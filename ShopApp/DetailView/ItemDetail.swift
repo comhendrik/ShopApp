@@ -10,6 +10,7 @@ import SwiftUI
 struct ItemDetail: View {
     @State private var colorIndex = 0
     @State private var shoeSize = 0
+    @Binding var isActive: Bool
     let item: Item
     var body: some View {
         ZStack {
@@ -25,14 +26,24 @@ struct ItemDetail: View {
             }
             VStack {
                 HStack {
-                    Text(item.title)
-                        .foregroundColor(.white)
-                        .font(.system(size: 24))
+                    VStack {
+                        Button(action: {
+                            isActive.toggle()
+                        }, label: {
+                            Image(systemName: "arrowshape.turn.up.backward.circle")
+                                .foregroundColor(.white)
+                                .font(.largeTitle)
+                        })
+                        Text(item.title)
+                            .foregroundColor(.white)
+                            .font(.system(size: 24))
+                    }
                     Spacer()
                 }
                 .padding(.top, UIScreen.main.bounds.height / 40)
                 .padding()
                 Spacer()
+
                 SelectColor(shoeIndex: $colorIndex, item: item)
                 SelectSize(actualSize: $shoeSize, item: item)
                 Text(item.description)
@@ -49,7 +60,7 @@ struct ItemDetail: View {
 
 struct ItemDetail_Previews: PreviewProvider {
     static var previews: some View {
-        ItemDetail(item: Item(_title: "off white jordanm",
+        ItemDetail(isActive: .constant(true), item: Item(_title: "off white jordanm",
                               _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                               _price: 129.99,
                               _gradient: [.red,.blue],
@@ -58,7 +69,10 @@ struct ItemDetail_Previews: PreviewProvider {
                               _colors: [Color.blue, Color.red, Color.white, Color.orange, Color.yellow],
                               _availableColors: [Color.blue, Color.red, Color.white, Color.orange, Color.yellow],
                               _imagePaths: ["Wethenew-Sneakers-France-Air-Jordan-1-High-85-Varsity-Red-BQ4422-600-1","Off-White-x-Jordan-1-UNC-Blue-2_w900"],
-                              _rating: 2.5)
+                              _rating: 2.5,
+                              _id: "0000001",
+                                                         _discount: 0
+                                                        )
         )
     }
 }

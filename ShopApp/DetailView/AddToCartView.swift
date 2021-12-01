@@ -54,7 +54,10 @@ struct AddToCartView_Previews: PreviewProvider {
                                  _colors: [Color.blue, Color.red, Color.white, Color.orange, Color.yellow],
                                  _availableColors: [Color.blue, Color.red, Color.white, Color.orange, Color.yellow],
                                  _imagePaths: ["Wethenew-Sneakers-France-Air-Jordan-1-High-85-Varsity-Red-BQ4422-600-1","Off-White-x-Jordan-1-UNC-Blue-2_w900"],
-                                 _rating: 2.5), shoeSize: 45, colorIndex: 0
+                                 _rating: 2.5,
+                                 _id: "0000001",
+                                 _discount: 0
+                                ), shoeSize: 45, colorIndex: 0
         )
     }
 }

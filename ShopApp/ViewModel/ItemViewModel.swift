@@ -8,7 +8,8 @@
 import Foundation
 import SwiftUI
 
-struct Item {
+struct Item: Identifiable {
+    
     var title: String
     var description: String
     var gradient: [Color]
@@ -19,8 +20,10 @@ struct Item {
     var availableColors: [Color]
     var imagePaths: [String]
     var rating: Float
+    var id: String
+    var discount: Int
     
-    init(_title: String, _description: String, _price: Double, _gradient: [Color], _sizes: [Int], _availableSizes: [Int], _colors: [Color], _availableColors: [Color], _imagePaths: [String], _rating: Float) {
+    init(_title: String, _description: String, _price: Double, _gradient: [Color], _sizes: [Int], _availableSizes: [Int], _colors: [Color], _availableColors: [Color], _imagePaths: [String], _rating: Float, _id: String, _discount: Int) {
         title = _title
         description = _description
         price = _price
@@ -31,5 +34,7 @@ struct Item {
         availableColors = _availableColors
         imagePaths = _imagePaths
         rating = _rating
+        id = _id
+        discount = _discount
     }
 }
