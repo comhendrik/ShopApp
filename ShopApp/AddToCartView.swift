@@ -9,6 +9,8 @@ import SwiftUI
 
 struct AddToCartView: View {
     let item: Item
+    var shoeSize: Int
+    var colorIndex: Int
     var body: some View {
         ZStack {
             Rectangle()
@@ -24,7 +26,7 @@ struct AddToCartView: View {
                         .padding()
                     Button(action: {
                         //TODO: Add Function to add to cart
-                        print(UIScreen.main.bounds.height)
+                        print(shoeSize, item.colors[colorIndex])
                     }, label: {
                         Text("Add To Cart")
                             .foregroundColor(.white)
@@ -52,7 +54,7 @@ struct AddToCartView_Previews: PreviewProvider {
                                  _colors: [Color.blue, Color.red, Color.white, Color.orange, Color.yellow],
                                  _availableColors: [Color.blue, Color.red, Color.white, Color.orange, Color.yellow],
                                  _imagePaths: ["Wethenew-Sneakers-France-Air-Jordan-1-High-85-Varsity-Red-BQ4422-600-1","Off-White-x-Jordan-1-UNC-Blue-2_w900"],
-                                 _rating: 2.5)
+                                 _rating: 2.5), shoeSize: 45, colorIndex: 0
         )
     }
 }

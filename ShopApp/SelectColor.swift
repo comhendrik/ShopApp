@@ -8,13 +8,12 @@
 import SwiftUI
 
 struct SelectColor: View {
-    @State private var colorIndex = 0
     @Binding var shoeIndex: Int
     let item: Item
     var body: some View {
         HStack {
             ForEach(0 ..< item.colors.count) { color in
-                SelectColorButton(colorIndex: $colorIndex, shoeIndex: $shoeIndex, changingIndex: color, changingColor: item.colors[color], colors: item.colors,availableColors: item.availableColors)
+                SelectColorButton(shoeIndex: $shoeIndex, changingIndex: color, changingColor: item.colors[color], colors: item.colors,availableColors: item.availableColors)
             }
         }
         .padding(.bottom, 1)
@@ -38,7 +37,6 @@ struct SelectColor_Previews: PreviewProvider {
 }
 
 struct SelectColorButton: View {
-    @Binding var colorIndex: Int
     @Binding var shoeIndex: Int
     let changingIndex: Int
     let changingColor: Color
@@ -47,17 +45,15 @@ struct SelectColorButton: View {
     var body: some View {
         Button(action: {
             if availableColors.contains(changingColor) {
-                colorIndex = changingIndex
                 shoeIndex = changingIndex
             } else {
                 //TODO: Alert or something like that
-                colorIndex = changingIndex
                 shoeIndex = changingIndex
                 print("not available")
             }
             
         }, label: {
-            Image(systemName: colors[colorIndex] == changingColor ? "circle.inset.filled" : "circle")
+            Image(systemName: colors[shoeIndex] == changingColor ? "circle.inset.filled" : "circle")
                 .font(.title)
                 .foregroundColor(availableColors.contains(changingColor) ? changingColor : .gray)
         })

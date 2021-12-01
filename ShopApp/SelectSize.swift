@@ -10,7 +10,7 @@ import SwiftUI
 //Implements the size selection
 
 struct SelectSize: View {
-    @State private var actualSize = 0
+    @Binding var actualSize: Int
     let item: Item
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -25,7 +25,7 @@ struct SelectSize: View {
 
 struct SelectSize_Previews: PreviewProvider {
     static var previews: some View {
-        SelectSize(item: Item(_title: "off white jordanm",
+        SelectSize(actualSize: .constant(0),item: Item(_title: "off white jordanm",
                               _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                               _price: 129.99,
                               _gradient: [.red,.blue],

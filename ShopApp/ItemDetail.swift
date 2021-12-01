@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ItemDetail: View {
-    @State private var shoeIndex = 0
+    @State private var colorIndex = 0
+    @State private var shoeSize = 0
     let item: Item
     var body: some View {
         ZStack {
@@ -16,7 +17,7 @@ struct ItemDetail: View {
                 .ignoresSafeArea(.all)
             //TODO: New option to display image correct
             VStack {
-                Image(item.imagePaths[shoeIndex])
+                Image(item.imagePaths[colorIndex])
                     .resizable()
                     .scaledToFit()
                     .padding(.top, UIScreen.main.bounds.height / 10)
@@ -32,13 +33,13 @@ struct ItemDetail: View {
                 .padding(.top, UIScreen.main.bounds.height / 40)
                 .padding()
                 Spacer()
-                SelectColor(shoeIndex: $shoeIndex, item: item)
-                SelectSize(item: item)
+                SelectColor(shoeIndex: $colorIndex, item: item)
+                SelectSize(actualSize: $shoeSize, item: item)
                 Text(item.description)
                     .font(.system(size: UIScreen.main.bounds.height < 700 ? 20 : 28))
                     .foregroundColor(.white)
                     .padding([.bottom, .horizontal])
-                AddToCartView(item: item)
+                AddToCartView(item: item, shoeSize: shoeSize, colorIndex: colorIndex)
                 
             }
         }
