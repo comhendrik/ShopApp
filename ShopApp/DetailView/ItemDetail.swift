@@ -10,13 +10,11 @@ import SwiftUI
 struct ItemDetail: View {
     @State private var colorIndex = 0
     @State private var shoeSize = 0
-    @Binding var isActive: Bool
+    @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     let item: Item
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: item.gradient), startPoint: .top, endPoint: .bottom)
-                .ignoresSafeArea(.all)
-            //TODO: New option to display image correct
+            item.colors[colorIndex]
             VStack {
                 Image(item.imagePaths[colorIndex])
                     .resizable()
@@ -26,44 +24,39 @@ struct ItemDetail: View {
             }
             VStack {
                 HStack {
+                    Spacer()
                     VStack {
-                        Button(action: {
-                            isActive.toggle()
-                        }, label: {
-                            Image(systemName: "arrowshape.turn.up.backward.circle")
-                                .foregroundColor(.white)
-                                .font(.largeTitle)
-                        })
                         Text(item.title)
+                            .font(.largeTitle)
                             .foregroundColor(.white)
                             .font(.system(size: 24))
                     }
-                    Spacer()
                 }
                 .padding(.top, UIScreen.main.bounds.height / 40)
                 .padding()
                 Spacer()
 
-                SelectColor(shoeIndex: $colorIndex, item: item)
-                SelectSize(actualSize: $shoeSize, item: item)
-                Text(item.description)
-                    .font(.system(size: UIScreen.main.bounds.height < 700 ? 20 : 28))
-                    .foregroundColor(.white)
-                    .padding([.bottom, .horizontal])
-                AddToCartView(item: item, shoeSize: shoeSize, colorIndex: colorIndex)
+
+                AddToCartView(item: item, shoeSize: $shoeSize, colorIndex: $colorIndex)
                 
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: Button(action : {
+            self.mode.wrappedValue.dismiss()
+        }){
+            Image(systemName: "arrow.left")
+                .foregroundColor(.white)
+        })
         .ignoresSafeArea(.all)
     }
 }
 
 struct ItemDetail_Previews: PreviewProvider {
     static var previews: some View {
-        ItemDetail(isActive: .constant(true), item: Item(_title: "off white jordanm",
+        ItemDetail(item: Item(_title: "off white jordanm",
                               _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                               _price: 129.99,
-                              _gradient: [.red,.blue],
                               _sizes: [41,42,43,44,45,46,47],
                               _availableSizes: [41,42,46,47],
                               _colors: [Color.blue, Color.red, Color.white, Color.orange, Color.yellow],

@@ -8,52 +8,94 @@
 import SwiftUI
 
 struct ListView: View {
-    @State private var searchText = ""
+    @State private var categories = "shoes"
     let items: [Item]
     var body: some View {
-        NavigationView {
-            VStack {
-                HStack {
-                    Button(action: {
-                        //TODO: Add profile page
-                    }, label: {
-                        Image(systemName: "person")
-                            .padding()
-                            .background(Color.gray.opacity(0.05))
-                            .clipShape(Circle())
-                    })
-                    Spacer()
-                    Button(action: {
-                        //TODO: Add profile page
-                    }, label: {
-                        Image(systemName: "gearshape")
-                            .padding()
-                            .background(Color.gray.opacity(0.25))
-                            .clipShape(Circle())
-                    })
-                }
-                .padding(.horizontal)
-                HStack {
-                    Text("Hi,\nCustomer!")
-                        .fontWeight(.heavy)
-                        .font(.largeTitle)
-                    Spacer()
-                }
-                .padding(.horizontal)
-                TextField("search", text: $searchText)
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(25, antialiased: false)
-                    .frame(width: UIScreen.main.bounds.width / 1.25)
-                    .shadow(color: Color.gray, radius: 5, x: 0, y: 5)
-                ScrollView(showsIndicators: false) {
-                    HorizontalScrollView(items: items, title: "Bestseller")
-                    HorizontalScrollView(items: items, title: "Newest products")
-                    HorizontalScrollView(items: items, title: "recommende")
-                }
-                .ignoresSafeArea(.all)
+        
+        ScrollView(showsIndicators: false) {
+            HStack(spacing: 10) {
+                Button(action: {
+                    withAnimation() {
+                        categories = "shoes"
+                    }
+                }, label: {
+                    if categories != "shoes" {
+                        Text("shoes")
+                            .foregroundColor(.black)
+                    } else {
+                        Text("shoes")
+                            .foregroundColor(.black)
+                            .underline()
+                    }
+                })
+                
+                Button(action: {
+                    withAnimation() {
+                        categories = "pullover"
+                    }
+                }, label: {
+                    if categories != "pullover" {
+                        Text("pullover")
+                            .foregroundColor(.black)
+                    } else {
+                        Text("pullover")
+                            .foregroundColor(.black)
+                            .underline()
+                    }
+                })
+                
+                Button(action: {
+                    withAnimation() {
+                        categories = "shirts"
+                    }
+                }, label: {
+                    if categories != "shirts" {
+                        Text("shirts")
+                            .foregroundColor(.black)
+                    } else {
+                        Text("shirts")
+                            .foregroundColor(.black)
+                            .underline()
+                    }
+                })
+                
+                Button(action: {
+                    withAnimation() {
+                        categories = "trousers"
+                    }
+                }, label: {
+                    if categories != "trousers" {
+                        Text("trousers")
+                            .foregroundColor(.black)
+                    } else {
+                        Text("trousers")
+                            .foregroundColor(.black)
+                            .underline()
+                    }
+                })
             }
-            .navigationBarHidden(true)
+            .padding()
+            switch categories {
+            case "pullover":
+                HorizontalScrollView(items: items, title: "Bestseller")
+                HorizontalScrollView(items: items, title: "Newest products")
+                HorizontalScrollView(items: items, title: "recommende")
+                
+            case "shirts":
+                HorizontalScrollView(items: items, title: "Bestseller")
+                HorizontalScrollView(items: items, title: "Newest products")
+                HorizontalScrollView(items: items, title: "recommende")
+                
+            case "trousers":
+                HorizontalScrollView(items: items, title: "Bestseller")
+                HorizontalScrollView(items: items, title: "Newest products")
+                HorizontalScrollView(items: items, title: "recommende")
+                
+            default:
+                HorizontalScrollView(items: items, title: "Bestseller")
+                HorizontalScrollView(items: items, title: "Newest products")
+                HorizontalScrollView(items: items, title: "recommende")
+            }
         }
     }
 }
@@ -63,7 +105,6 @@ struct ListView_Previews: PreviewProvider {
         ListView(items: [Item(_title: "jordan 1",
                               _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                               _price: 129.99,
-                              _gradient: [.red,.blue],
                               _sizes: [41,42,43,44,45,46,47],
                               _availableSizes: [41,42,46,47],
                               _colors: [Color.blue, Color.red, Color.white, Color.orange, Color.yellow],

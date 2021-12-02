@@ -28,7 +28,6 @@ struct SelectSize_Previews: PreviewProvider {
         SelectSize(actualSize: .constant(0),item: Item(_title: "off white jordanm",
                                                       _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                                                       _price: 129.99,
-                                                      _gradient: [.red,.blue],
                                                       _sizes: [41,42,43,44,45,46,47],
                                                       _availableSizes: [41,42,46,47],
                                                       _colors: [Color.blue, Color.red, Color.white, Color.orange, Color.yellow],
@@ -58,8 +57,8 @@ struct SelectSizeButton: View {
             Text("\(changingSize)")
                 .font(.system(size: UIScreen.main.bounds.width / 20))
                 .padding()
-                .background(size == changingSize ? .white : .clear)
-                .foregroundColor(size == changingSize ? .black : availableSizes.contains(changingSize) ? .white : .gray)
+                .background(size == changingSize ? .gray.opacity(0.35) : .clear)
+                .foregroundColor(availableSizes.contains(changingSize) ? .black : .gray)
                 .cornerRadius(10, antialiased: false)
         })
     }

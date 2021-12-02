@@ -25,7 +25,6 @@ struct SelectColor_Previews: PreviewProvider {
         SelectColor(shoeIndex: .constant(0), item: Item(_title: "off white jordanm",
                                                         _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                                                         _price: 129.99,
-                                                        _gradient: [.red,.blue],
                                                         _sizes: [41,42,43,44,45,46,47],
                                                         _availableSizes: [41,42,46,47],
                                                         _colors: [Color.blue, Color.red, Color.white, Color.orange, Color.yellow],
@@ -55,9 +54,10 @@ struct SelectColorButton: View {
             }
             
         }, label: {
-            Image(systemName: colors[shoeIndex] == changingColor ? "circle.inset.filled" : "circle")
+            Image(systemName: availableColors.contains(changingColor) ? colors[shoeIndex] == changingColor ? "circle.inset.filled" : "circle" : "circle.slash")
                 .font(.title)
-                .foregroundColor(availableColors.contains(changingColor) ? changingColor : .gray)
+                .foregroundColor(changingColor == .white ? .gray : changingColor)
+                
         })
     }
 }
