@@ -8,13 +8,19 @@
 import SwiftUI
 
 struct ShoppingCart: View {
+    @StateObject var ivm: ItemViewModel
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            ShoppingCartListView(items: ivm.cartItems)
+            PaymentButton()
+                .scaledToFit()
+                .padding()
+        }
     }
 }
 
 struct ShoppingCart_Previews: PreviewProvider {
     static var previews: some View {
-        ShoppingCart()
+        ShoppingCart(ivm: ItemViewModel())
     }
 }

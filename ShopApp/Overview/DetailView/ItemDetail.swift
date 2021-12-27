@@ -32,7 +32,6 @@ struct ItemDetail: View {
                                 .strikethrough()
                                 .foregroundColor(Color.gray.opacity(0.5))
                                 
-
                         }
                         
                     } else {
@@ -51,6 +50,7 @@ struct ItemDetail: View {
                 SelectSize(actualSize: $shoeSize, item: item)
                 Button(action: {
                     //TODO: Add Function to add to cart
+
                     print(shoeSize)
                 }, label: {
                     Text("Add to cart")
@@ -63,7 +63,12 @@ struct ItemDetail: View {
                         
                 })
                 Button(action: {
-                    //TODO: Add Function to add to favorites
+                    //TODO: Add full Function to add to favorites
+                    if shoeSize != 0 {
+                        PersistenceController.shared.createItem(_title: item.title, _information: item.description, _price: item.price, _size: shoeSize, _imagePath: item.imagePath, _rating: item.rating, _productId: item.id, _discount: item.discount)
+                    } else {
+                        print("choose size")
+                    }
                 }, label: {
                     Text("Add to favorites")
                         .foregroundColor(.black)

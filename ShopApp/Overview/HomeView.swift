@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject var ivm = ItemViewModel()
+    @StateObject var ivm: ItemViewModel
     var body: some View {
         VStack {
             HStack {
@@ -37,6 +37,6 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView()
+        HomeView(ivm: ItemViewModel())
     }
 }

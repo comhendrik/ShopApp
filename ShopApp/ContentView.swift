@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
-    
+    @StateObject var ivm = ItemViewModel()
     var body: some View {
         NavigationView {
             TabView {
-                HomeView()
+                HomeView(ivm: ivm)
                     .tabItem{
                         Image(systemName: "house")
                         Text("home")
                     }
-                ShoppingCart()
+                ShoppingCart(ivm: ItemViewModel())
                     .tabItem {
                         Image(systemName: "cart")
                         Text("Cart")
