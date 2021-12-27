@@ -8,95 +8,35 @@
 import SwiftUI
 
 struct ListView: View {
-    @State private var categories = "shoes"
+    @State private var categories = "Shoes"
     let items: [Item]
     var body: some View {
         
         ScrollView(showsIndicators: false) {
-            HStack(spacing: 10) {
-                Button(action: {
-                    withAnimation() {
-                        categories = "shoes"
-                    }
-                }, label: {
-                    if categories != "shoes" {
-                        Text("shoes")
-                            .foregroundColor(.black)
-                    } else {
-                        Text("shoes")
-                            .foregroundColor(.black)
-                            .underline()
-                    }
-                })
-                
-                Button(action: {
-                    withAnimation() {
-                        categories = "pullover"
-                    }
-                }, label: {
-                    if categories != "pullover" {
-                        Text("pullover")
-                            .foregroundColor(.black)
-                    } else {
-                        Text("pullover")
-                            .foregroundColor(.black)
-                            .underline()
-                    }
-                })
-                
-                Button(action: {
-                    withAnimation() {
-                        categories = "shirts"
-                    }
-                }, label: {
-                    if categories != "shirts" {
-                        Text("shirts")
-                            .foregroundColor(.black)
-                    } else {
-                        Text("shirts")
-                            .foregroundColor(.black)
-                            .underline()
-                    }
-                })
-                
-                Button(action: {
-                    withAnimation() {
-                        categories = "trousers"
-                    }
-                }, label: {
-                    if categories != "trousers" {
-                        Text("trousers")
-                            .foregroundColor(.black)
-                    } else {
-                        Text("trousers")
-                            .foregroundColor(.black)
-                            .underline()
-                    }
-                })
-            }
-            .padding()
+            CategorieNavigatorView(categories: $categories)
             switch categories {
-            case "pullover":
+            case "Pullover":
                 HorizontalScrollView(items: items, title: "Bestseller")
                 HorizontalScrollView(items: items, title: "Newest products")
-                HorizontalScrollView(items: items, title: "recommende")
+                HorizontalScrollView(items: items, title: "Recommended")
                 
-            case "shirts":
+            case "Shirts":
                 HorizontalScrollView(items: items, title: "Bestseller")
                 HorizontalScrollView(items: items, title: "Newest products")
-                HorizontalScrollView(items: items, title: "recommende")
+                HorizontalScrollView(items: items, title: "Recommended")
                 
-            case "trousers":
+            case "Trousers":
                 HorizontalScrollView(items: items, title: "Bestseller")
                 HorizontalScrollView(items: items, title: "Newest products")
-                HorizontalScrollView(items: items, title: "recommende")
+                HorizontalScrollView(items: items, title: "Recommended")
                 
             default:
                 HorizontalScrollView(items: items, title: "Bestseller")
                 HorizontalScrollView(items: items, title: "Newest products")
-                HorizontalScrollView(items: items, title: "recommende")
+                HorizontalScrollView(items: items, title: "Recommended")
             }
         }
+        .padding()
     }
 }
 
@@ -107,13 +47,11 @@ struct ListView_Previews: PreviewProvider {
                               _price: 129.99,
                               _sizes: [41,42,43,44,45,46,47],
                               _availableSizes: [41,42,46,47],
-                              _colors: [Color.blue, Color.red, Color.white, Color.orange, Color.yellow],
-                              _availableColors: [Color.blue, Color.red,Color.yellow],
-                              _imagePaths: ["Off-White-x-Jordan-1-UNC-Blue-2_w900", "Wethenew-Sneakers-France-Air-Jordan-1-High-85-Varsity-Red-BQ4422-600-1", "Wethenew-Sneakers-France-Air-Jordan-1-Mid-White-Shadow-554724-073-1","Wethenew-Sneakers-France-Air-Jordan-1-Mid-Turf-Orange-BQ6931-802-1_1","Wethenew-Sneakers-France-Air-Jordan-1-Mid-Dynamic-Yellow-1"],
+                              _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
                               _rating: 2.5,
-                              _id: "0000001",
+                              _id: "00003401",
                               _discount: 0
-                             )]
+              )]
         )
     }
 }

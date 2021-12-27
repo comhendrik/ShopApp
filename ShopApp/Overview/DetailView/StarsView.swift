@@ -9,7 +9,7 @@ import SwiftUI
 
 struct StarsView: View {
   private static let MAX_RATING: Float = 5 // Defines upper limit of the rating
-  private static let COLOR = Color.orange // The color of the stars
+  private static let COLOR = Color.black // The color of the stars
 
   let rating: Float
   private let fullCount: Int
@@ -27,7 +27,7 @@ struct StarsView: View {
     HStack {
       ForEach(0..<fullCount) { _ in
          self.fullStar
-              .font(.title2)
+              .font(.title3)
        }
        ForEach(0..<halfFullCount) { _ in
          self.halfFullStar
