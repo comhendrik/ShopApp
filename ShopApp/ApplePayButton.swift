@@ -26,7 +26,7 @@ struct PaymentButtonHelper: View {
     var body: some View {
         PaymentButtonRepresentable()
             .frame(minWidth: 100, maxWidth: 400)
-            .frame(height: 60)
+            .frame(height: 50)
             .frame(maxWidth: .infinity)
     }
 }
@@ -35,7 +35,7 @@ extension PaymentButtonHelper {
      
         var button: PKPaymentButton {
             let button = PKPaymentButton(paymentButtonType: .buy, paymentButtonStyle: .black) /*customize here*/
-            button.cornerRadius = 4.0 /* also customize here */
+            button.cornerRadius = 15 /* also customize here */
             return button
         }
      

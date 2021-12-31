@@ -8,16 +8,26 @@
 import SwiftUI
 
 struct ShoppingCartListView: View {
-    var items: [Item]
+    var items: [CartItem]
     var body: some View {
-        List(items) { item in
-            Text(item.title)
+        ScrollView {
+            HStack {
+                Image(systemName: "cart")
+                    .font(.largeTitle)
+                    .padding()
+                Spacer()
+            }
+            ForEach(items) { cartitem in
+                CartMiniViewer(item: cartitem)
+            }
         }
     }
 }
+
+
 //TODO: add preview items
 //struct ShoppingCartListView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        ShoppingCartListView(items: <#[Item]#>)
+//        ShoppingCartListView(items: [CartItem])
 //    }
 //}

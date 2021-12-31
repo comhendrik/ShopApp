@@ -10,15 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @StateObject var ivm: ItemViewModel
     var body: some View {
-        VStack {
-            HStack {
-                Text("Hi,\nCustomer")
-                    .font(.title)
-                    .fontWeight(.bold)
-                Spacer()
-            }
-            .padding()
-            Divider()
+        NavigationView {
             if ivm.showProgressView {
                 Spacer()
                 ProgressView()
@@ -30,7 +22,9 @@ struct HomeView: View {
                 Spacer()
             } else {
                 ListView(items: ivm.items)
+                    .navigationBarHidden(true)
             }
+            
         }
     }
 }

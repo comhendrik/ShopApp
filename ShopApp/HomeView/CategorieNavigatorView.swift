@@ -19,7 +19,7 @@ struct CategorieNavigatorView: View {
             Spacer()
             CategorieButtonView(categories: $categories, value: "Trousers")
         }
-        .padding()
+        .padding([.top,.bottom])
     }
 }
 

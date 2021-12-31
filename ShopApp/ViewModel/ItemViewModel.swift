@@ -35,14 +35,34 @@ struct Item: Identifiable {
 
 }
 
+struct CartItem: Identifiable {
+    var item: Item
+    var size: Int
+    var id: String
+    var amount: Int
+    
+    init(_item: Item, _size: Int) {
+        item = _item
+        size = _size
+        id = _item.id + String(size)
+        amount = 1
+    }
+}
+
 class ItemViewModel: ObservableObject {
     @Published var items: [Item] = []
-    @Published var cartItems: [Item] = []
+    @Published var cartItems: [CartItem] = []
+    @Published var favoriteItems: [Item] = []
     @Published var showProgressView = true
     //TODO: stuff with firebase
     init() {
         self.getItems()
         self.getCartItems()
+        self.getFavoriteItems()
+    }
+    
+    func increaseNumber() {
+        cartItems[0].amount += 1
     }
     
     func getItems() {
@@ -89,21 +109,53 @@ class ItemViewModel: ObservableObject {
     
     func getCartItems() {
         showProgressView = true
-        cartItems = [Item(_title: "Jordan 1",
-                          _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
-                          _price: 129.99,
-                          _sizes: [41,42,43,44,45,46,47],
-                          _availableSizes: [41,42,46,47],
-                          _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
-                          _rating: 2.5,
-                          _id: "00003401",
-                          _discount: 0
-          )]
+        cartItems = [CartItem(_item: Item(_title: "Jordan 1",
+                                          _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
+                                          _price: 129.99,
+                                          _sizes: [41,42,43,44,45,46,47],
+                                          _availableSizes: [41,42,46,47],
+                                          _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
+                                          _rating: 2.5,
+                                          _id: "00003401",
+                                          _discount: 0
+                          ), _size: 45),
+                     CartItem(_item: Item(_title: "Jordan 1",
+                                                       _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
+                                                       _price: 129.99,
+                                                       _sizes: [41,42,43,44,45,46,47],
+                                                       _availableSizes: [41,42,46,47],
+                                                       _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
+                                                       _rating: 2.5,
+                                                       _id: "00003401",
+                                                       _discount: 50
+                                       ), _size: 42)]
         showProgressView = false
     }
     
-    func addCartItem(itemToAdd: Item) {
+
+    
+    func addCartItem(itemToAdd: Item, size: Int) {
         
-        cartItems.append(itemToAdd)
+        cartItems.append(CartItem(_item: itemToAdd, _size: size))
+    }
+    
+    func getFavoriteItems() {
+        showProgressView = true
+        favoriteItems = [Item(_title: "Jordan 1",
+                              _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
+                              _price: 129.99,
+                              _sizes: [41,42,43,44,45,46,47],
+                              _availableSizes: [41,42,46,47],
+                              _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
+                              _rating: 2.5,
+                              _id: "00003401",
+                              _discount: 0
+              )]
+        showProgressView = false
+    }
+    
+    func addFavoriteItem(itemToAdd: Item) {
+        
+        favoriteItems.append(itemToAdd)
     }
 }

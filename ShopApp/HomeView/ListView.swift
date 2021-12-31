@@ -13,6 +13,12 @@ struct ListView: View {
     var body: some View {
         
         ScrollView(showsIndicators: false) {
+            HStack {
+                Text("Hi,\nCustomer")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                Spacer()
+            }
             CategorieNavigatorView(categories: $categories)
             switch categories {
             case "Pullover":

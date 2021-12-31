@@ -8,13 +8,27 @@
 import SwiftUI
 
 struct FavoritesView: View {
+    @StateObject var ivm: ItemViewModel
     var body: some View {
-        FavoriteItemsListView()
+        NavigationView {
+            ScrollView {
+                HStack {
+                    Image(systemName: "heart")
+                        .font(.largeTitle)
+                        .padding()
+                    Spacer()
+                }
+                ForEach(ivm.favoriteItems) { favoriteitem in
+                    FavoriteMiniViewer(item: favoriteitem)
+                }
+            }
+            .navigationBarHidden(true)
+        }
     }
 }
 
 struct FavoritesView_Previews: PreviewProvider {
     static var previews: some View {
-        FavoritesView()
+        FavoritesView(ivm: ItemViewModel())
     }
 }

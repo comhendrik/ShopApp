@@ -25,7 +25,7 @@ struct ItemDetail: View {
                 HStack {
                     if item.discount != 0 {
                         VStack {
-                            Text("\(String(format: "%.2f", (item.price/100.0) * Double(item.discount)))$")
+                            Text("\(String(format: "%.2f", (item.price - (item.price/100.0) * Double(item.discount))))$")
                                 .foregroundColor(Color.red)
                                 
                             Text("\(String(format: "%.2f", item.price))$")
@@ -64,11 +64,6 @@ struct ItemDetail: View {
                 })
                 Button(action: {
                     //TODO: Add full Function to add to favorites
-                    if shoeSize != 0 {
-                        PersistenceController.shared.createItem(_title: item.title, _information: item.description, _price: item.price, _size: shoeSize, _imagePath: item.imagePath, _rating: item.rating, _productId: item.id, _discount: item.discount)
-                    } else {
-                        print("choose size")
-                    }
                 }, label: {
                     Text("Add to favorites")
                         .foregroundColor(.black)

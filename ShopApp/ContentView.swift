@@ -10,35 +10,33 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var ivm = ItemViewModel()
     var body: some View {
-        NavigationView {
-            TabView {
-                HomeView(ivm: ivm)
-                    .tabItem{
-                        Image(systemName: "house")
-                        Text("home")
-                    }
-                ShoppingCart(ivm: ItemViewModel())
-                    .tabItem {
-                        Image(systemName: "cart")
-                        Text("Cart")
-                    }
-                FavoritesView()
-                    .tabItem {
-                        Image(systemName: "heart.text.square")
-                        Text("Favorites")
-                    }
-                ShopMap()
-                    .tabItem {
-                        Image(systemName: "map.circle")
-                        Text("map")
-                    }
-                AccountView()
-                    .tabItem {
-                        Image(systemName: "person.crop.circle")
-                        Text("account")
-                    }
-            }
-            .navigationBarHidden(true)
+        TabView {
+            HomeView(ivm: ivm)
+                .tabItem{
+                    Image(systemName: "house")
+                    Text("home")
+                        .foregroundColor(.black)
+                }
+            ShoppingCart(ivm: ivm)
+                .tabItem {
+                    Image(systemName: "cart")
+                    Text("Cart")
+                }
+            FavoritesView(ivm: ivm)
+                .tabItem {
+                    Image(systemName: "heart.text.square")
+                    Text("Favorites")
+                }
+            MapView()
+                .tabItem {
+                    Image(systemName: "map.circle")
+                    Text("map")
+                }
+            AccountView()
+                .tabItem {
+                    Image(systemName: "person.crop.circle")
+                    Text("account")
+                }
         }
     }
 }
