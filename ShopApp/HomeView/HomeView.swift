@@ -21,7 +21,7 @@ struct HomeView: View {
                 })
                 Spacer()
             } else {
-                ListView(items: ivm.items)
+                ListView(ivm: ivm, items: ivm.items)
                     .navigationBarHidden(true)
             }
             

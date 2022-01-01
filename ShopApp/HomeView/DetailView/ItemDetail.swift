@@ -11,6 +11,7 @@ struct ItemDetail: View {
     @State private var shoeSize = 0
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     let item: Item
+    let addAction: (Int) -> Void
     var body: some View {
         ScrollView {
             VStack {
@@ -50,8 +51,7 @@ struct ItemDetail: View {
                 SelectSize(actualSize: $shoeSize, item: item)
                 Button(action: {
                     //TODO: Add Function to add to cart
-
-                    print(shoeSize)
+                    addAction(shoeSize)
                 }, label: {
                     Text("Add to cart")
                         .foregroundColor(.white)
@@ -99,7 +99,9 @@ struct ItemDetail_Previews: PreviewProvider {
                               _rating: 2.5,
                               _id: "00003401",
                               _discount: 0
-              )
+                             ), addAction: {_ in 
+            print("hello")
+        }
         )
     }
 }

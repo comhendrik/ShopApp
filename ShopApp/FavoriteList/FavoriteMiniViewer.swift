@@ -9,13 +9,17 @@ import SwiftUI
 
 struct FavoriteMiniViewer: View {
     let item: Item
+    @StateObject var ivm: ItemViewModel
+    let addToCartAction: () -> Void
     var body: some View {
         VStack {
             HStack {
                 ZStack {
                     Color.gray.opacity(0.05)
                     NavigationLink {
-                        ItemDetail(item: item)
+                        ItemDetail(item: item, addAction: { number in
+                            ivm.addCartItem(with: item.id + String(number), size: number , item: item)
+                        })
                     } label: {
                         Image(item.imagePath)
                             .resizable()
@@ -44,6 +48,7 @@ struct FavoriteMiniViewer: View {
                 Spacer()
                 Button(action: {
                     //TODO: Edit action
+                    addToCartAction()
                 }, label: {
                     Text("Add to Cart")
                         .foregroundColor(.white)
@@ -70,6 +75,8 @@ struct FavoriteMiniViewer_Previews: PreviewProvider {
                                       _rating: 2.5,
                                       _id: "00003401",
                                       _discount: 0
-                      ))
+                                     ), ivm: ItemViewModel(), addToCartAction: {
+            print("hello")
+        })
     }
 }

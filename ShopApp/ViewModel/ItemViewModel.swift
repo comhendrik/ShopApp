@@ -54,6 +54,25 @@ class ItemViewModel: ObservableObject {
     @Published var cartItems: [CartItem] = []
     @Published var favoriteItems: [Item] = []
     @Published var showProgressView = true
+    @Published var placeholderCartItem = CartItem(_item: Item(_title: "Jordan 1",
+                                                              _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
+                                                              _price: 129.99,
+                                                              _sizes: [41,42,43,44,45,46,47],
+                                                              _availableSizes: [41,42,46,47],
+                                                              _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
+                                                              _rating: 2.5,
+                                                              _id: "00003401",
+                                                              _discount: 0
+                                              ), _size: 45)
+    @Published var placeholderItem =  Item(_title: "Jordan 1",
+                                         _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
+                                         _price: 129.99,
+                                         _sizes: [41,42,43,44,45,46,47],
+                                         _availableSizes: [41,42,46,47],
+                                          _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
+                                         _rating: 2.5,
+                                         _id: "00055001",
+                              _discount: 45)
     //TODO: stuff with firebase
     init() {
         self.getItems()
@@ -61,9 +80,58 @@ class ItemViewModel: ObservableObject {
         self.getFavoriteItems()
     }
     
-    func increaseNumber() {
-        cartItems[0].amount += 1
+    func changeAmountOfCartItem(with id: String, number: Int) {
+        var index = 0
+        for item in cartItems {
+            if item.id == id {
+                cartItems[index].amount += number
+                return
+            }
+            index += 1
+        }
     }
+    
+    func changeSizeOfCartItem(with id: String, size: Int) {
+        var index = 0
+        for item in cartItems {
+            if item.id == item.item.id + String(size) {
+                print("already adde")
+                //TODO: Handle this case properly
+                return
+            }
+        }
+        for item in cartItems {
+            if item.id == id {
+                cartItems[index].size = size
+                cartItems[index].id = cartItems[index].item.id + String(size)
+                return
+            }
+            index += 1
+        }
+    }
+    
+    func deleteCartItem(with id: String) {
+        var index = 0
+        for item in cartItems {
+            if item.id == id {
+                cartItems.remove(at: index)
+                return
+            }
+            index += 1
+        }
+    }
+    
+    func addCartItem(with id: String, size: Int, item: Item) {
+        for item in cartItems {
+            if item.id == id {
+                print("already added")
+                //TODO: Handle this case properly
+                return
+            }
+        }
+        cartItems.append(CartItem(_item: item, _size: size))
+    }
+
     
     func getItems() {
         items = [Item(_title: "Jordan 1",
@@ -131,13 +199,7 @@ class ItemViewModel: ObservableObject {
                                        ), _size: 42)]
         showProgressView = false
     }
-    
 
-    
-    func addCartItem(itemToAdd: Item, size: Int) {
-        
-        cartItems.append(CartItem(_item: itemToAdd, _size: size))
-    }
     
     func getFavoriteItems() {
         showProgressView = true

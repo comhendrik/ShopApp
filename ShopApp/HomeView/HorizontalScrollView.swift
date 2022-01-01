@@ -10,6 +10,7 @@ import SwiftUI
 struct HorizontalScrollView: View {
     let items: [Item]
     let title: String
+    @StateObject var ivm: ItemViewModel
     var body: some View {
         VStack {
             HStack {
@@ -22,7 +23,9 @@ struct HorizontalScrollView: View {
                 HStack {
                     ForEach(items) { item in
                         NavigationLink(destination: {
-                            ItemDetail(item: item)
+                            ItemDetail(item: item, addAction: { number in
+                                ivm.addCartItem(with: item.id + String(number), size: number, item: item)
+                            })
                             
                         }, label: {
                             MiniViewer(item: item)
@@ -48,6 +51,6 @@ struct HorizontalScrollView_Previews: PreviewProvider {
                                           _rating: 2.5,
                                           _id: "00003401",
                                           _discount: 0
-                          )], title: "Bestseller")
+                                         )], title: "Bestseller", ivm: ItemViewModel())
     }
 }

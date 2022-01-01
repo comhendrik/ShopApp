@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ShoppingCartListView: View {
-    var items: [CartItem]
+    @StateObject var ivm: ItemViewModel
+    @Binding var showEditView: Bool
     var body: some View {
         ScrollView {
             HStack {
@@ -17,9 +18,21 @@ struct ShoppingCartListView: View {
                     .padding()
                 Spacer()
             }
-            ForEach(items) { cartitem in
-                CartMiniViewer(item: cartitem)
+            ForEach(ivm.cartItems) { cartitem in
+                CartMiniViewer(item: cartitem,
+                               deleteAction: {
+                    ivm.deleteCartItem(with: cartitem.id)
+                },
+                               editAction: {
+                    ivm.placeholderCartItem = cartitem
+                    withAnimation() {
+                        showEditView.toggle()
+                    }
+                }, addAction: { number in
+                    ivm.addCartItem(with: cartitem.item.id + String(number), size: number, item: cartitem.item)
+                })
             }
+
         }
     }
 }

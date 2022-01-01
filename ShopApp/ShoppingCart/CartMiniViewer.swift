@@ -9,6 +9,9 @@ import SwiftUI
 
 struct CartMiniViewer: View {
     var item: CartItem
+    var deleteAction: () -> Void
+    var editAction: () -> Void
+    var addAction: (Int) -> Void
     var body: some View {
         VStack {
             HStack {
@@ -21,7 +24,9 @@ struct CartMiniViewer: View {
                 ZStack {
                     Color.gray.opacity(0.05)
                     NavigationLink {
-                        ItemDetail(item: item.item)
+                        ItemDetail(item: item.item, addAction: { number in
+                            addAction(number)
+                        })
                     } label: {
                         Image(item.item.imagePath)
                             .resizable()
@@ -37,7 +42,8 @@ struct CartMiniViewer: View {
                 Spacer()
                 VStack {
                     Button(action: {
-                        //TODO: Edit action
+                        //TODO: Edit action with firebase
+                        editAction()
                     }, label: {
                         Text("Edit")
                             .foregroundColor(.white)
@@ -47,6 +53,7 @@ struct CartMiniViewer: View {
                             .cornerRadius(15)
                     })
                     Button(action: {
+                        deleteAction()
                     }, label: {
                         Text("Delete")
                             .foregroundColor(.black)
@@ -74,6 +81,12 @@ struct CartFavoriteMiniViewer_Previews: PreviewProvider {
                                                           _rating: 2.5,
                                                           _id: "00003401",
                                                           _discount: 40
-                                                         ), _size: 45))
+                                                 ), _size: 45), deleteAction: {
+            print("hello")
+        }, editAction: {
+            print("hello")
+        }, addAction: {_ in 
+            print("hello")
+        })
     }
 }
