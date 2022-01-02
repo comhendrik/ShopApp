@@ -23,8 +23,11 @@ struct HorizontalScrollView: View {
                 HStack {
                     ForEach(items) { item in
                         NavigationLink(destination: {
-                            ItemDetail(item: item, addAction: { number in
-                                ivm.addCartItem(with: item.id + String(number), size: number, item: item)
+                            ItemDetail(item: item, addFavoriteAction: {
+                                print("added?")
+                                ivm.addItemToFavorites(with: item.id)
+                            }, addToCartAction: { number in
+                                ivm.addItemToCart(with: item.id, size: number)
                             })
                             
                         }, label: {

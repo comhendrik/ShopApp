@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AddToCartView: View {
-    @StateObject var ivm: ItemViewModel
+    @StateObject var uvm: UserViewModel
     @Binding var showAddToCartView: Bool
     @State private var amount = 0
     @State private var shoeSize = 0
@@ -52,9 +52,14 @@ struct AddToCartView: View {
                 HStack {
                     ZStack {
                         Color.gray.opacity(0.05)
-                        Image(item.imagePath)
-                            .resizable()
-                            .scaledToFit()
+                        AsyncImage(url: URL(string: item.imagePath)) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                            
+                        } placeholder: {
+                            ProgressView()
+                        }
                     }
                     .frame(width:
                             UIScreen.main.bounds.width / 2.5,
@@ -106,7 +111,6 @@ struct AddToCartView: View {
                 
                 Button(action: {
                     //TODO: Add Function to add to cart
-                    ivm.addCartItem(with: item.id + String(shoeSize), size: shoeSize, item: item)
                     withAnimation() {
                         showAddToCartView.toggle()
                     }

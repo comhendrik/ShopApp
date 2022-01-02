@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var ivm = ItemViewModel()
+    @StateObject var uvm = UserViewModel()
     var body: some View {
         TabView {
             HomeView(ivm: ivm)
@@ -17,12 +18,12 @@ struct ContentView: View {
                     Text("home")
                         .foregroundColor(.black)
                 }
-            ShoppingCart(ivm: ivm)
+            ShoppingCart(uvm: uvm)
                 .tabItem {
                     Image(systemName: "cart")
                     Text("Cart")
                 }
-            FavoritesView(ivm: ivm)
+            FavoritesView(uvm: uvm)
                 .tabItem {
                     Image(systemName: "heart.text.square")
                     Text("Favorites")
@@ -32,7 +33,7 @@ struct ContentView: View {
                     Image(systemName: "map.circle")
                     Text("map")
                 }
-            AccountView()
+            AccountView(uvm: uvm)
                 .tabItem {
                     Image(systemName: "person.crop.circle")
                     Text("account")

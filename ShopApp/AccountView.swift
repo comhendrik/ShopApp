@@ -8,13 +8,18 @@
 import SwiftUI
 
 struct AccountView: View {
+    @StateObject var uvm: UserViewModel
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            Text("\(uvm.mainUser.firstName),\(uvm.mainUser.lastName)")
+            Text(uvm.mainUser.birthday)
+            Text("\(uvm.mainUser.age)")
+        }
     }
 }
 
 struct AccountView_Previews: PreviewProvider {
     static var previews: some View {
-        AccountView()
+        AccountView(uvm: UserViewModel())
     }
 }

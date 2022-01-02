@@ -8,18 +8,18 @@
 import SwiftUI
 
 struct ShoppingCart: View {
-    @StateObject var ivm: ItemViewModel
+    @StateObject var uvm: UserViewModel
     @State private var showEditView = false
     var body: some View {
         NavigationView {
             ZStack {
                 VStack {
-                    ShoppingCartListView(ivm: ivm, showEditView: $showEditView)
+                    ShoppingCartListView(uvm: uvm, showEditView: $showEditView)
                     HStack {
                         Text("Sum:")
                             .fontWeight(.bold)
                         Spacer()
-                        Text("\(String(format: "%.2f", calculateCost(items: ivm.cartItems)))$")
+                        Text("\(String(format: "%.2f", calculateCost(items: uvm.mainUser.cartItems)))$")
                         
                     }
                     .padding(.horizontal)
@@ -30,14 +30,10 @@ struct ShoppingCart: View {
                 .blur(radius: showEditView ? 5 : 0)
                 VStack {
                     Spacer()
-                    EditView(item: ivm.placeholderCartItem,
+                    EditView(item: uvm.placeholderCartItem,
                              changeSize: { number in
-                        ivm.changeSizeOfCartItem(with: ivm.placeholderCartItem.id, size: number)
-                        ivm.placeholderCartItem.size = number
                     },
                              changeAmount: { number in
-                        ivm.changeAmountOfCartItem(with: ivm.placeholderCartItem.id, number: number)
-                        ivm.placeholderCartItem.amount += number
                     },
                              showEditView: $showEditView)
                         .offset(y: showEditView ? 0 : 400)
@@ -66,6 +62,6 @@ struct ShoppingCart: View {
 
 struct ShoppingCart_Previews: PreviewProvider {
     static var previews: some View {
-        ShoppingCart(ivm: ItemViewModel())
+        ShoppingCart(uvm: UserViewModel())
     }
 }

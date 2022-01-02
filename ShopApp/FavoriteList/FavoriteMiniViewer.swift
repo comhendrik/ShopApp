@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FavoriteMiniViewer: View {
     let item: Item
-    @StateObject var ivm: ItemViewModel
+    @StateObject var uvm: UserViewModel
     let addToCartAction: () -> Void
     var body: some View {
         VStack {
@@ -17,13 +17,19 @@ struct FavoriteMiniViewer: View {
                 ZStack {
                     Color.gray.opacity(0.05)
                     NavigationLink {
-                        ItemDetail(item: item, addAction: { number in
-                            ivm.addCartItem(with: item.id + String(number), size: number , item: item)
+                        ItemDetail(item: item, addFavoriteAction: {
+                        }, addToCartAction: {_ in 
+                            
                         })
                     } label: {
-                        Image(item.imagePath)
-                            .resizable()
-                            .scaledToFit()
+                        AsyncImage(url: URL(string: item.imagePath)) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                            
+                        } placeholder: {
+                            ProgressView()
+                        }
                     }
                 }
                 .frame(width: UIScreen.main.bounds.width / 2.5, height: UIScreen.main.bounds.width / 2.5)
@@ -37,6 +43,7 @@ struct FavoriteMiniViewer: View {
             }
             HStack {
                 Button(action: {
+                    //TODO: delete action
                 }, label: {
                     Text("Delete")
                         .foregroundColor(.black)
@@ -47,7 +54,7 @@ struct FavoriteMiniViewer: View {
                 })
                 Spacer()
                 Button(action: {
-                    //TODO: Edit action
+                    //TODO: add to cart action
                     addToCartAction()
                 }, label: {
                     Text("Add to Cart")
@@ -75,7 +82,7 @@ struct FavoriteMiniViewer_Previews: PreviewProvider {
                                       _rating: 2.5,
                                       _id: "00003401",
                                       _discount: 0
-                                     ), ivm: ItemViewModel(), addToCartAction: {
+                                     ), uvm: UserViewModel(), addToCartAction: {
             print("hello")
         })
     }

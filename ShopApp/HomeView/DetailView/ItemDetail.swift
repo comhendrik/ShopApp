@@ -11,18 +11,26 @@ struct ItemDetail: View {
     @State private var shoeSize = 0
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     let item: Item
-    let addAction: (Int) -> Void
+    let addFavoriteAction: () -> Void
+    let addToCartAction: (Int) -> Void
     var body: some View {
         ScrollView {
             VStack {
                 ZStack {
+                    
                     Color.gray.opacity(0.05)
-                    Image(item.imagePath)
-                        .resizable()
-                        .scaledToFit()
-                        .padding(.top, UIScreen.main.bounds.height / 10)
+                    AsyncImage(url: URL(string: item.imagePath)) { image in
+                        image
+                            .resizable()
+                            .scaledToFit()
+                        
+                    } placeholder: {
+                        ProgressView()
+                    }
+
                 }
                 .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
+
                 HStack {
                     if item.discount != 0 {
                         VStack {
@@ -50,8 +58,7 @@ struct ItemDetail: View {
                 
                 SelectSize(actualSize: $shoeSize, item: item)
                 Button(action: {
-                    //TODO: Add Function to add to cart
-                    addAction(shoeSize)
+                    addToCartAction(shoeSize)
                 }, label: {
                     Text("Add to cart")
                         .foregroundColor(.white)
@@ -64,6 +71,7 @@ struct ItemDetail: View {
                 })
                 Button(action: {
                     //TODO: Add full Function to add to favorites
+                    addFavoriteAction()
                 }, label: {
                     Text("Add to favorites")
                         .foregroundColor(.black)
@@ -99,8 +107,10 @@ struct ItemDetail_Previews: PreviewProvider {
                               _rating: 2.5,
                               _id: "00003401",
                               _discount: 0
-                             ), addAction: {_ in 
+                             ), addFavoriteAction: {
             print("hello")
+        }, addToCartAction: {_ in 
+            
         }
         )
     }

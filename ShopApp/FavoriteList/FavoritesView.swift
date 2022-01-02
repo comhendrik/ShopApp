@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FavoritesView: View {
-    @StateObject var ivm: ItemViewModel
+    @StateObject var uvm: UserViewModel
     @State private var showAddToCartView = false
     var body: some View {
         NavigationView {
@@ -20,19 +20,15 @@ struct FavoritesView: View {
                             .padding()
                         Spacer()
                     }
-                    ForEach(ivm.favoriteItems) { favoriteitem in
-                        FavoriteMiniViewer(item: favoriteitem, ivm: ivm, addToCartAction: {
-                            ivm.placeholderItem = favoriteitem
-                            withAnimation() {
-                                showAddToCartView.toggle()
-                            }
+                    ForEach(uvm.mainUser.favoriteItems) { favoriteitem in
+                        FavoriteMiniViewer(item: favoriteitem, uvm: uvm, addToCartAction: {
                         })
                     }
                 }
                 .blur(radius: showAddToCartView ? 5 : 0)
                 VStack {
                     Spacer()
-                    AddToCartView(ivm: ivm, showAddToCartView: $showAddToCartView, item: ivm.placeholderItem)
+                    AddToCartView(uvm: uvm, showAddToCartView: $showAddToCartView, item: uvm.placeholderItem)
                 }
                 .offset(y: showAddToCartView ? -20 : 400)
             }
@@ -43,6 +39,6 @@ struct FavoritesView: View {
 
 struct FavoritesView_Previews: PreviewProvider {
     static var previews: some View {
-        FavoritesView(ivm: ItemViewModel())
+        FavoritesView(uvm: UserViewModel())
     }
 }

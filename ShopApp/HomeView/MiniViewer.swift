@@ -14,9 +14,14 @@ struct MiniViewer: View {
             ZStack {
                 Rectangle()
                     .foregroundColor(Color.gray.opacity(0.05))
-                Image(item.imagePath)
-                    .resizable()
-                    .scaledToFit()
+                AsyncImage(url: URL(string: item.imagePath)) { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
+                    
+                } placeholder: {
+                    ProgressView()
+                }
             }
             .frame(width: UIScreen.main.bounds.width / 2.25, height: UIScreen.main.bounds.width / 2.25)
             HStack {

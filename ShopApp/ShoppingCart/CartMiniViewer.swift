@@ -24,13 +24,19 @@ struct CartMiniViewer: View {
                 ZStack {
                     Color.gray.opacity(0.05)
                     NavigationLink {
-                        ItemDetail(item: item.item, addAction: { number in
-                            addAction(number)
+                        ItemDetail(item: item.item, addFavoriteAction: {
+                        }, addToCartAction: {_ in 
+                            
                         })
                     } label: {
-                        Image(item.item.imagePath)
-                            .resizable()
-                            .scaledToFit()
+                        AsyncImage(url: URL(string: item.item.imagePath)) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                            
+                        } placeholder: {
+                            ProgressView()
+                        }
                     }
                 }
                 .frame(width: UIScreen.main.bounds.width / 2.5, height: UIScreen.main.bounds.width / 2.5)
