@@ -9,17 +9,18 @@ import SwiftUI
 
 struct ShoppingCart: View {
     @StateObject var uvm: UserViewModel
+    @StateObject var ivm: ItemViewModel
     @State private var showEditView = false
     var body: some View {
         NavigationView {
             ZStack {
                 VStack {
-                    ShoppingCartListView(uvm: uvm, showEditView: $showEditView)
+                    ShoppingCartListView(uvm: uvm, ivm: ivm, showEditView: $showEditView)
                     HStack {
                         Text("Sum:")
                             .fontWeight(.bold)
                         Spacer()
-                        Text("\(String(format: "%.2f", calculateCost(items: uvm.mainUser.cartItems)))$")
+                        Text("\(String(format: "%.2f", calculateCost(items: uvm.cartItems)))$")
                         
                     }
                     .padding(.horizontal)
@@ -30,10 +31,12 @@ struct ShoppingCart: View {
                 .blur(radius: showEditView ? 5 : 0)
                 VStack {
                     Spacer()
-                    EditView(item: uvm.placeholderCartItem,
-                             changeSize: { number in
-                    },
-                             changeAmount: { number in
+                    EditView(item: $uvm.placeholderCartItem,
+                             saveAction: {amount, id in
+                        ivm.updateAmount(with: id, amount: amount)
+                        withAnimation() {
+                            showEditView.toggle()
+                        }
                     },
                              showEditView: $showEditView)
                         .offset(y: showEditView ? 0 : 400)
@@ -62,6 +65,6 @@ struct ShoppingCart: View {
 
 struct ShoppingCart_Previews: PreviewProvider {
     static var previews: some View {
-        ShoppingCart(uvm: UserViewModel())
+        ShoppingCart(uvm: UserViewModel(), ivm: ItemViewModel())
     }
 }

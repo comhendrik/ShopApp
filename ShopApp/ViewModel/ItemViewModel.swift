@@ -43,11 +43,11 @@ struct CartItem: Identifiable {
     var id: String
     var amount: Int
     
-    init(_item: Item, _size: Int) {
+    init(_item: Item, _size: Int, _amount: Int) {
         item = _item
         size = _size
         id = _item.id + String(size)
-        amount = 1
+        amount = _amount
     }
 }
 
@@ -67,7 +67,7 @@ class ItemViewModel: ObservableObject {
                                                               _rating: 2.5,
                                                               _id: "00003401",
                                                               _discount: 0
-                                              ), _size: 45)
+                                                             ), _size: 45, _amount: 1)
     @Published var placeholderItem =  Item(_title: "Jordan 1",
                                          _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                                          _price: 129.99,
@@ -82,56 +82,23 @@ class ItemViewModel: ObservableObject {
         self.getItems()
     }
     
-    func changeAmountOfCartItem(with id: String, number: Int) {
-        var index = 0
-        for item in cartItems {
-            if item.id == id {
-                cartItems[index].amount += number
-                return
-            }
-            index += 1
-        }
-    }
-    
-    func changeSizeOfCartItem(with id: String, size: Int) {
-        var index = 0
-        for item in cartItems {
-            if item.id == item.item.id + String(size) {
-                print("already adde")
-                //TODO: Handle this case properly
-                return
-            }
-        }
-        for item in cartItems {
-            if item.id == id {
-                cartItems[index].size = size
-                cartItems[index].id = cartItems[index].item.id + String(size)
-                return
-            }
-            index += 1
-        }
-    }
-    
     func deleteCartItem(with id: String) {
-        var index = 0
-        for item in cartItems {
-            if item.id == id {
-                cartItems.remove(at: index)
-                return
+        userRef.collection("CartItems").document(id).delete { err in
+            if let err = err {
+                //TODO: Handle this properly
+                print(err)
+            } else {
+                print("removed")
             }
-            index += 1
         }
     }
     
-    func addCartItem(with id: String, size: Int, item: Item) {
-        for item in cartItems {
-            if item.id == id {
-                print("already added")
-                //TODO: Handle this case properly
-                return
-            }
-        }
-        cartItems.append(CartItem(_item: item, _size: size))
+    func updateAmount(with id: String, amount: Int) {
+        userRef.collection("CartItems").document(id).updateData(["amount" : amount])
+    }
+    
+    func updateSize(with id: String, size: Int) {
+        userRef.collection("CartItems").document(id).updateData(["size" : size])
     }
     
     func addItemToFavorites(with id: String) {
@@ -140,7 +107,11 @@ class ItemViewModel: ObservableObject {
     }
     
     func addItemToCart(with id: String, size: Int) {
-        userRef.collection("CartItems").document(id+String(size)).setData(["size" : size, "itemReference" : id])
+        userRef.collection("CartItems").document(id+String(size)).setData(["size" : size, "itemReference" : id, "amount":1])
+    }
+    
+    func deleteFavoriteItem(with id: String) {
+        userRef.updateData(["favoriteItems" : FieldValue.arrayRemove([itemsRef.document(id)])])
     }
 
     
@@ -191,7 +162,7 @@ class ItemViewModel: ObservableObject {
                                           _rating: 2.5,
                                           _id: "00003401",
                                           _discount: 0
-                          ), _size: 45),
+                                         ), _size: 45, _amount: 1),
                      CartItem(_item: Item(_title: "Jordan 1",
                                                        _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                                                        _price: 129.99,
@@ -201,7 +172,7 @@ class ItemViewModel: ObservableObject {
                                                        _rating: 2.5,
                                                        _id: "00003401",
                                                        _discount: 50
-                                       ), _size: 42)]
+                                         ), _size: 42, _amount: 1)]
         showProgressView = false
     }
 

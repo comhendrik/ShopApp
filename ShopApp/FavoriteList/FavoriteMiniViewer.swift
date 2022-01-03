@@ -10,7 +10,9 @@ import SwiftUI
 struct FavoriteMiniViewer: View {
     let item: Item
     @StateObject var uvm: UserViewModel
-    let addToCartAction: () -> Void
+    @Binding var showAddToCartView: Bool
+    let addToCartAction: (Int) -> Void
+    let deleteAction: (String) -> Void
     var body: some View {
         VStack {
             HStack {
@@ -18,8 +20,8 @@ struct FavoriteMiniViewer: View {
                     Color.gray.opacity(0.05)
                     NavigationLink {
                         ItemDetail(item: item, addFavoriteAction: {
-                        }, addToCartAction: {_ in 
-                            
+                        }, addToCartAction: {size in
+                            addToCartAction(size)
                         })
                     } label: {
                         AsyncImage(url: URL(string: item.imagePath)) { image in
@@ -43,7 +45,13 @@ struct FavoriteMiniViewer: View {
             }
             HStack {
                 Button(action: {
-                    //TODO: delete action
+                    deleteAction(item.id)
+                    for i in 0 ..< uvm.favoriteItems.count {
+                        if uvm.favoriteItems[i].id == item.id {
+                            uvm.favoriteItems.remove(at: i)
+                            break
+                        }
+                    }
                 }, label: {
                     Text("Delete")
                         .foregroundColor(.black)
@@ -54,8 +62,10 @@ struct FavoriteMiniViewer: View {
                 })
                 Spacer()
                 Button(action: {
-                    //TODO: add to cart action
-                    addToCartAction()
+                    uvm.placeholderItem = item
+                    withAnimation() {
+                        showAddToCartView.toggle()
+                    }
                 }, label: {
                     Text("Add to Cart")
                         .foregroundColor(.white)
@@ -82,8 +92,8 @@ struct FavoriteMiniViewer_Previews: PreviewProvider {
                                       _rating: 2.5,
                                       _id: "00003401",
                                       _discount: 0
-                                     ), uvm: UserViewModel(), addToCartAction: {
+                                     ), uvm: UserViewModel(), showAddToCartView: .constant(true), addToCartAction: {_ in 
             print("hello")
-        })
+        }, deleteAction: {_ in})
     }
 }

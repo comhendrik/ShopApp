@@ -18,12 +18,12 @@ struct ContentView: View {
                     Text("home")
                         .foregroundColor(.black)
                 }
-            ShoppingCart(uvm: uvm)
+            ShoppingCart(uvm: uvm, ivm: ivm)
                 .tabItem {
                     Image(systemName: "cart")
                     Text("Cart")
                 }
-            FavoritesView(uvm: uvm)
+            FavoritesView(uvm: uvm, ivm: ivm)
                 .tabItem {
                     Image(systemName: "heart.text.square")
                     Text("Favorites")

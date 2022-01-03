@@ -87,7 +87,7 @@ struct CartFavoriteMiniViewer_Previews: PreviewProvider {
                                                           _rating: 2.5,
                                                           _id: "00003401",
                                                           _discount: 40
-                                                 ), _size: 45), deleteAction: {
+                                                 ), _size: 45, _amount: 1), deleteAction: {
             print("hello")
         }, editAction: {
             print("hello")

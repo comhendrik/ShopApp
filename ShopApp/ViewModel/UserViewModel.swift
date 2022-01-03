@@ -15,22 +15,20 @@ struct User {
     var lastName: String
     var birthday: String
     var age: Int
-    var cartItems: [CartItem]
-    var favoriteItems: [Item]
     
-    init(_firstName: String, _lastName: String, _birthday: String, _age: Int, _cartItems: [CartItem], _favoriteItems: [Item]) {
+    init(_firstName: String, _lastName: String, _birthday: String, _age: Int) {
         firstName = _firstName
         lastName = _lastName
         birthday = _birthday
         age = _age
-        cartItems = _cartItems
-        favoriteItems = _favoriteItems
     }
 }
 
 class UserViewModel: ObservableObject {
-    @Published var mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _age: 0, _cartItems: [], _favoriteItems: [])
+    @Published var mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _age: 0)
     @Published var showProgressView = false
+    @Published var cartItems: [CartItem] = []
+    @Published var favoriteItems: [Item] = []
     let itemsRef = Firestore.firestore().collection("Items")
     let userRef = Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "M1c92mRQiKdPtaNKj8tT")
     @Published var placeholderItem =  Item(_title: "Jordan 1",
@@ -51,7 +49,7 @@ class UserViewModel: ObservableObject {
                                                               _rating: 2.5,
                                                               _id: "00003401",
                                                               _discount: 0
-                                              ), _size: 45)
+                                                             ), _size: 45, _amount: 1)
     
     
     init() {
@@ -62,7 +60,7 @@ class UserViewModel: ObservableObject {
     func getUser() {
         showProgressView = true
         userRef.addSnapshotListener { snap, err in
-            self.mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _age: 0, _cartItems: [], _favoriteItems: [])
+            self.mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _age: 0)
             if let err = err {
                 //TODO: Handle this error properly!
                 print(err)
@@ -87,9 +85,9 @@ class UserViewModel: ObservableObject {
                             let availableSizes = document?["availableSizes"] as? [Int] ?? []
                             let imagePath = document?["imagePath"] as? String ?? "No path"
                             let rating = document?["rating"] as? Float ?? 0.0
-                            let id = document?["id"] as? String ?? "No id"
+                            let id = docSnap?.documentID ?? "No id"
                             let discount = document?["discount"] as? Int ?? 0
-                            self.mainUser.favoriteItems.append(Item(_title: title,
+                            self.favoriteItems.append(Item(_title: title,
                                                                     _description: description,
                                                                     _price: price,
                                                                     _sizes: sizes,
@@ -99,6 +97,7 @@ class UserViewModel: ObservableObject {
                                                                     _id: id,
                                                                     _discount: discount))
                         }
+                        print(self.favoriteItems)
                     }
                 }
                 self.userRef.collection("CartItems").addSnapshotListener { cartItemsSnap, err in
@@ -107,11 +106,12 @@ class UserViewModel: ObservableObject {
                         print(err)
                         return
                     } else {
-                        self.mainUser.cartItems = []
+                        self.cartItems = []
                         for document in cartItemsSnap!.documents {
                             var newItem = Item(_title: "", _description: "", _price: 0.0, _sizes: [], _availableSizes: [], _imagePath: "", _rating: 0.0, _id: "", _discount: 0)
                             let itemReference = document.data()["itemReference"] as? String ?? "No id"
                             let size = document.data()["size"] as? Int ?? 0
+                            let amount = document.data()["amount"] as? Int ?? 0
                             self.itemsRef.document(itemReference).getDocument { docSnap, err in
                                 if let err = err {
                                     //TODO: Handle properly
@@ -139,13 +139,9 @@ class UserViewModel: ObservableObject {
                                     newItem.rating = rating
                                     newItem.id = item_id
                                     newItem.discount = discount
-                                    print(newItem)
-                                    self.mainUser.cartItems.append(CartItem(_item: newItem, _size: size))
+                                    self.cartItems.append(CartItem(_item: newItem, _size: size, _amount: amount))
                                 }
                             }
-                            print(newItem)
-                            
-                            //TODO: add amount to firebase
                             let id = document.documentID
                             
                         }
@@ -156,6 +152,8 @@ class UserViewModel: ObservableObject {
                 self.mainUser.lastName = lastName
                 self.mainUser.birthday = birthday
                 self.mainUser.age = age
+                print(self.mainUser.age)
+                print(self.favoriteItems)
             }
         }
         showProgressView = false
