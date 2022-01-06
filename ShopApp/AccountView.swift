@@ -11,9 +11,25 @@ struct AccountView: View {
     @StateObject var uvm: UserViewModel
     var body: some View {
         VStack {
+            ScrollView {
+                ForEach(uvm.orders) { order in
+                    VStack {
+                        Text(order.id)
+                        Text("\(order.items.count)")
+                    }
+                }
+            }
+            .onAppear(perform: {
+                uvm.getOrderInfo()
+            })
             Text("\(uvm.mainUser.firstName),\(uvm.mainUser.lastName)")
             Text(uvm.mainUser.birthday)
             Text("\(uvm.mainUser.age)")
+            Button(action: {
+                print(uvm.orders)
+            }, label: {
+                Text("print")
+            })
         }
     }
 }

@@ -117,7 +117,7 @@ struct EditView_Previews: PreviewProvider {
                                                       _rating: 2.5,
                                                       _id: "00003401",
                                                       _discount: 40
-                                                     ), _size: 42, _amount: 1)), saveAction: {amount, id in},
+                                                     ), _size: 42, _amount: 1, _id: "00003401")), saveAction: {amount, id in},
                  showEditView: .constant(true))
     }
 }

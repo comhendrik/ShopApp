@@ -43,17 +43,15 @@ struct CartItem: Identifiable {
     var id: String
     var amount: Int
     
-    init(_item: Item, _size: Int, _amount: Int) {
+    init(_item: Item, _size: Int, _amount: Int, _id: String) {
         item = _item
         size = _size
-        id = _item.id + String(size)
+        id = _id
         amount = _amount
     }
 }
 
 class ItemViewModel: ObservableObject {
-    let itemsRef = Firestore.firestore().collection("Items")
-    let userRef = Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "M1c92mRQiKdPtaNKj8tT")
     @Published var items: [Item] = []
     @Published var cartItems: [CartItem] = []
     @Published var favoriteItems: [Item] = []
@@ -67,7 +65,7 @@ class ItemViewModel: ObservableObject {
                                                               _rating: 2.5,
                                                               _id: "00003401",
                                                               _discount: 0
-                                                             ), _size: 45, _amount: 1)
+                                                             ), _size: 45, _amount: 1, _id: "asdf")
     @Published var placeholderItem =  Item(_title: "Jordan 1",
                                          _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                                          _price: 129.99,
@@ -113,7 +111,6 @@ class ItemViewModel: ObservableObject {
     func deleteFavoriteItem(with id: String) {
         userRef.updateData(["favoriteItems" : FieldValue.arrayRemove([itemsRef.document(id)])])
     }
-
     
     func getItems() {
         showProgressView = true
@@ -134,7 +131,6 @@ class ItemViewModel: ObservableObject {
                     let rating = document.data()["rating"] as? Float ?? 0.0
                     let id = document.documentID
                     let discount = document.data()["discount"] as? Int ?? 0
-                    print(document.documentID)
                     self.items.append(Item(_title: title,
                                       _description: description,
                                       _price: price,
@@ -145,55 +141,8 @@ class ItemViewModel: ObservableObject {
                                       _id: id,
                                       _discount: discount))
                 }
-                print("items added\n\n\n\n\n\n\n\n")
             }
         }
         showProgressView = false
-    }
-    
-    func getCartItems() {
-        showProgressView = true
-        cartItems = [CartItem(_item: Item(_title: "Jordan 1",
-                                          _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
-                                          _price: 129.99,
-                                          _sizes: [41,42,43,44,45,46,47],
-                                          _availableSizes: [41,42,46,47],
-                                          _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
-                                          _rating: 2.5,
-                                          _id: "00003401",
-                                          _discount: 0
-                                         ), _size: 45, _amount: 1),
-                     CartItem(_item: Item(_title: "Jordan 1",
-                                                       _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
-                                                       _price: 129.99,
-                                                       _sizes: [41,42,43,44,45,46,47],
-                                                       _availableSizes: [41,42,46,47],
-                                                       _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
-                                                       _rating: 2.5,
-                                                       _id: "00003401",
-                                                       _discount: 50
-                                         ), _size: 42, _amount: 1)]
-        showProgressView = false
-    }
-
-    
-    func getFavoriteItems() {
-        showProgressView = true
-        favoriteItems = [Item(_title: "Jordan 1",
-                              _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
-                              _price: 129.99,
-                              _sizes: [41,42,43,44,45,46,47],
-                              _availableSizes: [41,42,46,47],
-                              _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
-                              _rating: 2.5,
-                              _id: "00003401",
-                              _discount: 0
-              )]
-        showProgressView = false
-    }
-    
-    func addFavoriteItem(itemToAdd: Item) {
-        
-        favoriteItems.append(itemToAdd)
     }
 }

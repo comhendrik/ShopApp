@@ -9,13 +9,14 @@ import SwiftUI
 
 struct ListView: View {
     @State private var categories = "Shoes"
+    let nameOfCustomer: String
     @StateObject var ivm: ItemViewModel
     let items: [Item]
     var body: some View {
         
         ScrollView(showsIndicators: false) {
             HStack {
-                Text("Hi,\nCustomer")
+                Text("Hi,\n\(nameOfCustomer)")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 Spacer()
@@ -49,7 +50,7 @@ struct ListView: View {
 
 struct ListView_Previews: PreviewProvider {
     static var previews: some View {
-        ListView(ivm: ItemViewModel(), items: [Item(_title: "jordan 1",
+        ListView(nameOfCustomer: "customer", ivm: ItemViewModel(), items: [Item(_title: "jordan 1",
                               _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                               _price: 129.99,
                               _sizes: [41,42,43,44,45,46,47],

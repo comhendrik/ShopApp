@@ -16,17 +16,27 @@ struct ShoppingCart: View {
             ZStack {
                 VStack {
                     ShoppingCartListView(uvm: uvm, ivm: ivm, showEditView: $showEditView)
-                    HStack {
-                        Text("Sum:")
-                            .fontWeight(.bold)
-                        Spacer()
-                        Text("\(String(format: "%.2f", calculateCost(items: uvm.cartItems)))$")
-                        
+                    VStack {
+                        HStack {
+                            Text("Deliverydate:")
+                                .fontWeight(.bold)
+                            Spacer()
+                            Text("\(getDeliverDate())")
+                        }
+                        HStack {
+                            Text("Sum:")
+                                .fontWeight(.bold)
+                            Spacer()
+                            Text("\(String(format: "%.2f", calculateCost(items: uvm.cartItems)))$")
+                            
+                        }
                     }
                     .padding(.horizontal)
-                    PaymentButton()
+                    PaymentButton(addAction: {
+                        uvm.createOrders(items: uvm.cartItems, price: calculateCost(items: uvm.cartItems))
+                    })
                         .scaledToFit()
-                        .padding()
+                        .padding(.horizontal)
                 }
                 .blur(radius: showEditView ? 5 : 0)
                 VStack {
@@ -59,6 +69,11 @@ struct ShoppingCart: View {
             
         }
         return cost
+    }
+    
+    private func getDeliverDate() -> String {
+        //Normal delivery within 3 days
+        Calendar.current.date(byAdding: .day, value: 7, to: Date())?.formatted(date: .numeric, time: .omitted) ?? "no date available"
     }
 }
 

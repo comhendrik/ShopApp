@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject var ivm: ItemViewModel
+    let nameOfCustomer: String
     var body: some View {
         NavigationView {
             if ivm.showProgressView {
@@ -21,7 +22,7 @@ struct HomeView: View {
                 })
                 Spacer()
             } else {
-                ListView(ivm: ivm, items: ivm.items)
+                ListView(nameOfCustomer: nameOfCustomer, ivm: ivm, items: ivm.items)
                     .navigationBarHidden(true)
             }
             
@@ -31,6 +32,6 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(ivm: ItemViewModel())
+        HomeView(ivm: ItemViewModel(), nameOfCustomer: "customer")
     }
 }

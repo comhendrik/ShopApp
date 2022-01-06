@@ -12,7 +12,7 @@ struct ContentView: View {
     @StateObject var uvm = UserViewModel()
     var body: some View {
         TabView {
-            HomeView(ivm: ivm)
+            HomeView(ivm: ivm, nameOfCustomer: uvm.mainUser.firstName)
                 .tabItem{
                     Image(systemName: "house")
                     Text("home")

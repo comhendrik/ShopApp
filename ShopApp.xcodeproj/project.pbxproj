@@ -13,6 +13,7 @@
 		24142C272779CC4100195ADC /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C262779CC4100195ADC /* AccountView.swift */; };
 		24142C292779CD7F00195ADC /* ShoppingCart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C282779CD7F00195ADC /* ShoppingCart.swift */; };
 		24142C2B2779CEDC00195ADC /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C2A2779CEDC00195ADC /* FavoritesView.swift */; };
+		2417E6992787247C00593707 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2417E6982787247C00593707 /* Constants.swift */; };
 		242542E9277A4C4900FD8AA7 /* ApplePayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242542E8277A4C4900FD8AA7 /* ApplePayButton.swift */; };
 		242542FB277A5BC700FD8AA7 /* ShoppingCartListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242542FA277A5BC700FD8AA7 /* ShoppingCartListView.swift */; };
 		245252BF275798DC006D534B /* SelectSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245252BE275798DC006D534B /* SelectSize.swift */; };
@@ -53,6 +54,7 @@
 		24142C262779CC4100195ADC /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		24142C282779CD7F00195ADC /* ShoppingCart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingCart.swift; sourceTree = "<group>"; };
 		24142C2A2779CEDC00195ADC /* FavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
+		2417E6982787247C00593707 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		242542E8277A4C4900FD8AA7 /* ApplePayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayButton.swift; sourceTree = "<group>"; };
 		242542FA277A5BC700FD8AA7 /* ShoppingCartListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingCartListView.swift; sourceTree = "<group>"; };
 		245252BE275798DC006D534B /* SelectSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectSize.swift; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 			children = (
 				245252C72757A995006D534B /* ItemViewModel.swift */,
 				24844CDF27820F7B007EC96E /* UserViewModel.swift */,
+				2417E6982787247C00593707 /* Constants.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -304,6 +307,7 @@
 				24B5FABB2780A861002E3B09 /* AddToCartView.swift in Sources */,
 				242542FB277A5BC700FD8AA7 /* ShoppingCartListView.swift in Sources */,
 				2460311D2754155200FE98D8 /* ItemDetail.swift in Sources */,
+				2417E6992787247C00593707 /* Constants.swift in Sources */,
 				245252BF275798DC006D534B /* SelectSize.swift in Sources */,
 				24142C252779CC3600195ADC /* ShopMap.swift in Sources */,
 				24B5FAB927806C78002E3B09 /* EditView.swift in Sources */,
