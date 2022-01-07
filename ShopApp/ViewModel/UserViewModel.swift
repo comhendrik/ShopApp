@@ -29,7 +29,7 @@ struct Order: Identifiable {
     var deliverydate: Date
     var id: String
 }
-
+@MainActor
 class UserViewModel: ObservableObject {
     @Published var mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _age: 0)
     @Published var showProgressView = false
@@ -59,31 +59,47 @@ class UserViewModel: ObservableObject {
     
     init() {
         getUser()
-        normalOrderInformation()
-    }
-    func normalOrderInformation() {
-        orders = []
-        let docRef = userRef.collection("Orders")
-        var orderIDs = [String]()
-        docRef.addSnapshotListener { orderSnap, err in
-            if let err = err {
-                print(err)
-                //TODO: Handle this properly
-            } else {
-                for document in orderSnap!.documents {
-                    var order = Order(price: 0.0, items: [], deliverydate: Date.now, id: "")
-                    let price = document.data()["price"] as? Double ?? 0.0
-                    let deliverydate = document.data()["deliverdate"] as? Date ?? Date.now
-                    let id = document.documentID
-                    order.price = price
-                    order.deliverydate = deliverydate
-                    order.id = id
-                    orderIDs.append(id)
-                    self.orders.append(order)
-                }
-            }
+        Task {
+            await getData()
         }
-                    
+        
+    }
+    
+    func getData() async {
+        var newOrders = [Order]()
+        do {
+            let data = try await userRef.collection("Orders").getDocuments()
+            for document in data.documents {
+                var order = Order(price: 0.0, items: [], deliverydate: Date.now, id: "")
+                let price = document.data()["price"] as? Double ?? 0.0
+                let deliveryDate = document.data()["deliverydata"] as? Date ?? Date.now
+                let orderID = document.documentID
+                order.price = price
+                order.deliverydate = deliveryDate
+                order.id = orderID
+                let items = try await userRef.collection("Orders").document(orderID).collection("Items").getDocuments()
+                for item in items.documents {
+                    let size = item.data()["size"] as? Int ?? 0
+                    let amount = item.data()["amount"] as? Int ?? 0
+                    let cartItemID = item.documentID
+                    let itemId = item.data()["ref"] as? String ?? "no ref"
+                    let itemData = try await itemsRef.document(itemId).getDocument()
+                    let title = itemData.data()?["title"] as? String ?? "No title"
+                    let description = itemData.data()?["description"] as? String ?? "No description"
+                    let price = itemData.data()?["price"] as? Double ?? 0.00
+                    let sizes = itemData.data()?["sizes"] as? [Int] ?? []
+                    let availableSizes = itemData.data()?["availableSizes"] as? [Int] ?? []
+                    let imagePath = itemData.data()?["imagePath"] as? String ?? "No path"
+                    let rating = itemData.data()?["rating"] as? Float ?? 0.0
+                    let discount = itemData.data()?["discount"] as? Int ?? 0
+                    order.items.append(CartItem(_item: Item(_title: title, _description: description, _price: price, _sizes: sizes, _availableSizes: availableSizes, _imagePath: imagePath, _rating: rating, _id: itemId, _discount: discount), _size: size, _amount: amount, _id: cartItemID))
+                }
+                newOrders.append(order)
+            }
+            orders = newOrders
+        } catch {
+            print(error)
+        }
     }
     
     func getOrderInfo() {

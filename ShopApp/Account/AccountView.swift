@@ -19,14 +19,13 @@ struct AccountView: View {
                     }
                 }
             }
-            .onAppear(perform: {
-                uvm.getOrderInfo()
-            })
             Text("\(uvm.mainUser.firstName),\(uvm.mainUser.lastName)")
             Text(uvm.mainUser.birthday)
             Text("\(uvm.mainUser.age)")
             Button(action: {
-                print(uvm.orders)
+                Task {
+                    await uvm.getData()
+                }
             }, label: {
                 Text("print")
             })
