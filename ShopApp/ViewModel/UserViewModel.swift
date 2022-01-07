@@ -60,29 +60,39 @@ class UserViewModel: ObservableObject {
     init() {
         getUser()
         Task {
+            //Fetch Orders
             await getData()
         }
         
     }
     
     func getData() async {
+        //In diesem Array werden die Bestellungen gespeichert
         var newOrders = [Order]()
+        //do catch Block falls ein Fehler auftritt
         do {
+            // Mit async await alle Bestellungen bekommen
             let data = try await userRef.collection("Orders").getDocuments()
+            //folgender code wird für jede Bestellung ausgeführt
             for document in data.documents {
+                // Es wird eine Bestellung deklariert. Diese wird später verändert und dem Array von oben hinzugefügt
                 var order = Order(price: 0.0, items: [], deliverydate: Date.now, id: "")
                 let price = document.data()["price"] as? Double ?? 0.0
                 let deliveryDate = document.data()["deliverydata"] as? Date ?? Date.now
                 let orderID = document.documentID
+                //Nachdem die Daten von Firestore geladen wurden, wird unsere Bestellung überschrieben
                 order.price = price
                 order.deliverydate = deliveryDate
                 order.id = orderID
+                //Neuer async await call, damit alle Artikel der Bestellung verfügbar sind
                 let items = try await userRef.collection("Orders").document(orderID).collection("Items").getDocuments()
+                //Nun werden sich wieder für jedes Item die Daten geholt
                 for item in items.documents {
                     let size = item.data()["size"] as? Int ?? 0
                     let amount = item.data()["amount"] as? Int ?? 0
                     let cartItemID = item.documentID
                     let itemId = item.data()["ref"] as? String ?? "no ref"
+                    //Nächster async await call, da nur die artikel id in einer Bestellung gespeichert wird
                     let itemData = try await itemsRef.document(itemId).getDocument()
                     let title = itemData.data()?["title"] as? String ?? "No title"
                     let description = itemData.data()?["description"] as? String ?? "No description"
@@ -92,10 +102,14 @@ class UserViewModel: ObservableObject {
                     let imagePath = itemData.data()?["imagePath"] as? String ?? "No path"
                     let rating = itemData.data()?["rating"] as? Float ?? 0.0
                     let discount = itemData.data()?["discount"] as? Int ?? 0
+                    //Nun kann der Artikel der Bestellung hinzugefügt werden.
                     order.items.append(CartItem(_item: Item(_title: title, _description: description, _price: price, _sizes: sizes, _availableSizes: availableSizes, _imagePath: imagePath, _rating: rating, _id: itemId, _discount: discount), _size: size, _amount: amount, _id: cartItemID))
                 }
+                //Dank async await kann hier die Bestellung dem Array hinzugefügt werden. Sonst würde alles "synchronous" ablaufen und dieser Befehl würde schon bevor alle Date vorhanden sind ausgeführt werden.
                 newOrders.append(order)
             }
+            //Nun kann newOrders übergeben werden. Dank async await ist dies wieder an dieser Stelle möglich
+            //Normalerweise tritt hier ein Fehler auf, da die Funktion auf einem Backgroundthread laufen und von dort aus nicht die UI geupdatet werden darf. Dank @MainActor am Anfang der Klasse laufen all Befehle auf dem Mainthread
             orders = newOrders
         } catch {
             print(error)
