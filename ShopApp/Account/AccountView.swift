@@ -10,25 +10,28 @@ import SwiftUI
 struct AccountView: View {
     @StateObject var uvm: UserViewModel
     var body: some View {
-        VStack {
-            ScrollView {
-                ForEach(uvm.orders) { order in
-                    VStack {
-                        Text(order.id)
-                        Text("\(order.items.count)")
-                    }
-                }
+        NavigationView {
+            VStack {
+                NavigationLink("Orders", destination: {
+                        ScrollView {
+                            HStack {
+                                Text("Order")
+                                    .font(.largeTitle)
+                                    .fontWeight(.bold)
+                                Spacer()
+                            }
+                            .padding(.horizontal)
+                            ForEach(uvm.orders) { order in
+                                OrderMiniViewer(order: order)
+                            }
+                        }
+                        .navigationBarTitleDisplayMode(.inline)
+                })
+                Text("\(uvm.mainUser.firstName),\(uvm.mainUser.lastName)")
+                Text(uvm.mainUser.birthday)
+                Text("\(uvm.mainUser.age)")
             }
-            Text("\(uvm.mainUser.firstName),\(uvm.mainUser.lastName)")
-            Text(uvm.mainUser.birthday)
-            Text("\(uvm.mainUser.age)")
-            Button(action: {
-                Task {
-                    await uvm.getData()
-                }
-            }, label: {
-                Text("print")
-            })
+            .navigationBarHidden(true)
         }
     }
 }

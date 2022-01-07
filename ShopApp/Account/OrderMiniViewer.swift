@@ -10,17 +10,29 @@ import SwiftUI
 struct OrderMiniViewer: View {
     let order: Order
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("\(String(format: "%.2f", order.price))$")
-                .fontWeight(.bold)
-                .font(.largeTitle)
-            Text("\(order.items.count) \(order.items.count > 1 ? "items" : "item")")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-            Text("ID: \(order.id)")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-            
+        VStack {
+            HStack {
+                    VStack(alignment: .leading) {
+                        Text("\(String(format: "%.2f", order.price))$")
+                            .fontWeight(.bold)
+                        Text("\(order.items.count) \(order.items.count > 1 ? "items" : "item")")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        Text("ID: \(order.id)")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        Text("expected Delivery: \(order.deliverydate.formatted(date: .numeric, time: .omitted))")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        
+                    }
+                Spacer()
+                
+                Image(systemName: "arrow.right")
+                    .font(.title)
+            }
+            .padding(.horizontal)
+            Divider()
         }
     }
 }
