@@ -18,7 +18,7 @@ struct ShoppingCart: View {
                     ShoppingCartListView(uvm: uvm, ivm: ivm, showEditView: $showEditView)
                     VStack {
                         HStack {
-                            Text("Deliverydate:")
+                            Text("delivery date:")
                                 .fontWeight(.bold)
                             Spacer()
                             Text("\(getDeliverDate())")
@@ -33,7 +33,8 @@ struct ShoppingCart: View {
                     }
                     .padding(.horizontal)
                     PaymentButton(addAction: {
-                        uvm.createOrders(items: uvm.cartItems, price: calculateCost(items: uvm.cartItems))
+                        //Normale Lieferung in 3 Tage
+                        uvm.createOrders(items: uvm.cartItems, price: calculateCost(items: uvm.cartItems), deliveryDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date.now)
                     })
                         .scaledToFit()
                         .padding(.horizontal)

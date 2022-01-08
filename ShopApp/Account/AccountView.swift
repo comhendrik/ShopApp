@@ -22,7 +22,11 @@ struct AccountView: View {
                             }
                             .padding(.horizontal)
                             ForEach(uvm.orders) { order in
-                                OrderMiniViewer(order: order)
+                                NavigationLink(destination: {
+                                    OrderOverviewView(order: order)
+                                }, label: {
+                                    OrderMiniViewer(order: order)
+                                })
                             }
                         }
                         .navigationBarTitleDisplayMode(.inline)

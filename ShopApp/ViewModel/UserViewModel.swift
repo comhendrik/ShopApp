@@ -25,9 +25,24 @@ struct User {
 
 struct Order: Identifiable {
     var price: Double
-    var items: [CartItem]
+    var items: [OrderItem]
     var deliverydate: Date
     var id: String
+}
+struct OrderItem: Identifiable {
+    var item: Item
+    var size: Int
+    var id: String
+    var amount: Int
+    var price: Double
+    
+    init(_item: Item, _size: Int, _amount: Int, _id: String, _price: Double) {
+        item = _item
+        size = _size
+        id = _id
+        amount = _amount
+        price = _price
+    }
 }
 @MainActor
 class UserViewModel: ObservableObject {
@@ -78,11 +93,11 @@ class UserViewModel: ObservableObject {
                 // Es wird eine Bestellung deklariert. Diese wird später verändert und dem Array von oben hinzugefügt
                 var order = Order(price: 0.0, items: [], deliverydate: Date.now, id: "")
                 let price = document.data()["price"] as? Double ?? 0.0
-                let deliveryDate = document.data()["deliverydata"] as? Date ?? Date.now
+                let deliveryDate = document.data()["deliverydata"] as? Timestamp ?? Timestamp(date: Date.now)
                 let orderID = document.documentID
                 //Nachdem die Daten von Firestore geladen wurden, wird unsere Bestellung überschrieben
                 order.price = price
-                order.deliverydate = deliveryDate
+                order.deliverydate = deliveryDate.dateValue()
                 order.id = orderID
                 //Neuer async await call, damit alle Artikel der Bestellung verfügbar sind
                 let items = try await userRef.collection("Orders").document(orderID).collection("Items").getDocuments()
@@ -92,6 +107,7 @@ class UserViewModel: ObservableObject {
                     let amount = item.data()["amount"] as? Int ?? 0
                     let cartItemID = item.documentID
                     let itemId = item.data()["ref"] as? String ?? "no ref"
+                    let orderedPrice = item.data()["price"] as? Double ?? 0.0
                     //Nächster async await call, da nur die artikel id in einer Bestellung gespeichert wird
                     let itemData = try await itemsRef.document(itemId).getDocument()
                     let title = itemData.data()?["title"] as? String ?? "No title"
@@ -103,45 +119,23 @@ class UserViewModel: ObservableObject {
                     let rating = itemData.data()?["rating"] as? Float ?? 0.0
                     let discount = itemData.data()?["discount"] as? Int ?? 0
                     //Nun kann der Artikel der Bestellung hinzugefügt werden.
-                    order.items.append(CartItem(_item: Item(_title: title, _description: description, _price: price, _sizes: sizes, _availableSizes: availableSizes, _imagePath: imagePath, _rating: rating, _id: itemId, _discount: discount), _size: size, _amount: amount, _id: cartItemID))
+                    order.items.append(OrderItem(_item: Item(_title: title, _description: description, _price: price, _sizes: sizes, _availableSizes: availableSizes, _imagePath: imagePath, _rating: rating, _id: itemId, _discount: discount), _size: size, _amount: amount, _id: cartItemID, _price: orderedPrice))
                 }
                 //Dank async await kann hier die Bestellung dem Array hinzugefügt werden. Sonst würde alles "synchronous" ablaufen und dieser Befehl würde schon bevor alle Date vorhanden sind ausgeführt werden.
                 newOrders.append(order)
             }
             //Nun kann newOrders übergeben werden. Dank async await ist dies wieder an dieser Stelle möglich
-            //Normalerweise tritt hier ein Fehler auf, da die Funktion auf einem Backgroundthread laufen und von dort aus nicht die UI geupdatet werden darf. Dank @MainActor am Anfang der Klasse laufen all Befehle auf dem Mainthread
+            //Normalerweise tritt hier ein Fehler auf, da die Funktion auf einem Backgroundthread läuft und von dort aus nicht die UI geupdatet werden darf. Dank @MainActor am Anfang der Klasse laufen all Befehle auf dem Mainthread
             orders = newOrders
         } catch {
             print(error)
         }
     }
     
-    func getOrderInfo() {
-        for i in 0 ..< orders.count {
-            orders[i].items = []
-            userRef.collection("Orders").document(orders[i].id).collection("Items").getDocuments { snap, err in
-                for item in snap!.documents {
-                    let amount = item.data()["amount"] as? Int ?? 0
-                    let ref = item.data()["ref"] as? String ?? "No ref"
-                    itemsRef.document(ref).getDocument { itemSnap, err in
-                        if let err = err {
-                            //TODO: Handle this properly
-                            print(err)
-                        } else {
-                            let title = itemSnap!.data()?["title"] as? String ?? "no title"
-                            self.orders[i].items.append(CartItem(_item: Item(_title: title, _description: "", _price: 0.0, _sizes: [], _availableSizes: [], _imagePath: "", _rating: 0.0, _id: "", _discount: 0), _size: 0, _amount: amount, _id: ""))
-                        }
-                    
-                    }
-                }
-            }
-        }
-    }
-    
-    func createOrders(items: [CartItem], price: Double) {
+    func createOrders(items: [CartItem], price: Double, deliveryDate: Date) {
 
         let id = userRef.collection("Orders").addDocument(data: ["price" : price,
-                                    "deliverydate": Date.now,
+                                    "deliverydate": deliveryDate,
                                     "user": userRef]).documentID
         print(id)
         
@@ -152,7 +146,8 @@ class UserViewModel: ObservableObject {
             userRef.collection("Orders").document(id).collection("Items")
                 .addDocument(data: ["amount" : cartItem.amount,
                                     "ref":cartItemID,
-                                    "size": cartItem.size])
+                                    "size": cartItem.size,
+                                    "price": cartItem.item.discount != 0 ? cartItem.item.price - ((cartItem.item.price / 100.0) * Double(cartItem.item.discount)) : cartItem.item.price])
         }
     }
     

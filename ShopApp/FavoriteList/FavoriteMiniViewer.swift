@@ -35,45 +35,47 @@ struct FavoriteMiniViewer: View {
                     }
                 }
                 .frame(width: UIScreen.main.bounds.width / 2.5, height: UIScreen.main.bounds.width / 2.5)
-                Spacer()
                 VStack(alignment: .leading,spacing: 25) {
                     Text(item.title)
                         .fontWeight(.bold)
                     Text("\(String(format: "%.2f", item.discount != 0 ? (item.price - (item.price/100.0) * Double(item.discount)): item.price)) $")
+                    Spacer()
                     
                 }
-            }
-            HStack {
-                Button(action: {
-                    deleteAction(item.id)
-                    for i in 0 ..< uvm.favoriteItems.count {
-                        if uvm.favoriteItems[i].id == item.id {
-                            uvm.favoriteItems.remove(at: i)
-                            break
-                        }
-                    }
-                }, label: {
-                    Text("Delete")
-                        .foregroundColor(.black)
-                        .padding()
-                        .frame(width: UIScreen.main.bounds.width / 2.25)
-                        .background(.gray.opacity(0.25))
-                        .cornerRadius(15)
-                })
                 Spacer()
-                Button(action: {
-                    uvm.placeholderItem = item
-                    withAnimation() {
-                        showAddToCartView.toggle()
-                    }
-                }, label: {
-                    Text("Add to Cart")
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(width: UIScreen.main.bounds.width / 2.25)
-                        .background(.black)
-                        .cornerRadius(15)
-                })
+                VStack {
+                    Button(action: {
+                        uvm.placeholderItem = item
+                        withAnimation() {
+                            showAddToCartView.toggle()
+                        }
+                    }, label: {
+                        Text("Buy")
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: UIScreen.main.bounds.width / 4.5)
+                            .background(.black)
+                            .cornerRadius(15)
+                    })
+                    Button(action: {
+                        deleteAction(item.id)
+                        for i in 0 ..< uvm.favoriteItems.count {
+                            if uvm.favoriteItems[i].id == item.id {
+                                uvm.favoriteItems.remove(at: i)
+                                break
+                            }
+                        }
+                    }, label: {
+                        Text("Delete")
+                            .foregroundColor(.black)
+                            .padding()
+                            .frame(width: UIScreen.main.bounds.width / 4.5)
+                            .background(.gray.opacity(0.25))
+                            .cornerRadius(15)
+                    })
+
+                }
+                .padding(.horizontal)
             }
             Divider()
         }
