@@ -10,7 +10,7 @@ import SwiftUI
 struct AddToCartView: View {
     @StateObject var uvm: UserViewModel
     @Binding var showAddToCartView: Bool
-    let addAction: (String, Int) -> Void
+    let addAction: (String, Int, Int) -> Void
     @State private var amount = 0
     @State private var shoeSize = 0
     let item: Item
@@ -22,7 +22,7 @@ struct AddToCartView: View {
             VStack {
                 HStack {
                     VStack(alignment: .leading) {
-                        Text(item.id)
+                        Text(item.title)
                             .fontWeight(.bold)
                         HStack {
                             Text("\(String(format: "%.2f", item.discount != 0 ? (item.price - (item.price/100.0) * Double(item.discount)): item.price)) $")
@@ -112,7 +112,7 @@ struct AddToCartView: View {
                 
                 Button(action: {
                     //TODO: Add Function to add to cart
-                    addAction(item.id, shoeSize)
+                    addAction(item.id,amount, shoeSize)
                     withAnimation() {
                         showAddToCartView.toggle()
                     }

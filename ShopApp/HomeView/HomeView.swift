@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @StateObject var uvm: UserViewModel
     @StateObject var ivm: ItemViewModel
     let nameOfCustomer: String
     var body: some View {
@@ -22,7 +23,7 @@ struct HomeView: View {
                 })
                 Spacer()
             } else {
-                ListView(nameOfCustomer: nameOfCustomer, ivm: ivm, items: ivm.items)
+                ListView(nameOfCustomer: nameOfCustomer, uvm: uvm, items: ivm.items)
                     .navigationBarHidden(true)
             }
             
@@ -32,6 +33,6 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(ivm: ItemViewModel(), nameOfCustomer: "customer")
+        HomeView(uvm: UserViewModel(),ivm: ItemViewModel(), nameOfCustomer: "customer")
     }
 }

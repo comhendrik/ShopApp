@@ -12,18 +12,18 @@ struct ContentView: View {
     @StateObject var uvm = UserViewModel()
     var body: some View {
         TabView {
-            HomeView(ivm: ivm, nameOfCustomer: uvm.mainUser.firstName)
+            HomeView(uvm: uvm, ivm: ivm, nameOfCustomer: uvm.mainUser.firstName)
                 .tabItem{
                     Image(systemName: "house")
                     Text("home")
                         .foregroundColor(.black)
                 }
-            ShoppingCart(uvm: uvm, ivm: ivm)
+            ShoppingCart(uvm: uvm)
                 .tabItem {
                     Image(systemName: "cart")
                     Text("Cart")
                 }
-            FavoritesView(uvm: uvm, ivm: ivm)
+            FavoritesView(uvm: uvm)
                 .tabItem {
                     Image(systemName: "heart.text.square")
                     Text("Favorites")

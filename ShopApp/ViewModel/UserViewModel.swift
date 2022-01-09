@@ -14,12 +14,30 @@ struct User {
     var lastName: String
     var birthday: String
     var age: Int
+    var adress: Address
     
-    init(_firstName: String, _lastName: String, _birthday: String, _age: Int) {
+    init(_firstName: String, _lastName: String, _birthday: String, _age: Int, _address: Address) {
         firstName = _firstName
         lastName = _lastName
         birthday = _birthday
         age = _age
+        adress = _address
+    }
+}
+
+struct Address {
+    var city: String
+    var zipCode: Int
+    var street: String
+    var number: String
+    var land: String
+    
+    init(_city: String, _zipCode: Int, _street: String, _number: String, _land: String) {
+        city = _city
+        zipCode = _zipCode
+        street = _street
+        number = _number
+        land = _land
     }
 }
 
@@ -44,9 +62,25 @@ struct OrderItem: Identifiable {
         price = _price
     }
 }
+
+struct CartItem: Identifiable {
+    var item: Item
+    var size: Int
+    var id: String
+    var amount: Int
+    
+    init(_item: Item, _size: Int, _amount: Int, _id: String) {
+        item = _item
+        size = _size
+        id = _id
+        amount = _amount
+    }
+}
+
+
 @MainActor
 class UserViewModel: ObservableObject {
-    @Published var mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _age: 0)
+    @Published var mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _age: 0, _address: Address(_city: "???", _zipCode: 0, _street: "??", _number: "???", _land: "??"))
     @Published var showProgressView = false
     @Published var cartItems: [CartItem] = []
     @Published var favoriteItems: [Item] = []
@@ -74,14 +108,44 @@ class UserViewModel: ObservableObject {
     
     init() {
         getUser()
+        getCartItems()
+        getFavoriteItems()
         Task {
             //Fetch Orders
-            await getData()
+            await getOrders()
         }
         
     }
     
-    func getData() async {
+    func getUser() {
+        showProgressView = true
+        userRef.getDocument { snap, err in
+            self.mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _age: 0, _address: Address(_city: "???", _zipCode: 0, _street: "???", _number: "???", _land: "???"))
+            if let err = err {
+                //TODO: Handle this error properly!
+                print(err)
+            } else {
+                let firstName = snap?.data()?["firstName"] as? String ?? "no firstName"
+                let lastName = snap?.data()?["lastName"] as? String ?? "no lastName"
+                let birthday = snap?.data()?["birthday"] as? String ?? "no birthday"
+                let age = snap?.data()?["age"] as? Int ?? 0
+                let city = snap?.data()?["city"] as? String ?? "no city"
+                let zipCode = snap?.data()?["zipcode"] as? Int ?? 0
+                let street = snap?.data()?["street"] as? String ?? "no street"
+                let number = snap?.data()?["number"] as? String ?? "no number"
+                let land = snap?.data()?["land"] as? String ?? "no land"
+                
+                self.mainUser.adress = Address(_city: city, _zipCode: zipCode, _street: street, _number: number, _land: land)
+                self.mainUser.firstName = firstName
+                self.mainUser.lastName = lastName
+                self.mainUser.birthday = birthday
+                self.mainUser.age = age
+            }
+        }
+        showProgressView = false
+    }
+    
+    func getOrders() async {
         //In diesem Array werden die Bestellungen gespeichert
         var newOrders = [Order]()
         //do catch Block falls ein Fehler auftritt
@@ -151,25 +215,79 @@ class UserViewModel: ObservableObject {
         }
     }
     
-    
-    func getUser() {
-        showProgressView = true
-        userRef.addSnapshotListener { snap, err in
-            self.mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _age: 0)
+    func getFavoriteItems() {
+        userRef.collection("Favorites").addSnapshotListener { snap, err in
             if let err = err {
-                //TODO: Handle this error properly!
+                //TODO: Handle this properly
                 print(err)
             } else {
-                let firstName = snap?.data()?["firstName"] as? String ?? "no firstName"
-                let lastName = snap?.data()?["lastName"] as? String ?? "no lastName"
-                let birthday = snap?.data()?["birthday"] as? String ?? "no birthday"
-                let age = snap?.data()?["age"] as? Int ?? 0
-                let favoriteItemsReference = snap?.data()?["favoriteItems"] as? [DocumentReference] ?? []
-                self.favoriteItems = []
-                for reference in favoriteItemsReference {
-                    reference.getDocument { docSnap, err in
+                for doc in snap!.documents {
+                    let ref = doc.data()["ref"] as! DocumentReference
+                    ref.getDocument { docSnap, err in
                         if let err = err {
-                            //TODO: Handle this properly!
+                            //TODO: Handle this properly
+                            print(err)
+                        } else {
+                            let document = docSnap?.data()
+                            let title = document?["title"] as? String ?? "No title"
+                            let description = document?["description"] as? String ?? "No description"
+                            let price = document?["price"] as? Double ?? 0.00
+                            let sizes = document?["sizes"] as? [Int] ?? []
+                            let availableSizes = document?["availableSizes"] as? [Int] ?? []
+                            let imagePath = document?["imagePath"] as? String ?? "No path"
+                            let rating = document?["rating"] as? Float ?? 0.0
+                            let id = docSnap?.documentID ?? "no id"
+                            let discount = document?["discount"] as? Int ?? 0
+                            self.favoriteItems.append(Item(_title: title,
+                                                                    _description: description,
+                                                                    _price: price,
+                                                                    _sizes: sizes,
+                                                                    _availableSizes: availableSizes,
+                                                                    _imagePath: imagePath,
+                                                                    _rating: rating,
+                                                           _id: id,
+                                                                    _discount: discount))
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func addItemToFavorites(with id: String) {
+        userRef.collection("Favorites").addDocument(data: ["ref" : itemsRef.document(id)])
+        
+    }
+    
+    func deleteFavoriteItem(with id: String) {
+        userRef.collection("Favorites").document(id).delete { err in
+            if let err = err {
+                //TODO: Handle this properly
+                print(err)
+            } else {
+                print("removed")
+            }
+        }
+    }
+    
+    func getCartItems() {
+        showProgressView = true
+        userRef.collection("CartItems").addSnapshotListener { cartItemsSnap, err in
+            if let err = err {
+                //TODO: Handle this properly
+                print(err)
+                return
+            } else {
+                self.cartItems = []
+                for document in cartItemsSnap!.documents {
+                    var newItem = Item(_title: "", _description: "", _price: 0.0, _sizes: [], _availableSizes: [], _imagePath: "", _rating: 0.0, _id: "", _discount: 0)
+                    let itemReference = document.data()["itemReference"] as? String ?? "No id"
+                    let size = document.data()["size"] as? Int ?? 0
+                    let amount = document.data()["amount"] as? Int ?? 0
+                    let id = document.documentID
+                    itemsRef.document(itemReference).getDocument { docSnap, err in
+                        if let err = err {
+                            //TODO: Handle properly
                             print(err)
                             return
                         } else {
@@ -181,73 +299,47 @@ class UserViewModel: ObservableObject {
                             let availableSizes = document?["availableSizes"] as? [Int] ?? []
                             let imagePath = document?["imagePath"] as? String ?? "No path"
                             let rating = document?["rating"] as? Float ?? 0.0
-                            let id = docSnap?.documentID ?? "No id"
+                            let item_id = docSnap?.documentID ?? "no id"
                             let discount = document?["discount"] as? Int ?? 0
-                            self.favoriteItems.append(Item(_title: title,
-                                                                    _description: description,
-                                                                    _price: price,
-                                                                    _sizes: sizes,
-                                                                    _availableSizes: availableSizes,
-                                                                    _imagePath: imagePath,
-                                                                    _rating: rating,
-                                                                    _id: id,
-                                                                    _discount: discount))
+                            newItem.title = title
+                            newItem.description = description
+                            newItem.price = price
+                            newItem.sizes = sizes
+                            newItem.availableSizes = availableSizes
+                            newItem.imagePath = imagePath
+                            newItem.rating = rating
+                            newItem.id = item_id
+                            newItem.discount = discount
+                            self.cartItems.append(CartItem(_item: newItem, _size: size, _amount: amount,_id: id))
                         }
                     }
+                    
+                    
                 }
-                userRef.collection("CartItems").addSnapshotListener { cartItemsSnap, err in
-                    if let err = err {
-                        //TODO: Handle this properly
-                        print(err)
-                        return
-                    } else {
-                        self.cartItems = []
-                        for document in cartItemsSnap!.documents {
-                            var newItem = Item(_title: "", _description: "", _price: 0.0, _sizes: [], _availableSizes: [], _imagePath: "", _rating: 0.0, _id: "", _discount: 0)
-                            let itemReference = document.data()["itemReference"] as? String ?? "No id"
-                            let size = document.data()["size"] as? Int ?? 0
-                            let amount = document.data()["amount"] as? Int ?? 0
-                            let id = document.documentID
-                            itemsRef.document(itemReference).getDocument { docSnap, err in
-                                if let err = err {
-                                    //TODO: Handle properly
-                                    print(err)
-                                    return
-                                } else {
-                                    let document = docSnap?.data()
-                                    let title = document?["title"] as? String ?? "No title"
-                                    let description = document?["description"] as? String ?? "No description"
-                                    let price = document?["price"] as? Double ?? 0.00
-                                    let sizes = document?["sizes"] as? [Int] ?? []
-                                    let availableSizes = document?["availableSizes"] as? [Int] ?? []
-                                    let imagePath = document?["imagePath"] as? String ?? "No path"
-                                    let rating = document?["rating"] as? Float ?? 0.0
-                                    let item_id = docSnap?.documentID ?? "no id"
-                                    let discount = document?["discount"] as? Int ?? 0
-                                    newItem.title = title
-                                    newItem.description = description
-                                    newItem.price = price
-                                    newItem.sizes = sizes
-                                    newItem.availableSizes = availableSizes
-                                    newItem.imagePath = imagePath
-                                    newItem.rating = rating
-                                    newItem.id = item_id
-                                    newItem.discount = discount
-                                    self.cartItems.append(CartItem(_item: newItem, _size: size, _amount: amount,_id: id))
-                                }
-                            }
-                            
-                            
-                        }
-                        
-                    }
-                }
-                self.mainUser.firstName = firstName
-                self.mainUser.lastName = lastName
-                self.mainUser.birthday = birthday
-                self.mainUser.age = age
+                
             }
         }
-        showProgressView = false
     }
+    
+    func deleteCartItem(with id: String) {
+        userRef.collection("CartItems").document(id).delete { err in
+            if let err = err {
+                //TODO: Handle this properly
+                print(err)
+            } else {
+                print("removed")
+            }
+        }
+    }
+    
+    func updateAmount(with id: String, amount: Int) {
+        userRef.collection("CartItems").document(id).updateData(["amount" : amount])
+    }
+    
+    func addItemToCart(with id: String, size: Int, amount: Int) {
+        userRef.collection("CartItems").document(id+String(size)).setData(["size" : size, "itemReference" : id, "amount": amount])
+    }
+    
+    
+
 }

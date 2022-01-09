@@ -37,20 +37,6 @@ struct Item: Identifiable {
 
 }
 
-struct CartItem: Identifiable {
-    var item: Item
-    var size: Int
-    var id: String
-    var amount: Int
-    
-    init(_item: Item, _size: Int, _amount: Int, _id: String) {
-        item = _item
-        size = _size
-        id = _id
-        amount = _amount
-    }
-}
-
 class ItemViewModel: ObservableObject {
     @Published var items: [Item] = []
     @Published var cartItems: [CartItem] = []
@@ -80,37 +66,7 @@ class ItemViewModel: ObservableObject {
         self.getItems()
     }
     
-    func deleteCartItem(with id: String) {
-        userRef.collection("CartItems").document(id).delete { err in
-            if let err = err {
-                //TODO: Handle this properly
-                print(err)
-            } else {
-                print("removed")
-            }
-        }
-    }
-    
-    func updateAmount(with id: String, amount: Int) {
-        userRef.collection("CartItems").document(id).updateData(["amount" : amount])
-    }
-    
-    func updateSize(with id: String, size: Int) {
-        userRef.collection("CartItems").document(id).updateData(["size" : size])
-    }
-    
-    func addItemToFavorites(with id: String) {
-        userRef.updateData(["favoriteItems" : FieldValue.arrayUnion([itemsRef.document(id)])])
-        
-    }
-    
-    func addItemToCart(with id: String, size: Int) {
-        userRef.collection("CartItems").document(id+String(size)).setData(["size" : size, "itemReference" : id, "amount":1])
-    }
-    
-    func deleteFavoriteItem(with id: String) {
-        userRef.updateData(["favoriteItems" : FieldValue.arrayRemove([itemsRef.document(id)])])
-    }
+
     
     func getItems() {
         showProgressView = true

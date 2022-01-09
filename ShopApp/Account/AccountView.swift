@@ -12,6 +12,27 @@ struct AccountView: View {
     var body: some View {
         NavigationView {
             VStack {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("\(uvm.mainUser.firstName),\(uvm.mainUser.lastName)")
+                            .fontWeight(.bold)
+                            .font(.largeTitle)
+                        Text(uvm.mainUser.birthday)
+                        Text("\(uvm.mainUser.age)")
+                    }
+                    .padding()
+                    Spacer()
+                    VStack(alignment: .leading) {
+                        Text("\(uvm.mainUser.adress.street) \(uvm.mainUser.adress.number)")
+                        Text("\(uvm.mainUser.adress.zipCode) \(uvm.mainUser.adress.street)")
+                        Text(uvm.mainUser.adress.land)
+                    }
+                    .padding()
+                    
+                }
+                .padding()
+                
+                Spacer()
                 NavigationLink("Orders", destination: {
                         ScrollView {
                             HStack {
@@ -29,11 +50,7 @@ struct AccountView: View {
                                 })
                             }
                         }
-                        .navigationBarTitleDisplayMode(.inline)
                 })
-                Text("\(uvm.mainUser.firstName),\(uvm.mainUser.lastName)")
-                Text(uvm.mainUser.birthday)
-                Text("\(uvm.mainUser.age)")
             }
             .navigationBarHidden(true)
         }

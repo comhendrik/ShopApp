@@ -10,7 +10,7 @@ import SwiftUI
 struct HorizontalScrollView: View {
     let items: [Item]
     let title: String
-    @StateObject var ivm: ItemViewModel
+    @StateObject var uvm: UserViewModel
     var body: some View {
         VStack {
             HStack {
@@ -25,9 +25,9 @@ struct HorizontalScrollView: View {
                         NavigationLink(destination: {
                             ItemDetail(item: item, addFavoriteAction: {
                                 print("added?")
-                                ivm.addItemToFavorites(with: item.id)
+                                uvm.addItemToFavorites(with: item.id)
                             }, addToCartAction: { number in
-                                ivm.addItemToCart(with: item.id, size: number)
+                                uvm.addItemToCart(with: item.id, size: number, amount: 1)
                             })
                             
                         }, label: {
@@ -54,6 +54,6 @@ struct HorizontalScrollView_Previews: PreviewProvider {
                                           _rating: 2.5,
                                           _id: "00003401",
                                           _discount: 0
-                                         )], title: "Bestseller", ivm: ItemViewModel())
+                                         )], title: "Bestseller", uvm: UserViewModel())
     }
 }

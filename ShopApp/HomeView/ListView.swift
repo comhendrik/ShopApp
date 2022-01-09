@@ -10,7 +10,7 @@ import SwiftUI
 struct ListView: View {
     @State private var categories = "Shoes"
     let nameOfCustomer: String
-    @StateObject var ivm: ItemViewModel
+    @StateObject var uvm: UserViewModel
     let items: [Item]
     var body: some View {
         
@@ -24,24 +24,24 @@ struct ListView: View {
             CategorieNavigatorView(categories: $categories)
             switch categories {
             case "Pullover":
-                HorizontalScrollView(items: items, title: "Bestseller", ivm: ivm)
-                HorizontalScrollView(items: items, title: "Newest products", ivm: ivm)
-                HorizontalScrollView(items: items, title: "Recommended", ivm: ivm)
+                HorizontalScrollView(items: items, title: "Bestseller", uvm: uvm)
+                HorizontalScrollView(items: items, title: "Newest products", uvm: uvm)
+                HorizontalScrollView(items: items, title: "Recommended", uvm: uvm)
                 
             case "Shirts":
-                HorizontalScrollView(items: items, title: "Bestseller", ivm: ivm)
-                HorizontalScrollView(items: items, title: "Newest products", ivm: ivm)
-                HorizontalScrollView(items: items, title: "Recommended", ivm: ivm)
+                HorizontalScrollView(items: items, title: "Bestseller", uvm: uvm)
+                HorizontalScrollView(items: items, title: "Newest products", uvm: uvm)
+                HorizontalScrollView(items: items, title: "Recommended", uvm: uvm)
                 
             case "Trousers":
-                HorizontalScrollView(items: items, title: "Bestseller", ivm: ivm)
-                HorizontalScrollView(items: items, title: "Newest products", ivm: ivm)
-                HorizontalScrollView(items: items, title: "Recommended", ivm: ivm)
+                HorizontalScrollView(items: items, title: "Bestseller", uvm: uvm)
+                HorizontalScrollView(items: items, title: "Newest products", uvm: uvm)
+                HorizontalScrollView(items: items, title: "Recommended", uvm: uvm)
                 
             default:
-                HorizontalScrollView(items: items, title: "Bestseller", ivm: ivm)
-                HorizontalScrollView(items: items, title: "Newest products", ivm: ivm)
-                HorizontalScrollView(items: items, title: "Recommended", ivm: ivm)
+                HorizontalScrollView(items: items, title: "Bestseller", uvm: uvm)
+                HorizontalScrollView(items: items, title: "Newest products", uvm: uvm)
+                HorizontalScrollView(items: items, title: "Recommended", uvm: uvm)
             }
         }
         .padding()
@@ -50,7 +50,7 @@ struct ListView: View {
 
 struct ListView_Previews: PreviewProvider {
     static var previews: some View {
-        ListView(nameOfCustomer: "customer", ivm: ItemViewModel(), items: [Item(_title: "jordan 1",
+        ListView(nameOfCustomer: "customer", uvm: UserViewModel(), items: [Item(_title: "jordan 1",
                               _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                               _price: 129.99,
                               _sizes: [41,42,43,44,45,46,47],

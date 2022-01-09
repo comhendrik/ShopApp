@@ -9,20 +9,13 @@ import SwiftUI
 
 struct ShoppingCartListView: View {
     @StateObject var uvm: UserViewModel
-    @StateObject var ivm: ItemViewModel
     @Binding var showEditView: Bool
     var body: some View {
         ScrollView {
-            HStack {
-                Image(systemName: "cart")
-                    .font(.largeTitle)
-                    .padding()
-                Spacer()
-            }
             ForEach(uvm.cartItems) { cartitem in
                 CartMiniViewer(item: cartitem,
                                deleteAction: {
-                    ivm.deleteCartItem(with: cartitem.id)
+                    uvm.deleteCartItem(with: cartitem.id)
                 },
                                editAction: {
                     uvm.placeholderCartItem = cartitem
@@ -38,9 +31,8 @@ struct ShoppingCartListView: View {
 }
 
 
-//TODO: add preview items
-//struct ShoppingCartListView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ShoppingCartListView(items: [CartItem])
-//    }
-//}
+struct ShoppingCartListView_Previews: PreviewProvider {
+    static var previews: some View {
+        ShoppingCartListView(uvm: UserViewModel(), showEditView: .constant(true))
+    }
+}
