@@ -15,6 +15,7 @@ struct OrderMiniViewer: View {
                     VStack(alignment: .leading) {
                         Text("\(String(format: "%.2f", order.price))$")
                             .fontWeight(.bold)
+                            .foregroundColor(.black)
                         Text("\(order.items.count) \(order.items.count > 1 ? "items" : "item")")
                             .font(.subheadline)
                             .foregroundColor(.gray)

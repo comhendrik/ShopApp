@@ -13,15 +13,21 @@ struct User {
     var firstName: String
     var lastName: String
     var birthday: String
-    var age: Int
+    var profilePicPath: String
     var adress: Address
+    var memberStatus: String
+    var email: String
+    var memberId: String
     
-    init(_firstName: String, _lastName: String, _birthday: String, _age: Int, _address: Address) {
+    init(_firstName: String, _lastName: String, _birthday: String, _profilePicPath: String, _address: Address, _memberStatus: String, _email: String, _memberId: String) {
         firstName = _firstName
         lastName = _lastName
         birthday = _birthday
-        age = _age
+        profilePicPath = _profilePicPath
         adress = _address
+        memberStatus = _memberStatus
+        email = _email
+        memberId = _memberId
     }
 }
 
@@ -80,7 +86,7 @@ struct CartItem: Identifiable {
 
 @MainActor
 class UserViewModel: ObservableObject {
-    @Published var mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _age: 0, _address: Address(_city: "???", _zipCode: 0, _street: "??", _number: "???", _land: "??"))
+    @Published var mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "??", _number: "???", _land: "??"), _memberStatus: "bronze", _email: "???", _memberId: "???")
     @Published var showProgressView = false
     @Published var cartItems: [CartItem] = []
     @Published var favoriteItems: [Item] = []
@@ -120,7 +126,7 @@ class UserViewModel: ObservableObject {
     func getUser() {
         showProgressView = true
         userRef.getDocument { snap, err in
-            self.mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _age: 0, _address: Address(_city: "???", _zipCode: 0, _street: "???", _number: "???", _land: "???"))
+            self.mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "???", _number: "???", _land: "???"), _memberStatus: "bronze", _email: "???", _memberId: "???")
             if let err = err {
                 //TODO: Handle this error properly!
                 print(err)
@@ -128,18 +134,23 @@ class UserViewModel: ObservableObject {
                 let firstName = snap?.data()?["firstName"] as? String ?? "no firstName"
                 let lastName = snap?.data()?["lastName"] as? String ?? "no lastName"
                 let birthday = snap?.data()?["birthday"] as? String ?? "no birthday"
-                let age = snap?.data()?["age"] as? Int ?? 0
+                let profilePicPath = snap?.data()?["profilePic"] as? String ?? "no profile pic"
                 let city = snap?.data()?["city"] as? String ?? "no city"
                 let zipCode = snap?.data()?["zipcode"] as? Int ?? 0
                 let street = snap?.data()?["street"] as? String ?? "no street"
                 let number = snap?.data()?["number"] as? String ?? "no number"
                 let land = snap?.data()?["land"] as? String ?? "no land"
-                
+                let memberStatus = snap?.data()?["memberStatus"] as? String ?? "no member Status"
+                let email = snap?.data()?["email"] as? String ?? "no email"
+                let memberId = snap?.documentID
                 self.mainUser.adress = Address(_city: city, _zipCode: zipCode, _street: street, _number: number, _land: land)
                 self.mainUser.firstName = firstName
                 self.mainUser.lastName = lastName
                 self.mainUser.birthday = birthday
-                self.mainUser.age = age
+                self.mainUser.profilePicPath = profilePicPath
+                self.mainUser.memberStatus = memberStatus
+                self.mainUser.email = email
+                self.mainUser.memberId = memberId ?? "no id"
             }
         }
         showProgressView = false

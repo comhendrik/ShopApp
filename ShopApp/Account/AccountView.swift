@@ -12,46 +12,88 @@ struct AccountView: View {
     var body: some View {
         NavigationView {
             VStack {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("\(uvm.mainUser.firstName),\(uvm.mainUser.lastName)")
-                            .fontWeight(.bold)
-                            .font(.largeTitle)
-                        Text(uvm.mainUser.birthday)
-                        Text("\(uvm.mainUser.age)")
+                
+                ZStack {
+                    Color.gray.opacity(0.05)
+                    AsyncImage(url: URL(string: uvm.mainUser.profilePicPath)) { image in
+                        image
+                            .resizable()
+                            .scaledToFit()
+                        
+                    } placeholder: {
+                        ProgressView()
                     }
-                    .padding()
-                    Spacer()
-                    VStack(alignment: .leading) {
-                        Text("\(uvm.mainUser.adress.street) \(uvm.mainUser.adress.number)")
-                        Text("\(uvm.mainUser.adress.zipCode) \(uvm.mainUser.adress.street)")
-                        Text(uvm.mainUser.adress.land)
-                    }
-                    .padding()
-                    
+                }
+                .clipShape(Circle())
+                .frame(width: UIScreen.main.bounds.width / 3, height: UIScreen.main.bounds.width / 3)
+                
+                VStack {
+                    Text("\(uvm.mainUser.firstName) \(uvm.mainUser.lastName)")
+                        .fontWeight(.bold)
+                        .font(.title2)
+                    Text("\(uvm.mainUser.memberStatus) Member")
+                        .fontWeight(.bold)
+                        .font(.subheadline)
                 }
                 .padding()
+                HStack {
+                    VStack {
+                        Text("email:")
+                            .foregroundColor(.black)
+                            .fontWeight(.bold)
+                        Text(uvm.mainUser.email)
+                            .font(.subheadline)
+                            .padding(.bottom)
+                        Text("memberId:")
+                            .foregroundColor(.black)
+                            .fontWeight(.bold)
+                        Text(uvm.mainUser.memberId)
+                            .font(.subheadline)
+                            .padding(.bottom)
+                        Text("birthday:")
+                            .foregroundColor(.black)
+                            .fontWeight(.bold)
+                        Text(uvm.mainUser.birthday)
+                            .font(.subheadline)
+                            .padding(.bottom)
+                        Text("address:")
+                            .foregroundColor(.black)
+                            .fontWeight(.bold)
+                        Text("\(uvm.mainUser.adress.street) \(uvm.mainUser.adress.number) \(String(uvm.mainUser.adress.zipCode)) \(uvm.mainUser.adress.city)")
+                            .font(.subheadline)
+                            .padding(.bottom)
+                        Text("land:")
+                            .foregroundColor(.black)
+                            .fontWeight(.bold)
+                        Text(uvm.mainUser.adress.land)
+                            .font(.subheadline)
+
+                    }
+                    .foregroundColor(.gray)
+                    .padding()
+                }
                 
-                Spacer()
-                NavigationLink("Orders", destination: {
-                        ScrollView {
-                            HStack {
-                                Text("Order")
-                                    .font(.largeTitle)
-                                    .fontWeight(.bold)
-                                Spacer()
-                            }
-                            .padding(.horizontal)
-                            ForEach(uvm.orders) { order in
-                                NavigationLink(destination: {
-                                    OrderOverviewView(order: order)
-                                }, label: {
-                                    OrderMiniViewer(order: order)
-                                })
-                            }
+                
+                
+                NavigationLink(destination: {
+                    ScrollView {
+                        ForEach(uvm.orders) { order in
+                            NavigationLink(destination: {
+                                OrderOverviewView(order: order)
+                            }, label: {
+                                OrderMiniViewer(order: order)
+                            })
                         }
+                    }
+                }, label: {
+                    Text("Orders")
+                        .fontWeight(.bold)
+                        .font(.title2)
+                        .foregroundColor(.black)
                 })
+                Spacer()
             }
+            .padding()
             .navigationBarHidden(true)
         }
     }
