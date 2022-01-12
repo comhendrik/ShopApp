@@ -20,6 +20,7 @@ struct FavoriteMiniViewer: View {
                     Color.gray.opacity(0.05)
                     NavigationLink {
                         ItemDetail(item: item, addFavoriteAction: {
+                            uvm.addItemToFavorites(with: item.id)
                         }, addToCartAction: {size in
                             addToCartAction(size)
                         })

@@ -63,12 +63,12 @@ class ItemViewModel: ObservableObject {
                               _discount: 45)
     //TODO: stuff with firebase
     init() {
-        self.getItems()
+        self.getShoes()
     }
     
 
     
-    func getItems() {
+    func getShoes() {
         showProgressView = true
         itemsRef.getDocuments { snap, err in
             if let err = err {

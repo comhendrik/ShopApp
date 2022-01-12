@@ -15,13 +15,12 @@ struct OrderItemMiniViewer: View {
                 ZStack {
                     Color.gray.opacity(0.05)
                     NavigationLink(destination: {
-                        ItemDetail(item: orderItem.item) {
-                            //TODO: Handle this properly
+                        ItemDetail(item: orderItem.item,
+                        addFavoriteAction: {
                             print("not properly handled")
-                        } addToCartAction: { _ in
-                            //TODO: Handle this properly
+                        }, addToCartAction: {_ in
                             print("not properly handled")
-                        }
+                        })
                     }, label: {
                         AsyncImage(url: URL(string: orderItem.item.imagePath)) { image in
                             image

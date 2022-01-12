@@ -24,24 +24,11 @@ struct ListView: View {
             CategorieNavigatorView(categories: $categories)
             switch categories {
             case "Pullover":
-                HorizontalScrollView(items: items, title: "Bestseller", uvm: uvm)
-                HorizontalScrollView(items: items, title: "Newest products", uvm: uvm)
-                HorizontalScrollView(items: items, title: "Recommended", uvm: uvm)
-                
+                ItemScrollView(items: items, uvm: uvm)
             case "Shirts":
-                HorizontalScrollView(items: items, title: "Bestseller", uvm: uvm)
-                HorizontalScrollView(items: items, title: "Newest products", uvm: uvm)
-                HorizontalScrollView(items: items, title: "Recommended", uvm: uvm)
-                
-            case "Trousers":
-                HorizontalScrollView(items: items, title: "Bestseller", uvm: uvm)
-                HorizontalScrollView(items: items, title: "Newest products", uvm: uvm)
-                HorizontalScrollView(items: items, title: "Recommended", uvm: uvm)
-                
+                ItemScrollView(items: items, uvm: uvm)
             default:
-                HorizontalScrollView(items: items, title: "Bestseller", uvm: uvm)
-                HorizontalScrollView(items: items, title: "Newest products", uvm: uvm)
-                HorizontalScrollView(items: items, title: "Recommended", uvm: uvm)
+                ItemScrollView(items: items, uvm: uvm)
             }
         }
         .padding()

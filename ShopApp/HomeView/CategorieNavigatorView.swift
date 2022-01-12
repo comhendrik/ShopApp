@@ -11,13 +11,13 @@ struct CategorieNavigatorView: View {
     @Binding var categories: String
     var body: some View {
         HStack(spacing: 10) {
+            Spacer()
             CategorieButtonView(categories: $categories, value: "Shoes")
             Spacer()
             CategorieButtonView(categories: $categories, value: "Pullover")
             Spacer()
             CategorieButtonView(categories: $categories, value: "Shirts")
             Spacer()
-            CategorieButtonView(categories: $categories, value: "Trousers")
         }
         .padding([.top,.bottom])
     }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AccountView: View {
     @StateObject var uvm: UserViewModel
+    @StateObject var lvm: LoginViewModel
     var body: some View {
         NavigationView {
             VStack {
@@ -91,6 +92,17 @@ struct AccountView: View {
                         .font(.title2)
                         .foregroundColor(.black)
                 })
+                    .padding()
+                
+                Button(action: {
+                    lvm.logOut()
+                }, label: {
+                    Text("Logout")
+                        .fontWeight(.bold)
+                        .font(.title2)
+                        .foregroundColor(.black)
+                })
+                    .padding()
                 Spacer()
             }
             .padding()
@@ -101,6 +113,6 @@ struct AccountView: View {
 
 struct AccountView_Previews: PreviewProvider {
     static var previews: some View {
-        AccountView(uvm: UserViewModel())
+        AccountView(uvm: UserViewModel(), lvm: LoginViewModel())
     }
 }
