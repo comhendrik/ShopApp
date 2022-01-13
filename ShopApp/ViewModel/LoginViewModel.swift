@@ -16,7 +16,6 @@ class LoginViewModel: ObservableObject {
     @Published var email_SignUp = ""
     @Published var password_SignUp = ""
     @Published var reEnterPassword = ""
-    @Published var number = ""
     @Published var resetEmail = ""
     @Published var isLinkSend = false
     @Published var isLoading = false
@@ -25,8 +24,9 @@ class LoginViewModel: ObservableObject {
     
     
     @Published var firstName = ""
-    @Published var middleName = ""
     @Published var lastName = ""
+    @Published var birthday = Date.now
+    @Published var address = Address(_city: "", _zipCode: 0, _street: "", _number: "", _land: "")
     @Published var image_Data = Data(count: 0)
     @Published var picker = false
     
@@ -61,33 +61,34 @@ class LoginViewModel: ObservableObject {
     }
     
     func registerNewUserData() {
-        if let phoneNumber = Int(number) {
-            let uid = Auth.auth().currentUser!.uid
-            UploadImage(imageData: image_Data, path: "profile_Photos") { (url) in
-                
-                self.db.collection("Users").document(uid).setData([
-                    "uid":uid,
-                    "imgurl": url,
-                    "firstName": self.firstName,
-                    "middleName": self.middleName,
-                    "lastName": self.lastName,
-                    "email": Auth.auth().currentUser?.email ?? "errormail@notreal.com",
-                    "number": phoneNumber
-                ]) {
-                    (err) in
-                    if err != nil {
-                        self.isLoading = false
-                        return
-                    }
-                    self.isLoading = false
-                    self.status = true
-                }
-            }
+        let uid = Auth.auth().currentUser!.uid
+        UploadImage(imageData: image_Data, path: "profilePics") { (url) in
             
-            statusofregister = false
-        } else {
-            return
+            self.db.collection("Users").document(uid).setData([
+                "uid":uid,
+                "profilePic": url,
+                "firstName": self.firstName,
+                "lastName": self.lastName,
+                "birthday": self.birthday,
+                "memberStatus": "Bronze",
+                "street": self.address.street,
+                "number": self.address.number,
+                "city": self.address.city,
+                "zipcode": self.address.zipCode,
+                "land": self.address.land,
+                "email": Auth.auth().currentUser?.email ?? "errormail@notreal.com",
+            ]) {
+                (err) in
+                if err != nil {
+                    self.isLoading = false
+                    return
+                }
+                self.isLoading = false
+                self.status = true
+            }
         }
+        
+        statusofregister = false
 
     }
     
@@ -127,41 +128,40 @@ class LoginViewModel: ObservableObject {
             
             let user = Auth.auth().currentUser
             
-//            if !user!.isEmailVerified {
-//                self.alertMsg = "Please verify"
-//                self.alert.toggle()
-//
-//                do {
-//                   try Auth.auth().signOut()
-//                } catch {
-//                    print(error)
-//                }
-//                return
-//
-//            } else {
-//                self.status = true
-//            }
+            if !user!.isEmailVerified {
+                self.alertMsg = "Please verify"
+                self.alert.toggle()
+                do {
+                   try Auth.auth().signOut()
+                } catch {
+                    print(error)
+                }
+                return
+                
+            }
             
-//            self.db.collection("Users").whereField("uid", isEqualTo: Auth.auth().currentUser!.uid ).getDocuments { (snap, err) in
-//                self.isLoading = true
-//                if err != nil {
-//                    self.statusofregister.toggle()
-//                    self.isLoading = false
-//                    return
-//                }
-//
-//                if snap!.documents.isEmpty {
-//                    self.statusofregister.toggle()
-//                    self.isLoading = false
-//                    return
-//                }
-//
-//                self.statusofregister = false
-//                self.status = true
-//                self.isLoading = false
-//            }
+            self.db.collection("Users").whereField("uid", isEqualTo: Auth.auth().currentUser!.uid ).getDocuments { (snap, err) in
+                self.isLoading = true
+                if err != nil {
+                    self.statusofregister = true
+                    self.isLoading = false
+                    return
+                }
+                print("yea")
+                if snap!.documents.isEmpty {
+                    self.statusofregister = true
+                    self.isLoading = false
+                    print("no")
+                    return
+                    
+                }
+                
+                self.statusofregister = false
+                self.status = true
+                self.isLoading = false
+            }
         }
-            self.status = true
+            
     }
     
     func SignUp() {
@@ -192,7 +192,7 @@ class LoginViewModel: ObservableObject {
                     return
                 }
                 
-                self.alertMsg = "Verify Link has been sent. Verify your email"
+                self.alertMsg = "Verify Link has been sent. Verify your email and login after you did it"
                 self.alert.toggle()
                 
             })

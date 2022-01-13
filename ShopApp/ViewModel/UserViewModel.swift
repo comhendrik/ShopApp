@@ -12,14 +12,14 @@ import FirebaseAuth
 struct User {
     var firstName: String
     var lastName: String
-    var birthday: String
+    var birthday: Date
     var profilePicPath: String
     var adress: Address
     var memberStatus: String
     var email: String
     var memberId: String
     
-    init(_firstName: String, _lastName: String, _birthday: String, _profilePicPath: String, _address: Address, _memberStatus: String, _email: String, _memberId: String) {
+    init(_firstName: String, _lastName: String, _birthday: Date, _profilePicPath: String, _address: Address, _memberStatus: String, _email: String, _memberId: String) {
         firstName = _firstName
         lastName = _lastName
         birthday = _birthday
@@ -86,7 +86,7 @@ struct CartItem: Identifiable {
 
 @MainActor
 class UserViewModel: ObservableObject {
-    @Published var mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "??", _number: "???", _land: "??"), _memberStatus: "bronze", _email: "???", _memberId: "???")
+    @Published var mainUser = User(_firstName: "???", _lastName: "??", _birthday: Date.now, _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "??", _number: "???", _land: "??"), _memberStatus: "bronze", _email: "???", _memberId: "???")
     @Published var showProgressView = false
     @Published var cartItems: [CartItem] = []
     @Published var favoriteItems: [Item] = []
@@ -126,14 +126,14 @@ class UserViewModel: ObservableObject {
     func getUser() {
         showProgressView = true
         userRef.getDocument { snap, err in
-            self.mainUser = User(_firstName: "???", _lastName: "??", _birthday: "???", _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "???", _number: "???", _land: "???"), _memberStatus: "bronze", _email: "???", _memberId: "???")
+            self.mainUser = User(_firstName: "???", _lastName: "??", _birthday: Date.now, _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "???", _number: "???", _land: "???"), _memberStatus: "bronze", _email: "???", _memberId: "???")
             if let err = err {
                 //TODO: Handle this error properly!
                 print(err)
             } else {
                 let firstName = snap?.data()?["firstName"] as? String ?? "no firstName"
                 let lastName = snap?.data()?["lastName"] as? String ?? "no lastName"
-                let birthday = snap?.data()?["birthday"] as? String ?? "no birthday"
+                let birthday = snap?.data()?["birthday"] as! Timestamp
                 let profilePicPath = snap?.data()?["profilePic"] as? String ?? "no profile pic"
                 let city = snap?.data()?["city"] as? String ?? "no city"
                 let zipCode = snap?.data()?["zipcode"] as? Int ?? 0
@@ -146,7 +146,7 @@ class UserViewModel: ObservableObject {
                 self.mainUser.adress = Address(_city: city, _zipCode: zipCode, _street: street, _number: number, _land: land)
                 self.mainUser.firstName = firstName
                 self.mainUser.lastName = lastName
-                self.mainUser.birthday = birthday
+                self.mainUser.birthday = birthday.dateValue()
                 self.mainUser.profilePicPath = profilePicPath
                 self.mainUser.memberStatus = memberStatus
                 self.mainUser.email = email

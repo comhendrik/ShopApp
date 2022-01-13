@@ -54,7 +54,7 @@ struct AccountView: View {
                         Text("birthday:")
                             .foregroundColor(.black)
                             .fontWeight(.bold)
-                        Text(uvm.mainUser.birthday)
+                        Text("\(uvm.mainUser.birthday.formatted(date: .numeric, time: .omitted))")
                             .font(.subheadline)
                             .padding(.bottom)
                         Text("address:")

@@ -8,36 +8,30 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var ivm = ItemViewModel()
-    @StateObject var uvm = UserViewModel()
+
+    @StateObject var lvm = LoginViewModel()
+    @AppStorage("log_status") var status = false
+    @AppStorage("current_status") var statusofregister = false
     var body: some View {
-        TabView {
-            HomeView(uvm: uvm, ivm: ivm, nameOfCustomer: uvm.mainUser.firstName)
-                .tabItem{
-                    Image(systemName: "house")
-                    Text("home")
-                        .foregroundColor(.black)
+        if status {
+            ShopView(lvm: lvm)
+        } else {
+            if statusofregister {
+                VStack {
+                    RegisterView(lvm: lvm)
+                    Button(action: {
+                        statusofregister.toggle()
+                    }, label: {
+                        Text("go back")
+                    })
                 }
-            ShoppingCart(uvm: uvm)
-                .tabItem {
-                    Image(systemName: "cart")
-                    Text("Cart")
+            } else {
+                if lvm.signUpView {
+                    SignUpView(lvm: lvm)
+                } else {
+                    LoginView(lvm: lvm)
                 }
-            FavoritesView(uvm: uvm)
-                .tabItem {
-                    Image(systemName: "heart.text.square")
-                    Text("Favorites")
-                }
-            MapView()
-                .tabItem {
-                    Image(systemName: "map.circle")
-                    Text("map")
-                }
-            AccountView(uvm: uvm)
-                .tabItem {
-                    Image(systemName: "person.crop.circle")
-                    Text("account")
-                }
+            }
         }
     }
 }

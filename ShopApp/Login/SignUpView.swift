@@ -1,39 +1,37 @@
 //
-//  LoginView.swift
+//  SignUpView.swift
 //  ShopApp
 //
-//  Created by Hendrik Steen on 12.01.22.
+//  Created by Hendrik Steen on 13.01.22.
 //
 
 import SwiftUI
 
-struct LoginView: View {
+struct SignUpView: View {
     @StateObject var lvm: LoginViewModel
     var body: some View {
-        TextField("email", text: $lvm.email)
+        TextField("email", text: $lvm.email_SignUp)
             .textInputAutocapitalization(TextInputAutocapitalization.never)
-        TextField("password", text: $lvm.password)
+        TextField("password", text: $lvm.password_SignUp)
+        TextField("repassword", text: $lvm.reEnterPassword)
         Button(action: {
-            lvm.login()
+            lvm.SignUp()
         }, label: {
-            Text("Login")
+            Text("signup")
         })
             .alert(lvm.alertMsg, isPresented: $lvm.alert) {
                 Button("OK", role: .cancel) { }
             }
         Button(action: {
             lvm.signUpView.toggle()
-            print(lvm.statusofregister)
         }, label: {
-            Text("no account ? signup!")
+            Text("already an account ? log in!")
         })
-
-        
     }
 }
 
-struct LoginView_Previews: PreviewProvider {
+struct SignUpView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView(lvm: LoginViewModel())
+        SignUpView(lvm: LoginViewModel())
     }
 }

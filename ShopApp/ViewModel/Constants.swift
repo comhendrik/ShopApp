@@ -14,6 +14,6 @@ let itemsRef = Firestore.firestore().collection("Items")
 let shoeRef = Firestore.firestore().collection("Shoes")
 let pulloverRef = Firestore.firestore().collection("Pullover")
 let shirtsRef = Firestore.firestore().collection("Shirts")
-let userRef = Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "M1c92mRQiKdPtaNKj8tT")
+let userRef = Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid")
 let orderRef = Firestore.firestore().collection("Orders")
 
