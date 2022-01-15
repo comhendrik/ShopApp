@@ -13,12 +13,23 @@ struct FavoritesView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                ScrollView {
-                    ForEach(uvm.favoriteItems) { favoriteitem in
-                        FavoriteMiniViewer(item: favoriteitem, uvm: uvm, showAddToCartView: $showAddToCartView, addToCartAction: { size in uvm.addItemToCart(with: favoriteitem.id, size: size, amount: 1)}, deleteAction: {id in uvm.deleteFavoriteItem(with: id)})
+                if uvm.favoriteItems.count > 0 {
+                    ScrollView {
+                        ForEach(uvm.favoriteItems) { favoriteitem in
+                            FavoriteMiniViewer(item: favoriteitem, uvm: uvm, showAddToCartView: $showAddToCartView, addToCartAction: { size in uvm.addItemToCart(with: favoriteitem.id, size: size, amount: 1)}, deleteAction: {id in uvm.deleteFavoriteItem(with: id)})
+                        }
+                    }
+                    .blur(radius: showAddToCartView ? 5 : 0)
+                } else {
+                    VStack {
+                        Spacer()
+                        Text("Add some items to your cart \nhave fun shopping !")
+                            .font(.title3)
+                        Image(systemName: "doc.badge.plus")
+                            .font(.largeTitle)
+                        Spacer()
                     }
                 }
-                .blur(radius: showAddToCartView ? 5 : 0)
                 VStack {
                     Spacer()
                     AddToCartView(uvm: uvm, showAddToCartView: $showAddToCartView, addAction: {id,amount, size in uvm.addItemToCart(with: id, size: size, amount: amount)}, item: uvm.placeholderItem)

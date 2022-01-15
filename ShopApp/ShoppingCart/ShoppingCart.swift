@@ -14,7 +14,18 @@ struct ShoppingCart: View {
         NavigationView {
             ZStack {
                 VStack {
-                    ShoppingCartListView(uvm: uvm, showEditView: $showEditView)
+                    if uvm.cartItems.count > 0 {
+                        ShoppingCartListView(uvm: uvm, showEditView: $showEditView)
+                    } else {
+                        VStack {
+                            Spacer()
+                            Text("Add some items to your cart \nhave fun shopping !")
+                                .font(.title3)
+                            Image(systemName: "bag.badge.plus")
+                                .font(.largeTitle)
+                            Spacer()
+                        }
+                    }
                     VStack {
                         HStack {
                             Text("delivery date:")

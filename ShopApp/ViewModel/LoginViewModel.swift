@@ -112,8 +112,9 @@ class LoginViewModel: ObservableObject {
     }
     
     func login() {
-        
+        self.isLoading = true
         if email == "" || password == "" {
+            self.isLoading = false
             self.alertMsg = "Fill the contents properly"
             self.alert.toggle()
             return
@@ -121,6 +122,7 @@ class LoginViewModel: ObservableObject {
         
         Auth.auth().signIn(withEmail: email, password: password) { (res, err) in
             if err != nil {
+                self.isLoading = false
                 self.alertMsg = err!.localizedDescription
                 self.alert.toggle()
                 return
@@ -128,18 +130,18 @@ class LoginViewModel: ObservableObject {
             
             let user = Auth.auth().currentUser
             
-            if !user!.isEmailVerified {
-                self.alertMsg = "Please verify"
-                self.alert.toggle()
-                do {
-                   try Auth.auth().signOut()
-                } catch {
-                    print(error)
-                }
-                return
-                
-            }
-            
+//            if !user!.isEmailVerified {
+//                self.alertMsg = "Please verify"
+//                self.alert.toggle()
+//                do {
+//                   try Auth.auth().signOut()
+//                } catch {
+//                    print(error)
+//                }
+//                return
+//
+//            }
+//
             self.db.collection("Users").whereField("uid", isEqualTo: Auth.auth().currentUser!.uid ).getDocuments { (snap, err) in
                 self.isLoading = true
                 if err != nil {
@@ -147,11 +149,9 @@ class LoginViewModel: ObservableObject {
                     self.isLoading = false
                     return
                 }
-                print("yea")
                 if snap!.documents.isEmpty {
                     self.statusofregister = true
                     self.isLoading = false
-                    print("no")
                     return
                     
                 }

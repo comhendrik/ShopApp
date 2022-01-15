@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import FirebaseAuth
 struct AccountView: View {
     @StateObject var uvm: UserViewModel
     @StateObject var lvm: LoginViewModel

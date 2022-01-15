@@ -111,21 +111,11 @@ class UserViewModel: ObservableObject {
                                                               _discount: 0
                                                              ), _size: 45, _amount: 1, _id: "0000340146")
     
-    
-    init() {
-        getUser()
-        getCartItems()
-        getFavoriteItems()
-        Task {
-            //Fetch Orders
-            await getOrders()
-        }
-        
-    }
+
     
     func getUser() {
         showProgressView = true
-        userRef.getDocument { snap, err in
+        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").getDocument { snap, err in
             self.mainUser = User(_firstName: "???", _lastName: "??", _birthday: Date.now, _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "???", _number: "???", _land: "???"), _memberStatus: "bronze", _email: "???", _memberId: "???")
             if let err = err {
                 //TODO: Handle this error properly!
@@ -133,7 +123,7 @@ class UserViewModel: ObservableObject {
             } else {
                 let firstName = snap?.data()?["firstName"] as? String ?? "no firstName"
                 let lastName = snap?.data()?["lastName"] as? String ?? "no lastName"
-                let birthday = snap?.data()?["birthday"] as! Timestamp
+                let birthday = snap?.data()?["birthday"] as? Timestamp
                 let profilePicPath = snap?.data()?["profilePic"] as? String ?? "no profile pic"
                 let city = snap?.data()?["city"] as? String ?? "no city"
                 let zipCode = snap?.data()?["zipcode"] as? Int ?? 0
@@ -146,7 +136,7 @@ class UserViewModel: ObservableObject {
                 self.mainUser.adress = Address(_city: city, _zipCode: zipCode, _street: street, _number: number, _land: land)
                 self.mainUser.firstName = firstName
                 self.mainUser.lastName = lastName
-                self.mainUser.birthday = birthday.dateValue()
+                self.mainUser.birthday = birthday?.dateValue() ?? Date.now
                 self.mainUser.profilePicPath = profilePicPath
                 self.mainUser.memberStatus = memberStatus
                 self.mainUser.email = email
@@ -162,7 +152,7 @@ class UserViewModel: ObservableObject {
         //do catch Block falls ein Fehler auftritt
         do {
             // Mit async await alle Bestellungen bekommen
-            let data = try await userRef.collection("Orders").getDocuments()
+            let data = try await Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").getDocuments()
             //folgender code wird für jede Bestellung ausgeführt
             for document in data.documents {
                 // Es wird eine Bestellung deklariert. Diese wird später verändert und dem Array von oben hinzugefügt
@@ -175,7 +165,7 @@ class UserViewModel: ObservableObject {
                 order.deliverydate = deliveryDate.dateValue()
                 order.id = orderID
                 //Neuer async await call, damit alle Artikel der Bestellung verfügbar sind
-                let items = try await userRef.collection("Orders").document(orderID).collection("Items").getDocuments()
+                let items = try await Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").document(orderID).collection("Items").getDocuments()
                 //Nun werden sich wieder für jedes Item die Daten geholt
                 for item in items.documents {
                     let size = item.data()["size"] as? Int ?? 0
@@ -209,16 +199,15 @@ class UserViewModel: ObservableObject {
     
     func createOrders(items: [CartItem], price: Double, deliveryDate: Date) {
 
-        let id = userRef.collection("Orders").addDocument(data: ["price" : price,
+        let id = Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").addDocument(data: ["price" : price,
                                     "deliverydate": deliveryDate,
-                                    "user": userRef]).documentID
-        print(id)
+                                    "user": Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid")]).documentID
         
         for cartItem in cartItems {
             var cartItemID = cartItem.id
             _ = cartItemID.removeLast()
             _ = cartItemID.removeLast()
-            userRef.collection("Orders").document(id).collection("Items")
+            Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").document(id).collection("Items")
                 .addDocument(data: ["amount" : cartItem.amount,
                                     "ref":cartItemID,
                                     "size": cartItem.size,
@@ -227,11 +216,12 @@ class UserViewModel: ObservableObject {
     }
     
     func getFavoriteItems() {
-        userRef.collection("Favorites").addSnapshotListener { snap, err in
+        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Favorites").addSnapshotListener { snap, err in
             if let err = err {
                 //TODO: Handle this properly
                 print(err)
             } else {
+                self.favoriteItems = []
                 for doc in snap!.documents {
                     let ref = doc.data()["ref"] as! DocumentReference
                     ref.getDocument { docSnap, err in
@@ -266,12 +256,14 @@ class UserViewModel: ObservableObject {
     }
     
     func addItemToFavorites(with id: String) {
-        userRef.collection("Favorites").addDocument(data: ["ref" : itemsRef.document(id)])
+        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Favorites").document(id).setData(["ref" : itemsRef.document(id)])
         
     }
     
     func deleteFavoriteItem(with id: String) {
-        userRef.collection("Favorites").document(id).delete { err in
+        print(id)
+        print(Auth.auth().currentUser?.uid ?? "no uid")
+        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Favorites").document(id).delete { err in
             if let err = err {
                 //TODO: Handle this properly
                 print(err)
@@ -283,7 +275,7 @@ class UserViewModel: ObservableObject {
     
     func getCartItems() {
         showProgressView = true
-        userRef.collection("CartItems").addSnapshotListener { cartItemsSnap, err in
+        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").addSnapshotListener { cartItemsSnap, err in
             if let err = err {
                 //TODO: Handle this properly
                 print(err)
@@ -333,7 +325,7 @@ class UserViewModel: ObservableObject {
     }
     
     func deleteCartItem(with id: String) {
-        userRef.collection("CartItems").document(id).delete { err in
+        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id).delete { err in
             if let err = err {
                 //TODO: Handle this properly
                 print(err)
@@ -344,11 +336,11 @@ class UserViewModel: ObservableObject {
     }
     
     func updateAmount(with id: String, amount: Int) {
-        userRef.collection("CartItems").document(id).updateData(["amount" : amount])
+        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id).updateData(["amount" : amount])
     }
     
     func addItemToCart(with id: String, size: Int, amount: Int) {
-        userRef.collection("CartItems").document(id+String(size)).setData(["size" : size, "itemReference" : id, "amount": amount])
+        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id+String(size)).setData(["size" : size, "itemReference" : id, "amount": amount])
     }
     
     

@@ -27,6 +27,11 @@ struct LoginView: View {
         }, label: {
             Text("no account ? signup!")
         })
+        Button(action: {
+            lvm.resetPassword()
+        }, label: {
+            Text("Forgot password? Please type your email in the field above")
+        })
 
         
     }

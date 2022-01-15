@@ -13,23 +13,27 @@ struct ContentView: View {
     @AppStorage("log_status") var status = false
     @AppStorage("current_status") var statusofregister = false
     var body: some View {
-        if status {
-            ShopView(lvm: lvm)
+        if lvm.isLoading {
+            ProgressView()
         } else {
-            if statusofregister {
-                VStack {
-                    RegisterView(lvm: lvm)
-                    Button(action: {
-                        statusofregister.toggle()
-                    }, label: {
-                        Text("go back")
-                    })
-                }
+            if status {
+                ShopView(lvm: lvm)
             } else {
-                if lvm.signUpView {
-                    SignUpView(lvm: lvm)
+                if statusofregister {
+                    VStack {
+                        RegisterView(lvm: lvm)
+                        Button(action: {
+                            statusofregister.toggle()
+                        }, label: {
+                            Text("go back")
+                        })
+                    }
                 } else {
-                    LoginView(lvm: lvm)
+                    if lvm.signUpView {
+                        SignUpView(lvm: lvm)
+                    } else {
+                        LoginView(lvm: lvm)
+                    }
                 }
             }
         }
