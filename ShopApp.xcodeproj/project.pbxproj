@@ -18,6 +18,8 @@
 		241CA8D92789E250009D698E /* OrderItemMiniViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241CA8D82789E250009D698E /* OrderItemMiniViewer.swift */; };
 		242542E9277A4C4900FD8AA7 /* ApplePayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242542E8277A4C4900FD8AA7 /* ApplePayButton.swift */; };
 		242542FB277A5BC700FD8AA7 /* ShoppingCartListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242542FA277A5BC700FD8AA7 /* ShoppingCartListView.swift */; };
+		2433199D27942D0200200E1C /* AddAnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2433199C27942D0200200E1C /* AddAnimationButton.swift */; };
+		2433199F27943D4C00200E1C /* FavoriteAddAnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2433199E27943D4C00200E1C /* FavoriteAddAnimationButton.swift */; };
 		2449C4F0278F5C4C00B48FFF /* ItemScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2449C4EF278F5C4C00B48FFF /* ItemScrollView.swift */; };
 		2449C4F2278F5DC300B48FFF /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2449C4F1278F5DC300B48FFF /* LoginViewModel.swift */; };
 		2449C4F5278F5E1A00B48FFF /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2449C4F4278F5E1A00B48FFF /* LoginView.swift */; };
@@ -68,6 +70,8 @@
 		241CA8D82789E250009D698E /* OrderItemMiniViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemMiniViewer.swift; sourceTree = "<group>"; };
 		242542E8277A4C4900FD8AA7 /* ApplePayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayButton.swift; sourceTree = "<group>"; };
 		242542FA277A5BC700FD8AA7 /* ShoppingCartListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingCartListView.swift; sourceTree = "<group>"; };
+		2433199C27942D0200200E1C /* AddAnimationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAnimationButton.swift; sourceTree = "<group>"; };
+		2433199E27943D4C00200E1C /* FavoriteAddAnimationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteAddAnimationButton.swift; sourceTree = "<group>"; };
 		2449C4EF278F5C4C00B48FFF /* ItemScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemScrollView.swift; sourceTree = "<group>"; };
 		2449C4F1278F5DC300B48FFF /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		2449C4F4278F5E1A00B48FFF /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -237,6 +241,8 @@
 			isa = PBXGroup;
 			children = (
 				2460311C2754155200FE98D8 /* ItemDetail.swift */,
+				2433199C27942D0200200E1C /* AddAnimationButton.swift */,
+				2433199E27943D4C00200E1C /* FavoriteAddAnimationButton.swift */,
 				245252C22757A17F006D534B /* StarsView.swift */,
 				245252BE275798DC006D534B /* SelectSize.swift */,
 			);
@@ -246,8 +252,8 @@
 		2491BFFA2757E89000BBEB9F /* HomeView */ = {
 			isa = PBXGroup;
 			children = (
-				24142C222779CAC800195ADC /* HomeView.swift */,
 				2491BFF92757E87700BBEB9F /* DetailView */,
+				24142C222779CAC800195ADC /* HomeView.swift */,
 				2491BFFB2757E8A300BBEB9F /* ListView.swift */,
 				24142C202779B34500195ADC /* CategorieNavigatorView.swift */,
 				2491BFFD2757EDC800BBEB9F /* MiniViewer.swift */,
@@ -372,9 +378,11 @@
 				2460310F275414D900FE98D8 /* ShopAppApp.swift in Sources */,
 				2449C4F5278F5E1A00B48FFF /* LoginView.swift in Sources */,
 				2491BFFE2757EDC800BBEB9F /* MiniViewer.swift in Sources */,
+				2433199D27942D0200200E1C /* AddAnimationButton.swift in Sources */,
 				241CA8D92789E250009D698E /* OrderItemMiniViewer.swift in Sources */,
 				24142C272779CC4100195ADC /* AccountView.swift in Sources */,
 				2491BFFC2757E8A300BBEB9F /* ListView.swift in Sources */,
+				2433199F27943D4C00200E1C /* FavoriteAddAnimationButton.swift in Sources */,
 				24142C292779CD7F00195ADC /* ShoppingCart.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

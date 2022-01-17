@@ -23,6 +23,8 @@ struct FavoriteMiniViewer: View {
                             uvm.addItemToFavorites(with: item.id)
                         }, addToCartAction: {size in
                             addToCartAction(size)
+                        }, checkFavoriteAction: {
+                            return uvm.checkIfItemIsAlreadyFavorite(with: item.id)
                         })
                     } label: {
                         AsyncImage(url: URL(string: item.imagePath)) { image in

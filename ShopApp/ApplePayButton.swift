@@ -13,7 +13,6 @@ struct PaymentButton: View {
     let addAction: () -> Void
     var body: some View {
         Button(action: {
-            print("order acceptet")
             //TODO: Handle this properly. With custom alert, etc.
             addAction()
             /* Your custom payment code here */

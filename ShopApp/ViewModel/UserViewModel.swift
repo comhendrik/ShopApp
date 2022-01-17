@@ -15,17 +15,15 @@ struct User {
     var birthday: Date
     var profilePicPath: String
     var adress: Address
-    var memberStatus: String
     var email: String
     var memberId: String
     
-    init(_firstName: String, _lastName: String, _birthday: Date, _profilePicPath: String, _address: Address, _memberStatus: String, _email: String, _memberId: String) {
+    init(_firstName: String, _lastName: String, _birthday: Date, _profilePicPath: String, _address: Address, _email: String, _memberId: String) {
         firstName = _firstName
         lastName = _lastName
         birthday = _birthday
         profilePicPath = _profilePicPath
         adress = _address
-        memberStatus = _memberStatus
         email = _email
         memberId = _memberId
     }
@@ -86,7 +84,7 @@ struct CartItem: Identifiable {
 
 @MainActor
 class UserViewModel: ObservableObject {
-    @Published var mainUser = User(_firstName: "???", _lastName: "??", _birthday: Date.now, _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "??", _number: "???", _land: "??"), _memberStatus: "bronze", _email: "???", _memberId: "???")
+    @Published var mainUser = User(_firstName: "???", _lastName: "??", _birthday: Date.now, _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "??", _number: "???", _land: "??"),_email: "???", _memberId: "???")
     @Published var showProgressView = false
     @Published var cartItems: [CartItem] = []
     @Published var favoriteItems: [Item] = []
@@ -110,13 +108,15 @@ class UserViewModel: ObservableObject {
                                                               _id: "00003401",
                                                               _discount: 0
                                                              ), _size: 45, _amount: 1, _id: "0000340146")
+    @Published var alertMessage = ""
+    @Published var showAlert = false
     
 
     
     func getUser() {
         showProgressView = true
         Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").getDocument { snap, err in
-            self.mainUser = User(_firstName: "???", _lastName: "??", _birthday: Date.now, _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "???", _number: "???", _land: "???"), _memberStatus: "bronze", _email: "???", _memberId: "???")
+            self.mainUser = User(_firstName: "???", _lastName: "??", _birthday: Date.now, _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "???", _number: "???", _land: "???"), _email: "???", _memberId: "???")
             if let err = err {
                 //TODO: Handle this error properly!
                 print(err)
@@ -130,7 +130,6 @@ class UserViewModel: ObservableObject {
                 let street = snap?.data()?["street"] as? String ?? "no street"
                 let number = snap?.data()?["number"] as? String ?? "no number"
                 let land = snap?.data()?["land"] as? String ?? "no land"
-                let memberStatus = snap?.data()?["memberStatus"] as? String ?? "no member Status"
                 let email = snap?.data()?["email"] as? String ?? "no email"
                 let memberId = snap?.documentID
                 self.mainUser.adress = Address(_city: city, _zipCode: zipCode, _street: street, _number: number, _land: land)
@@ -138,7 +137,6 @@ class UserViewModel: ObservableObject {
                 self.mainUser.lastName = lastName
                 self.mainUser.birthday = birthday?.dateValue() ?? Date.now
                 self.mainUser.profilePicPath = profilePicPath
-                self.mainUser.memberStatus = memberStatus
                 self.mainUser.email = email
                 self.mainUser.memberId = memberId ?? "no id"
             }
@@ -261,8 +259,6 @@ class UserViewModel: ObservableObject {
     }
     
     func deleteFavoriteItem(with id: String) {
-        print(id)
-        print(Auth.auth().currentUser?.uid ?? "no uid")
         Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Favorites").document(id).delete { err in
             if let err = err {
                 //TODO: Handle this properly
@@ -271,6 +267,15 @@ class UserViewModel: ObservableObject {
                 print("removed")
             }
         }
+    }
+    
+    func checkIfItemIsAlreadyFavorite(with id: String) -> Bool {
+        for item in favoriteItems {
+            if item.id == id {
+                return true
+            }
+        }
+        return false
     }
     
     func getCartItems() {
@@ -325,6 +330,7 @@ class UserViewModel: ObservableObject {
     }
     
     func deleteCartItem(with id: String) {
+        //Löschen eines Items im Warenkorb. Es wird die ID eines CartItems benötigt
         Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id).delete { err in
             if let err = err {
                 //TODO: Handle this properly
@@ -336,13 +342,28 @@ class UserViewModel: ObservableObject {
     }
     
     func updateAmount(with id: String, amount: Int) {
+        //Anzahl wird erhöht und. Als Id wird die ID eines CartItems benötigt.
         Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id).updateData(["amount" : amount])
     }
     
     func addItemToCart(with id: String, size: Int, amount: Int) {
-        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id+String(size)).setData(["size" : size, "itemReference" : id, "amount": amount])
+        //Zuerst wird überprüft, ob sich der Artikel bereits im Warenkorb befindet.
+        //Wir verwenden id+String(size) als Indikator, da wir so einzelne Größen eines Artikels speichern können. Hat der Artikel die Nummer 1HKLK0KJP wird der Artikel in der Größe 45 als 1HKLK0KJP45 gespeichert.
+        let docRef = Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id+String(size))
+        docRef.getDocument { (document, error) in
+            if document!.exists {
+                //Ist der Artikel vorhanden holen wir uns die Anzahl des Artikels, die im Warenkorb gespeichert wurde und erhöhen diese.
+                let oldAmount = document!.data()?["amount"] as? Int ?? 0
+                self.updateAmount(with: id+String(size), amount: oldAmount + amount)
+              } else {
+                  //Der Artikel ist nicht vorhanden und wird neu erstellt mit Größe, neuer Id, Anzahl = 1 und einem String der auf das richtige Item hinweist.
+                  Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id+String(size)).setData(["size" : size, "itemReference" : id, "amount": amount])
+              }
+        }
+        
     }
     
     
+
 
 }

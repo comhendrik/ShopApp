@@ -20,6 +20,8 @@ struct OrderItemMiniViewer: View {
                             print("not properly handled")
                         }, addToCartAction: {_ in
                             print("not properly handled")
+                        }, checkFavoriteAction: {
+                            return false
                         })
                     }, label: {
                         AsyncImage(url: URL(string: orderItem.item.imagePath)) { image in

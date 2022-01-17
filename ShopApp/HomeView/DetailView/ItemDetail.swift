@@ -13,6 +13,7 @@ struct ItemDetail: View {
     let item: Item
     let addFavoriteAction: () -> Void
     let addToCartAction: (Int) -> Void
+    let checkFavoriteAction: () -> Bool
     var body: some View {
         ScrollView {
             VStack {
@@ -57,30 +58,13 @@ struct ItemDetail: View {
                     .padding()
                 
                 SelectSize(actualSize: $shoeSize, item: item)
-                Button(action: {
+                AddAnimationButton {
                     addToCartAction(shoeSize)
-                }, label: {
-                    Text("Add to cart")
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(width: UIScreen.main.bounds.width - 50)
-                        .background(.black)
-                        .cornerRadius(15, antialiased: false)
-                        
-                        
-                })
-                Button(action: {
-                    //TODO: Add full Function to add to favorites
+                }
+                FavoriteAddAnimationButton(addAction: {
                     addFavoriteAction()
-                }, label: {
-                    Text("Add to favorites")
-                        .foregroundColor(.black)
-                        .padding()
-                        .frame(width: UIScreen.main.bounds.width - 50)
-                        .background(.gray.opacity(0.25))
-                        .cornerRadius(15, antialiased: false)
-                        
-                        
+                }, checkFavoriteAction: {
+                    return checkFavoriteAction()
                 })
 
             }
@@ -93,7 +77,10 @@ struct ItemDetail: View {
                 .foregroundColor(.black)
         })
         .navigationTitle(item.title)
-        .navigationBarTitleDisplayMode(.inline)    }
+        .navigationBarTitleDisplayMode(.inline)
+        
+    }
+    
 }
 
 struct ItemDetail_Previews: PreviewProvider {
@@ -111,6 +98,8 @@ struct ItemDetail_Previews: PreviewProvider {
             print("hello")
         }, addToCartAction: {_ in 
             
+        }, checkFavoriteAction: {
+            return true
         }
         )
     }

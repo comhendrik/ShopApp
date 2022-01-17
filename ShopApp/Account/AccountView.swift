@@ -28,14 +28,9 @@ struct AccountView: View {
                 .clipShape(Circle())
                 .frame(width: UIScreen.main.bounds.width / 3, height: UIScreen.main.bounds.width / 3)
                 
-                VStack {
-                    Text("\(uvm.mainUser.firstName) \(uvm.mainUser.lastName)")
-                        .fontWeight(.bold)
-                        .font(.title2)
-                    Text("\(uvm.mainUser.memberStatus) Member")
-                        .fontWeight(.bold)
-                        .font(.subheadline)
-                }
+                Text("\(uvm.mainUser.firstName) \(uvm.mainUser.lastName)")
+                    .fontWeight(.bold)
+                    .font(.title2)
                 .padding()
                 HStack {
                     VStack {

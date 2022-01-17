@@ -15,11 +15,16 @@ struct ItemScrollView: View {
             LazyVGrid(columns: [GridItem(), GridItem()]) {
                 ForEach(items) { item in
                     NavigationLink(destination: {
-                        ItemDetail(item: item, addFavoriteAction: {
-                            print("added?")
-                            uvm.addItemToFavorites(with: item.id)
+                        ItemDetail(item: item, addFavoriteAction: { 
+                            if uvm.checkIfItemIsAlreadyFavorite(with: item.id) {
+                                uvm.deleteFavoriteItem(with: item.id)
+                            } else {
+                                uvm.addItemToFavorites(with: item.id)
+                            }
                         }, addToCartAction: { number in
                             uvm.addItemToCart(with: item.id, size: number, amount: 1)
+                        }, checkFavoriteAction: {
+                            return uvm.checkIfItemIsAlreadyFavorite(with: item.id)
                         })
                         
                     }, label: {

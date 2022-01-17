@@ -27,6 +27,8 @@ struct CartMiniViewer: View {
                         ItemDetail(item: item.item, addFavoriteAction: {
                         }, addToCartAction: {_ in 
                             
+                        }, checkFavoriteAction: {
+                            return false
                         })
                     } label: {
                         AsyncImage(url: URL(string: item.item.imagePath)) { image in
