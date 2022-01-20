@@ -4,7 +4,21 @@
 //
 //  Created by Hendrik Steen on 28.11.21.
 //
-
+//Beispiel für einen USECASE:
+//ItemDetail(item: item, addFavoriteAction: {
+//    if uvm.checkIfItemIsAlreadyFavorite(with: item.id) {
+//        uvm.deleteFavoriteItem(with: item.id)
+//    } else {
+//        uvm.addItemToFavorites(with: item.id)
+//    }
+//}, addToCartAction: { number in
+//    uvm.addItemToCart(with: item.id, size: number, amount: 1)
+//}, checkFavoriteAction: {
+//    return uvm.checkIfItemIsAlreadyFavorite(with: item.id)
+//})
+//    .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
+//        Button("Ok", role: .cancel) {}
+//    }
 import SwiftUI
 
 struct ItemDetail: View {
@@ -12,7 +26,7 @@ struct ItemDetail: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     let item: Item
     let addFavoriteAction: () -> Void
-    let addToCartAction: (Int) -> Void
+    let addToCartAction: (Int) -> Bool
     let checkFavoriteAction: () -> Bool
     var body: some View {
         ScrollView {
@@ -59,7 +73,7 @@ struct ItemDetail: View {
                 
                 SelectSize(actualSize: $shoeSize, item: item)
                 AddAnimationButton {
-                    addToCartAction(shoeSize)
+                    return addToCartAction(shoeSize)
                 }
                 FavoriteAddAnimationButton(addAction: {
                     addFavoriteAction()
@@ -97,7 +111,7 @@ struct ItemDetail_Previews: PreviewProvider {
                              ), addFavoriteAction: {
             print("hello")
         }, addToCartAction: {_ in 
-            
+            return true
         }, checkFavoriteAction: {
             return true
         }

@@ -26,6 +26,9 @@ struct ItemScrollView: View {
                         }, checkFavoriteAction: {
                             return uvm.checkIfItemIsAlreadyFavorite(with: item.id)
                         })
+                            .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
+                                Button("Ok", role: .cancel) {}
+                            }
                         
                     }, label: {
                         MiniViewer(item: item)

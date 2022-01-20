@@ -10,13 +10,14 @@ import SwiftUI
 struct AddAnimationButton: View {
     @State private var doAnimation = false
     @State private var disableButton = false
-    let addAction: () -> Void
+    let addAction: () -> Bool
     var body: some View {
         ZStack {
 
             Button(action: {
-                addAction()
-                fullAnimation()
+                if addAction() {
+                    fullAnimation()
+                }
             }, label: {
                 Text("Add to cart")
                     .foregroundColor(disableButton ? .black : .white)
@@ -54,7 +55,7 @@ struct AddAnimationButton: View {
 struct AddAnimationButton_Previews: PreviewProvider {
     static var previews: some View {
         AddAnimationButton(addAction: {
-            print("Hello")
+            return true
         })
             .previewDevice("iPhone 13")
     }

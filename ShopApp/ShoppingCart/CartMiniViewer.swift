@@ -8,30 +8,37 @@
 import SwiftUI
 
 struct CartMiniViewer: View {
-    var item: CartItem
-    var deleteAction: () -> Void
-    var editAction: () -> Void
-    var addAction: (Int) -> Void
+    var cartItem: CartItem
+    @StateObject var uvm: UserViewModel
     var body: some View {
         VStack {
             HStack {
-                Text(item.item.title)
+                Text(cartItem.item.title)
                     .fontWeight(.bold)
                 Spacer()
-                    
+                Button(action: {
+                    uvm.deleteCartItem(with: cartItem.id)
+                }, label: {
+                    Text("Delete")
+                        .fontWeight(.bold)
+                        .foregroundColor(.black)
+                })
+                
             }
             HStack {
                 ZStack {
                     Color.gray.opacity(0.05)
                     NavigationLink {
-                        ItemDetail(item: item.item, addFavoriteAction: {
-                        }, addToCartAction: {_ in 
-                            
+                        ItemDetail(item: cartItem.item,
+                                   addFavoriteAction: {
+                            uvm.addItemToFavorites(with: cartItem.item.id)
+                        }, addToCartAction: {number in
+                            return uvm.addItemToCart(with: cartItem.item.id, size: number, amount: 1)
                         }, checkFavoriteAction: {
-                            return false
+                            return uvm.checkIfItemIsAlreadyFavorite(with: cartItem.item.id)
                         })
                     } label: {
-                        AsyncImage(url: URL(string: item.item.imagePath)) { image in
+                        AsyncImage(url: URL(string: cartItem.item.imagePath)) { image in
                             image
                                 .resizable()
                                 .scaledToFit()
@@ -42,35 +49,29 @@ struct CartMiniViewer: View {
                     }
                 }
                 .frame(width: UIScreen.main.bounds.width / 2.5, height: UIScreen.main.bounds.width / 2.5)
+                Spacer()
                 VStack(alignment: .leading,spacing: 25) {
-                    Text("Size: \(item.size)")
-                    Text("\(String(format: "%.2f", item.item.discount != 0 ? (item.item.price - (item.item.price/100.0) * Double(item.item.discount)): item.item.price)) $")
-                    Text("Amount: \(item.amount)")
+                    Text("Size: \(cartItem.size)")
+                    Text("\(String(format: "%.2f", cartItem.item.discount != 0 ? (cartItem.item.price - (cartItem.item.price/100.0) * Double(cartItem.item.discount)): cartItem.item.price)) $")
+                    HStack {
+                        Button(action: {
+                            if cartItem.amount > 0 {
+                                uvm.updateAmount(with: cartItem.id, amount: cartItem.amount-1)
+                            }
+                        }, label: {
+                            Text("<")
+                                .foregroundColor(.black)
+                        })
+                        Text("\(cartItem.amount)")
+                        Button(action: {
+                            uvm.updateAmount(with: cartItem.id, amount: cartItem.amount+1)
+                        }, label: {
+                            Text(">")
+                                .foregroundColor(.black)
+                        })
+                    }
                 }
                 Spacer()
-                VStack {
-                    Button(action: {
-                        //TODO: Edit action with firebase
-                        editAction()
-                    }, label: {
-                        Text("Edit")
-                            .foregroundColor(.white)
-                            .padding()
-                            .frame(width: UIScreen.main.bounds.width / 4)
-                            .background(.black)
-                            .cornerRadius(15)
-                    })
-                    Button(action: {
-                        deleteAction()
-                    }, label: {
-                        Text("Delete")
-                            .foregroundColor(.black)
-                            .padding()
-                            .frame(width: UIScreen.main.bounds.width / 4)
-                            .background(.gray.opacity(0.25))
-                            .cornerRadius(15)
-                    })
-                }
             }
             Divider()
         }
@@ -80,7 +81,7 @@ struct CartMiniViewer: View {
 
 struct CartFavoriteMiniViewer_Previews: PreviewProvider {
     static var previews: some View {
-        CartMiniViewer(item: CartItem(_item: Item(_title: "Jordan 1",
+        CartMiniViewer(cartItem: CartItem(_item: Item(_title: "Jordan 1",
                                                           _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                                                           _price: 129.99,
                                                           _sizes: [41,42,43,44,45,46,47],
@@ -89,12 +90,7 @@ struct CartFavoriteMiniViewer_Previews: PreviewProvider {
                                                           _rating: 2.5,
                                                           _id: "00003401",
                                                           _discount: 40
-                                                 ), _size: 45, _amount: 1, _id: "0000340146"), deleteAction: {
-            print("hello")
-        }, editAction: {
-            print("hello")
-        }, addAction: {_ in 
-            print("hello")
-        })
-    }
+                                                 ), _size: 45, _amount: 1, _id: "0000340146"),
+                       uvm: UserViewModel())
+                       }
 }

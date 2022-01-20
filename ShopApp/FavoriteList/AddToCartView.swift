@@ -10,8 +10,7 @@ import SwiftUI
 struct AddToCartView: View {
     @StateObject var uvm: UserViewModel
     @Binding var showAddToCartView: Bool
-    let addAction: (String, Int, Int) -> Void
-    @State private var amount = 0
+    let addAction: (String, Int, Int) -> Bool
     @State private var shoeSize = 0
     let item: Item
     var body: some View {
@@ -49,44 +48,7 @@ struct AddToCartView: View {
                     
                  
                 }
-                
-                HStack {
-                    ZStack {
-                        Color.gray.opacity(0.05)
-                        AsyncImage(url: URL(string: item.imagePath)) { image in
-                            image
-                                .resizable()
-                                .scaledToFit()
-                            
-                        } placeholder: {
-                            ProgressView()
-                        }
-                    }
-                    .frame(width:
-                            UIScreen.main.bounds.width / 2.5,
-                           height: UIScreen.main.bounds.width / 2.5)
-                    Spacer()
-                    HStack {
-                        Button(action: {
-                            amount -= 1
-                        }, label: {
-                            Image(systemName: "arrow.backward.circle.fill")
-                                .font(.largeTitle)
-                                .foregroundColor(.black)
-                        })
-                        Text("\(amount)")
-                            .font(.title)
-                            .fontWeight(.bold)
-                        Button(action: {
-                            amount += 1
-                        }, label: {
-                            Image(systemName: "arrow.forward.circle.fill")
-                                .font(.largeTitle)
-                                .foregroundColor(.black)
-                        })
-                    }
-                    .padding()
-                }
+                Spacer()
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         ForEach(0 ..< item.sizes.count, id: \.self) { size in
@@ -111,11 +73,13 @@ struct AddToCartView: View {
                 }
                 
                 Button(action: {
-                    //TODO: Add Function to add to cart
-                    addAction(item.id,amount, shoeSize)
-                    withAnimation() {
-                        showAddToCartView.toggle()
+                    //Funktion zum hinzufügen des Warenkorbs wird ausgeführt wenn eine Größe ausgewählt wurde. Innerhalb der addAction wird dies geregelt. Das einzige was die View machen muss ist die AddToCartView wieder zu entfernen.
+                    if addAction(item.id,1, shoeSize) {
+                        withAnimation() {
+                            showAddToCartView.toggle()
+                        }
                     }
+
                 }, label: {
                     Text("Add to cart")
                         .foregroundColor(.white)
@@ -131,7 +95,7 @@ struct AddToCartView: View {
             .padding()
         }
         
-        .frame(height: UIScreen.main.bounds.height / 3)
+        .frame(height: UIScreen.main.bounds.height / 5)
         .padding()
     }
 }

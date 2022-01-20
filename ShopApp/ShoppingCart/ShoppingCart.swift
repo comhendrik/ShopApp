@@ -9,19 +9,19 @@ import SwiftUI
 
 struct ShoppingCart: View {
     @StateObject var uvm: UserViewModel
-    @State private var showEditView = false
     var body: some View {
         NavigationView {
             ZStack {
                 VStack {
                     if uvm.cartItems.count > 0 {
-                        ShoppingCartListView(uvm: uvm, showEditView: $showEditView)
+                        ShoppingCartListView(uvm: uvm)
                     } else {
                         VStack {
                             Spacer()
-                            Text("Add some items to your cart \nhave fun shopping !")
+                            Text("Add some items to your cart \nBut most importantly, have fun shopping!")
+                                .multilineTextAlignment(.center)
                                 .font(.title3)
-                            Image(systemName: "bag.badge.plus")
+                            Image(systemName: "cart.badge.plus")
                                 .font(.largeTitle)
                             Spacer()
                         }
@@ -44,26 +44,16 @@ struct ShoppingCart: View {
                     .padding(.horizontal)
                     PaymentButton(addAction: {
                         //Normale Lieferung in 3 Tage
-                        uvm.createOrders(items: uvm.cartItems, price: calculateCost(items: uvm.cartItems), deliveryDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date.now)
+                        uvm.createOrders(price: calculateCost(items: uvm.cartItems), deliveryDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date.now)
                     })
                         .scaledToFit()
                         .padding(.horizontal)
-                }
-                .blur(radius: showEditView ? 5 : 0)
-                VStack {
-                    Spacer()
-                    EditView(item: $uvm.placeholderCartItem,
-                             saveAction: {amount, id in
-                        uvm.updateAmount(with: id, amount: amount)
-                        withAnimation() {
-                            showEditView.toggle()
+                        .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
+                            Button("OK", role: .cancel) { }
                         }
-                    },
-                             showEditView: $showEditView)
-                        .offset(y: showEditView ? 0 : 400)
-                    
                 }
-            }
+                
+                }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     HStack {
@@ -77,6 +67,7 @@ struct ShoppingCart: View {
                 }
             }
         }
+        
         
     }
     

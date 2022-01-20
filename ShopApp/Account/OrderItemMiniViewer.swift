@@ -9,20 +9,27 @@ import SwiftUI
 
 struct OrderItemMiniViewer: View {
     let orderItem: OrderItem
+    @StateObject var uvm: UserViewModel
     var body: some View {
         VStack {
             HStack {
                 ZStack {
                     Color.gray.opacity(0.05)
                     NavigationLink(destination: {
-                        ItemDetail(item: orderItem.item,
-                        addFavoriteAction: {
-                            print("not properly handled")
-                        }, addToCartAction: {_ in
-                            print("not properly handled")
+                        ItemDetail(item: orderItem.item, addFavoriteAction: {
+                            if uvm.checkIfItemIsAlreadyFavorite(with: orderItem.item.id) {
+                                uvm.deleteFavoriteItem(with: orderItem.item.id)
+                            } else {
+                                uvm.addItemToFavorites(with: orderItem.item.id)
+                            }
+                        }, addToCartAction: { number in
+                            uvm.addItemToCart(with: orderItem.item.id, size: number, amount: 1)
                         }, checkFavoriteAction: {
-                            return false
+                            return uvm.checkIfItemIsAlreadyFavorite(with: orderItem.item.id)
                         })
+                            .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
+                                Button("Ok", role: .cancel) {}
+                            }
                     }, label: {
                         AsyncImage(url: URL(string: orderItem.item.imagePath)) { image in
                             image
@@ -66,6 +73,6 @@ struct OrderItemMiniViewer_Previews: PreviewProvider {
                                                            _rating: 2.5,
                                                            _id: "00003401",
                                                            _discount: 40
-                                                            ), _size: 45, _amount: 1, _id: "0000340146", _price: 129.99))
+                                                            ), _size: 45, _amount: 1, _id: "0000340146", _price: 129.99), uvm: UserViewModel())
     }
 }

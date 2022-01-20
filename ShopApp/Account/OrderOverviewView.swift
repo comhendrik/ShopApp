@@ -9,6 +9,7 @@ import SwiftUI
 
 struct OrderOverviewView: View {
     let order: Order
+    @StateObject var uvm: UserViewModel
     var body: some View {
         ScrollView {
             HStack {
@@ -18,7 +19,7 @@ struct OrderOverviewView: View {
             }
             .padding(.horizontal)
             ForEach(order.items) { orderItem in
-                OrderItemMiniViewer(orderItem: orderItem)
+                OrderItemMiniViewer(orderItem: orderItem, uvm: uvm)
             }
             HStack {
                 Text("Sum:")

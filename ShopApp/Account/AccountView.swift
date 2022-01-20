@@ -75,7 +75,7 @@ struct AccountView: View {
                     ScrollView {
                         ForEach(uvm.orders) { order in
                             NavigationLink(destination: {
-                                OrderOverviewView(order: order)
+                                OrderOverviewView(order: order, uvm: uvm)
                             }, label: {
                                 OrderMiniViewer(order: order)
                             })

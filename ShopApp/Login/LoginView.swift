@@ -23,7 +23,6 @@ struct LoginView: View {
             }
         Button(action: {
             lvm.signUpView.toggle()
-            print(lvm.statusofregister)
         }, label: {
             Text("no account ? signup!")
         })

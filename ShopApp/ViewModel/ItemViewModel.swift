@@ -61,7 +61,6 @@ class ItemViewModel: ObservableObject {
                                          _rating: 2.5,
                                          _id: "00055001",
                               _discount: 45)
-    //TODO: stuff with firebase
     init() {
         self.getShoes()
     }

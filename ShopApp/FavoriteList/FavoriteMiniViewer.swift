@@ -11,7 +11,6 @@ struct FavoriteMiniViewer: View {
     let item: Item
     @StateObject var uvm: UserViewModel
     @Binding var showAddToCartView: Bool
-    let addToCartAction: (Int) -> Void
     let deleteAction: (String) -> Void
     var body: some View {
         VStack {
@@ -20,12 +19,19 @@ struct FavoriteMiniViewer: View {
                     Color.gray.opacity(0.05)
                     NavigationLink {
                         ItemDetail(item: item, addFavoriteAction: {
-                            uvm.addItemToFavorites(with: item.id)
-                        }, addToCartAction: {size in
-                            addToCartAction(size)
+                            if uvm.checkIfItemIsAlreadyFavorite(with: item.id) {
+                                uvm.deleteFavoriteItem(with: item.id)
+                            } else {
+                                uvm.addItemToFavorites(with: item.id)
+                            }
+                        }, addToCartAction: { number in
+                            uvm.addItemToCart(with: item.id, size: number, amount: 1)
                         }, checkFavoriteAction: {
                             return uvm.checkIfItemIsAlreadyFavorite(with: item.id)
                         })
+                            .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
+                                Button("Ok", role: .cancel) {}
+                            }
                     } label: {
                         AsyncImage(url: URL(string: item.imagePath)) { image in
                             image
@@ -97,8 +103,6 @@ struct FavoriteMiniViewer_Previews: PreviewProvider {
                                       _rating: 2.5,
                                       _id: "00003401",
                                       _discount: 0
-                                     ), uvm: UserViewModel(), showAddToCartView: .constant(true), addToCartAction: {_ in 
-            print("hello")
-        }, deleteAction: {_ in})
+                                     ), uvm: UserViewModel(), showAddToCartView: .constant(true),deleteAction: {_ in})
     }
 }

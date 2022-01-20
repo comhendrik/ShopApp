@@ -195,22 +195,33 @@ class UserViewModel: ObservableObject {
         }
     }
     
-    func createOrders(items: [CartItem], price: Double, deliveryDate: Date) {
+    func createOrders(price: Double, deliveryDate: Date) {
 
         let id = Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").addDocument(data: ["price" : price,
                                     "deliverydate": deliveryDate,
                                     "user": Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid")]).documentID
         
-        for cartItem in cartItems {
-            var cartItemID = cartItem.id
-            _ = cartItemID.removeLast()
-            _ = cartItemID.removeLast()
-            Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").document(id).collection("Items")
-                .addDocument(data: ["amount" : cartItem.amount,
-                                    "ref":cartItemID,
-                                    "size": cartItem.size,
-                                    "price": cartItem.item.discount != 0 ? cartItem.item.price - ((cartItem.item.price / 100.0) * Double(cartItem.item.discount)) : cartItem.item.price])
+        if cartItems.isEmpty {
+            alertMessage = "Thank you for wanting to order, but please add some items."
+            showAlert.toggle()
+        } else {
+            for cartItem in cartItems {
+                var cartItemID = cartItem.id
+                _ = cartItemID.removeLast()
+                _ = cartItemID.removeLast()
+                Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").document(id).collection("Items")
+                    .addDocument(data: ["amount" : cartItem.amount,
+                                        "ref":cartItemID,
+                                        "size": cartItem.size,
+                                        "price": cartItem.item.discount != 0 ? cartItem.item.price - ((cartItem.item.price / 100.0) * Double(cartItem.item.discount)) : cartItem.item.price])
+                deleteCartItem(with: cartItem.id)
+            }
+            alertMessage = "Thank you for ordering. We do our best to send the order to you as fast as possible!"
+            showAlert.toggle()
+            
         }
+        
+        
     }
     
     func getFavoriteItems() {
@@ -346,7 +357,14 @@ class UserViewModel: ObservableObject {
         Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id).updateData(["amount" : amount])
     }
     
-    func addItemToCart(with id: String, size: Int, amount: Int) {
+    func addItemToCart(with id: String, size: Int, amount: Int) -> Bool {
+        if size == 0 {
+            //Es wird übeprüft, ob eine größe ausgewählt wurde, wenn size == 0 ist wurde keine ausgewählt
+            alertMessage = "Please select a size"
+            showAlert.toggle()
+            return false
+            //Es wird false zurückgegeben, damit keine Animation in der View getriggert wird.
+        }
         //Zuerst wird überprüft, ob sich der Artikel bereits im Warenkorb befindet.
         //Wir verwenden id+String(size) als Indikator, da wir so einzelne Größen eines Artikels speichern können. Hat der Artikel die Nummer 1HKLK0KJP wird der Artikel in der Größe 45 als 1HKLK0KJP45 gespeichert.
         let docRef = Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id+String(size))
@@ -360,6 +378,7 @@ class UserViewModel: ObservableObject {
                   Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id+String(size)).setData(["size" : size, "itemReference" : id, "amount": amount])
               }
         }
+        return true
         
     }
     
