@@ -4,14 +4,14 @@
 //
 //  Created by Hendrik Steen on 01.12.21.
 //
-
+//Dieses ViewModel holt sich die Standard Daten der Items
 import Foundation
 import SwiftUI
 import FirebaseFirestore
 import FirebaseAuth
 
 struct Item: Identifiable {
-    
+//Der Aufbau eines Item es muss nur Daten anzeigen können
     var title: String
     var description: String
     var price: Double
@@ -38,45 +38,31 @@ struct Item: Identifiable {
 }
 
 class ItemViewModel: ObservableObject {
-    @Published var items: [Item] = []
-    @Published var cartItems: [CartItem] = []
-    @Published var favoriteItems: [Item] = []
+    @Published var shoes: [Item] = []
     @Published var showProgressView = true
-    @Published var placeholderCartItem = CartItem(_item: Item(_title: "Jordan 1",
-                                                              _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
-                                                              _price: 129.99,
-                                                              _sizes: [41,42,43,44,45,46,47],
-                                                              _availableSizes: [41,42,46,47],
-                                                              _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
-                                                              _rating: 2.5,
-                                                              _id: "00003401",
-                                                              _discount: 0
-                                                             ), _size: 45, _amount: 1, _id: "asdf")
-    @Published var placeholderItem =  Item(_title: "Jordan 1",
-                                         _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
-                                         _price: 129.99,
-                                         _sizes: [41,42,43,44,45,46,47],
-                                         _availableSizes: [41,42,46,47],
-                                          _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
-                                         _rating: 2.5,
-                                         _id: "00055001",
-                              _discount: 45)
+    //Beim initaliesieren werden alle Produkte geladen
     init() {
         self.getShoes()
     }
     
-
     
     func getShoes() {
+        //Diese Funktion lädt alle Schuhe
         showProgressView = true
+        //Erstmal wird eine ProgressView angezeigt
         itemsRef.getDocuments { snap, err in
+            //Es wird getDocuments verwendet, um die Daten von Firebase zu erhalten.
+            //Ein snapshotlistener ist nicht von Nöten, da Echtzeitupdates ist diesem Bereich nicht notwendig ist.
             if let err = err {
+                //Tritt ein Fehler wird dieser geprintet und eine ProgressView wird nicht mehr angezeigt
                 //TODO: Handle error properly
                 print(err)
                 self.showProgressView = false
                 return
             } else {
+                //Wurden Dokumente gefunden wird folgender Code ausgeführt:
                 for document in snap!.documents {
+                    //Zuerst werden alle Attribute geholt und dann wird der Schuh den shoes array hinzugefügt
                     let title = document.data()["title"] as? String ?? "No title"
                     let description = document.data()["description"] as? String ?? "No description"
                     let price = document.data()["price"] as? Double ?? 0.00
@@ -86,7 +72,7 @@ class ItemViewModel: ObservableObject {
                     let rating = document.data()["rating"] as? Float ?? 0.0
                     let id = document.documentID
                     let discount = document.data()["discount"] as? Int ?? 0
-                    self.items.append(Item(_title: title,
+                    self.shoes.append(Item(_title: title,
                                       _description: description,
                                       _price: price,
                                       _sizes: sizes,
@@ -98,6 +84,7 @@ class ItemViewModel: ObservableObject {
                 }
             }
         }
+        //Die Schuhe sind nun im shoes Array, also wird die ProgressView nicht mehr angezeigt.
         showProgressView = false
     }
 }

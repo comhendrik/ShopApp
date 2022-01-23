@@ -23,7 +23,7 @@ struct HomeView: View {
                 })
                 Spacer()
             } else {
-                ListView(nameOfCustomer: nameOfCustomer, uvm: uvm, items: ivm.items)
+                ListView(nameOfCustomer: nameOfCustomer, uvm: uvm, items: ivm.shoes)
                     .navigationBarHidden(true)
             }
             
