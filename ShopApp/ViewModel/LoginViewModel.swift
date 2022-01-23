@@ -141,7 +141,7 @@ class LoginViewModel: ObservableObject {
 //                return
 //
 //            }
-//
+
             self.db.collection("Users").whereField("uid", isEqualTo: Auth.auth().currentUser!.uid ).getDocuments { (snap, err) in
                 self.isLoading = true
                 if err != nil {
