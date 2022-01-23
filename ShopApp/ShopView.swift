@@ -24,9 +24,6 @@ struct ShopView: View {
                     Image(systemName: "cart")
                     Text("Cart")
                 }
-                .onAppear {
-                    
-                }
             FavoritesView(uvm: uvm)
                 .tabItem {
                     Image(systemName: "heart.text.square")

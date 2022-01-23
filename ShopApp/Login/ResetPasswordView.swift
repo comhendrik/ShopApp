@@ -1,28 +1,22 @@
 //
-//  SignUpView.swift
+//  ResetPasswordView.swift
 //  ShopApp
 //
-//  Created by Hendrik Steen on 13.01.22.
+//  Created by Hendrik Steen on 23.01.22.
 //
 
 import SwiftUI
 
-struct SignUpView: View {
+struct ResetPasswordView: View {
+    @Binding var showResetPasswordview: Bool
     @StateObject var lvm: LoginViewModel
     var body: some View {
-        Text("Welcome!")
-            .fontWeight(.bold)
-        Spacer()
-        Image("people-shopping-2")
-            .scaledToFit()
-        LoginTextField(isSecure: false, value: $lvm.email_SignUp, title: "email", systemImage: "envelope")
-        LoginTextField(isSecure: true, value: $lvm.password_SignUp, title: "password", systemImage: "lock")
-        LoginTextField(isSecure: true, value: $lvm.reEnterPassword, title: "re enter password", systemImage: "lock")
+        LoginTextField(isSecure: false, value: $lvm.email, title: "email", systemImage: "envelope")
         Spacer()
         Button(action: {
-            lvm.SignUp()
+            lvm.resetPassword()
         }, label: {
-            Text("SignUp!")
+            Text("Reset")
                 .foregroundColor(.white)
                 .padding()
                 .frame(width: UIScreen.main.bounds.width - 50)
@@ -34,22 +28,21 @@ struct SignUpView: View {
             }
         Button(action: {
             withAnimation() {
-                lvm.signUpView.toggle()
+                showResetPasswordview.toggle()
             }
         }, label: {
-            Text("you have an account? signup!")
+            Text("Dismiss")
                 .foregroundColor(.black)
                 .padding()
                 .frame(width: UIScreen.main.bounds.width - 50)
                 .background(.gray.opacity(0.05))
                 .cornerRadius(15, antialiased: false)
         })
-        
     }
 }
 
-struct SignUpView_Previews: PreviewProvider {
+struct ResetPasswordView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpView(lvm: LoginViewModel())
+        ResetPasswordView(showResetPasswordview: .constant(true), lvm: LoginViewModel())
     }
 }
