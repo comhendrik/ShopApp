@@ -61,7 +61,30 @@ class LoginViewModel: ObservableObject {
     }
     
     func registerNewUserData() {
+        //Überprüfe, ob alle Daten vorhanden sind
+        if firstName == "" || lastName == "" {
+            alertMsg = "Please tell us your name and make sure that you filled all fields."
+            alert.toggle()
+            return
+        }
+        if address.zipCode == 0 {
+            alertMsg = "Please use a valid zipcode and make sure that you filled all fields."
+            alert.toggle()
+            return
+        }
+        if address.street == "" || address.number == "" || address.city == "" || address.land == "" {
+            alertMsg = "Please tell us your address and make sure that you filled all fields."
+            alert.toggle()
+            return
+        }
+        if Auth.auth().currentUser == nil {
+            alertMsg = "There are problems with your account. Please make sure that you are logged in."
+            alert.toggle()
+            return
+        }
         let uid = Auth.auth().currentUser!.uid
+        
+        //Hochladen des bildes und dann wird mit dem Path im Storage ein Account erstellt.
         UploadImage(imageData: image_Data, path: "profilePics") { (url) in
             
             self.db.collection("Users").document(uid).setData([

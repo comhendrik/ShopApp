@@ -24,10 +24,9 @@ struct FavoritesView: View {
                 } else {
                     VStack {
                         Spacer()
-                        Text("Add some items to your wishlist. \nBut most importantly, have fun shopping!")
-                            .multilineTextAlignment(.center)
+                        Text("Empty list")
                             .font(.title3)
-                        Image(systemName: "doc.badge.plus")
+                        Image(systemName: "heart.fill")
                             .font(.largeTitle)
                         Spacer()
                     }

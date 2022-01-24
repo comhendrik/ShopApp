@@ -18,30 +18,17 @@ struct ShoppingCart: View {
                     } else {
                         VStack {
                             Spacer()
-                            Text("Add some items to your cart \nBut most importantly, have fun shopping!")
-                                .multilineTextAlignment(.center)
+                            Text("Empty Cart")
                                 .font(.title3)
-                            Image(systemName: "cart.badge.plus")
+                            Image(systemName: "cart.fill")
                                 .font(.largeTitle)
                             Spacer()
                         }
                     }
-                    VStack {
-                        HStack {
-                            Text("delivery date:")
-                                .fontWeight(.bold)
-                            Spacer()
-                            Text("\(getDeliverDate())")
-                        }
-                        HStack {
-                            Text("Sum:")
-                                .fontWeight(.bold)
-                            Spacer()
-                            Text("\(String(format: "%.2f", calculateCost(items: uvm.cartItems)))$")
-                            
-                        }
-                    }
-                    .padding(.horizontal)
+                    Text("\(String(format: "%.2f", calculateCost(items: uvm.cartItems)))$")
+                        .fontWeight(.bold)
+                        .font(.title2)
+                        .padding()
                     PaymentButton(addAction: {
                         //Normale Lieferung in 3 Tage
                         uvm.createOrders(price: calculateCost(items: uvm.cartItems), deliveryDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date.now)
@@ -82,11 +69,6 @@ struct ShoppingCart: View {
             
         }
         return cost
-    }
-    
-    private func getDeliverDate() -> String {
-        //Normal delivery within 3 days
-        Calendar.current.date(byAdding: .day, value: 7, to: Date())?.formatted(date: .numeric, time: .omitted) ?? "no date available"
     }
 }
 

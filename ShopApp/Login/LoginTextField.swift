@@ -16,9 +16,11 @@ struct LoginTextField: View {
     @State private var showSecureField = true
     var body: some View {
         VStack(alignment: .leading) {
-            Image(systemName: systemImage)
-                .foregroundColor(isFocused ? .black : .gray)
-                .padding()
+            if systemImage != "" {
+                Image(systemName: systemImage)
+                    .foregroundColor(isFocused ? .black : .gray)
+                    .padding()
+            }
             if isSecure {
                 HStack {
                     if showSecureField {

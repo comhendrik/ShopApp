@@ -23,9 +23,17 @@ struct ContentView: View {
                     VStack {
                         RegisterView(lvm: lvm)
                         Button(action: {
-                            statusofregister.toggle()
+                            withAnimation() {
+                                statusofregister.toggle()
+                            }
+                            lvm.logOut()
                         }, label: {
-                            Text("go back")
+                            Text("Logout")
+                                .foregroundColor(.black)
+                                .padding()
+                                .frame(width: UIScreen.main.bounds.width - 50)
+                                .background(.gray.opacity(0.05))
+                                .cornerRadius(15, antialiased: false)
                         })
                     }
                 } else {
