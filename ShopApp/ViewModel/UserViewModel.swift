@@ -89,16 +89,17 @@ class UserViewModel: ObservableObject {
     @Published var cartItems: [CartItem] = []
     @Published var favoriteItems: [Item] = []
     @Published var orders: [Order] = []
-    @Published var placeholderItem =  Item(_title: "Jordan 1",
-                                         _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
-                                         _price: 129.99,
-                                         _sizes: [41,42,43,44,45,46,47],
-                                         _availableSizes: [41,42,46,47],
-                                          _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
-                                         _rating: 2.5,
-                                         _id: "00055001",
-                              _discount: 45)
-    @Published var placeholderCartItem = CartItem(_item: Item(_title: "Jordan 1",
+    @Published var placeholderItem =  Item(_title: "jordan 1",
+                                           _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
+                                           _price: 129.99,
+                                           _sizes: [41,42,43,44,45,46,47],
+                                           _availableSizes: [41,42,46,47],
+                                           _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
+                                           _rating: 2.5,
+                                           _id: "00003401",
+                                                                                             _discount: 0, _inStock: 5
+                           )
+    @Published var placeholderCartItem = CartItem(_item: Item(_title: "jordan 1",
                                                               _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                                                               _price: 129.99,
                                                               _sizes: [41,42,43,44,45,46,47],
@@ -106,8 +107,8 @@ class UserViewModel: ObservableObject {
                                                               _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
                                                               _rating: 2.5,
                                                               _id: "00003401",
-                                                              _discount: 0
-                                                             ), _size: 45, _amount: 1, _id: "0000340146")
+                                                                                                                _discount: 0, _inStock: 5
+                                              ), _size: 45, _amount: 1, _id: "0000340146")
     @Published var alertMessage = ""
     @Published var showAlert = false
     
@@ -145,6 +146,7 @@ class UserViewModel: ObservableObject {
     }
     
     func getOrders() async {
+        //TODO: Snapshot listener anstelle von getDocuments
         //In diesem Array werden die Bestellungen gespeichert
         var newOrders = [Order]()
         //do catch Block falls ein Fehler auftritt
@@ -181,8 +183,9 @@ class UserViewModel: ObservableObject {
                     let imagePath = itemData.data()?["imagePath"] as? String ?? "No path"
                     let rating = itemData.data()?["rating"] as? Float ?? 0.0
                     let discount = itemData.data()?["discount"] as? Int ?? 0
+                    let inStock = itemData.data()?["inStock"] as? Int ?? 0
                     //Nun kann der Artikel der Bestellung hinzugefügt werden.
-                    order.items.append(OrderItem(_item: Item(_title: title, _description: description, _price: price, _sizes: sizes, _availableSizes: availableSizes, _imagePath: imagePath, _rating: rating, _id: itemId, _discount: discount), _size: size, _amount: amount, _id: cartItemID, _price: orderedPrice))
+                    order.items.append(OrderItem(_item: Item(_title: title, _description: description, _price: price, _sizes: sizes, _availableSizes: availableSizes, _imagePath: imagePath, _rating: rating, _id: itemId, _discount: discount, _inStock: inStock), _size: size, _amount: amount, _id: cartItemID, _price: orderedPrice))
                 }
                 //Dank async await kann hier die Bestellung dem Array hinzugefügt werden. Sonst würde alles "synchronous" ablaufen und dieser Befehl würde schon bevor alle Date vorhanden sind ausgeführt werden.
                 newOrders.append(order)
@@ -195,8 +198,7 @@ class UserViewModel: ObservableObject {
         }
     }
     
-    func createOrders(price: Double, deliveryDate: Date) {
-
+    func createOrders(price: Double, deliveryDate: Date) async {
         let id = Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").addDocument(data: ["price" : price,
                                     "deliverydate": deliveryDate,
                                     "user": Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid")]).documentID
@@ -206,15 +208,35 @@ class UserViewModel: ObservableObject {
             showAlert.toggle()
         } else {
             for cartItem in cartItems {
-                var cartItemID = cartItem.id
-                _ = cartItemID.removeLast()
-                _ = cartItemID.removeLast()
-                Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").document(id).collection("Items")
-                    .addDocument(data: ["amount" : cartItem.amount,
-                                        "ref":cartItemID,
-                                        "size": cartItem.size,
-                                        "price": cartItem.item.discount != 0 ? cartItem.item.price - ((cartItem.item.price / 100.0) * Double(cartItem.item.discount)) : cartItem.item.price])
-                deleteCartItem(with: cartItem.id)
+                do {
+                    //TODO: Von der Id des CartItem werden zwei entfernt, damit die originale Id des normalen Items verwendet werden kann. Eventuell ersetzen durch cartItem.item.id
+                    var cartItemID = cartItem.id
+                    _ = cartItemID.removeLast()
+                    _ = cartItemID.removeLast()
+                    //data ist ein dictionary mit allen Werten von Firebase. Es wird überprüft, ob sich seid dem Hinzufügen etwas am Bestand geändert hat.
+                    //TODO: Mehrere inStock Werte für die verschiedenen Größen
+                    let data = try await itemsRef.document(cartItemID).getDocument().data()
+                    if data?["inStock"] as? Int ?? 0 < cartItem.amount {
+                        alertMessage = "The item \(cartItem.item.title) is not available. Try to reload or adjust the amount."
+                        showAlert.toggle()
+                        return
+                    }
+
+                    
+                    Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").document(id).collection("Items")
+                        .addDocument(data: ["amount" : cartItem.amount,
+                                            "ref":cartItemID,
+                                            "size": cartItem.size,
+                                            "price": cartItem.item.discount != 0 ? cartItem.item.price - ((cartItem.item.price / 100.0) * Double(cartItem.item.discount)) : cartItem.item.price])
+                    //Update Items auf Lager
+                    try await itemsRef.document(cartItemID).updateData(["inStock" : cartItem.item.inStock-1])
+                    deleteCartItem(with: cartItem.id)
+                } catch {
+                    print(error)
+                    alertMessage = error.localizedDescription
+                    showAlert.toggle()
+                    return
+                }
             }
             alertMessage = "Thank you for ordering. We do our best to send the order to you as fast as possible!"
             showAlert.toggle()
@@ -248,15 +270,17 @@ class UserViewModel: ObservableObject {
                             let rating = document?["rating"] as? Float ?? 0.0
                             let id = docSnap?.documentID ?? "no id"
                             let discount = document?["discount"] as? Int ?? 0
+                            let inStock = document?["inStock"] as? Int ?? 0
                             self.favoriteItems.append(Item(_title: title,
-                                                                    _description: description,
-                                                                    _price: price,
-                                                                    _sizes: sizes,
-                                                                    _availableSizes: availableSizes,
-                                                                    _imagePath: imagePath,
-                                                                    _rating: rating,
+                                                            _description: description,
+                                                            _price: price,
+                                                            _sizes: sizes,
+                                                            _availableSizes: availableSizes,
+                                                            _imagePath: imagePath,
+                                                            _rating: rating,
                                                            _id: id,
-                                                                    _discount: discount))
+                                                           _discount: discount,
+                                                          _inStock: inStock))
                         }
                     }
                 }
@@ -299,7 +323,6 @@ class UserViewModel: ObservableObject {
             } else {
                 self.cartItems = []
                 for document in cartItemsSnap!.documents {
-                    var newItem = Item(_title: "", _description: "", _price: 0.0, _sizes: [], _availableSizes: [], _imagePath: "", _rating: 0.0, _id: "", _discount: 0)
                     let itemReference = document.data()["itemReference"] as? String ?? "No id"
                     let size = document.data()["size"] as? Int ?? 0
                     let amount = document.data()["amount"] as? Int ?? 0
@@ -320,16 +343,8 @@ class UserViewModel: ObservableObject {
                             let rating = document?["rating"] as? Float ?? 0.0
                             let item_id = docSnap?.documentID ?? "no id"
                             let discount = document?["discount"] as? Int ?? 0
-                            newItem.title = title
-                            newItem.description = description
-                            newItem.price = price
-                            newItem.sizes = sizes
-                            newItem.availableSizes = availableSizes
-                            newItem.imagePath = imagePath
-                            newItem.rating = rating
-                            newItem.id = item_id
-                            newItem.discount = discount
-                            self.cartItems.append(CartItem(_item: newItem, _size: size, _amount: amount,_id: id))
+                            let inStock = document?["inStock"] as? Int ?? 0
+                            self.cartItems.append(CartItem(_item: Item(_title: title, _description: description, _price: price, _sizes: sizes, _availableSizes: availableSizes, _imagePath: imagePath, _rating: rating, _id: item_id, _discount: discount, _inStock: inStock), _size: size, _amount: amount,_id: id))
                         }
                     }
                     

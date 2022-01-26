@@ -66,14 +66,24 @@ struct ItemDetail: View {
                     StarsView(rating: item.rating)
                 }
                 .padding()
-
+                
                 Text(item.description)
                     .font(.system(size: UIScreen.main.bounds.height < 700 ? 15 : 20))
                     .padding()
                 
                 SelectSize(actualSize: $shoeSize, item: item)
-                AddAnimationButton {
-                    return addToCartAction(shoeSize)
+                if item.inStock > 0 {
+                    AddAnimationButton {
+                        return addToCartAction(shoeSize)
+                    }
+                } else {
+                    //Falls ein Artikel ausverkauft ist wird diese View angezeigt und der Kunde kann den Artikel nicht bestellen
+                    Text("Not in Stock")
+                        .foregroundColor(.black)
+                        .padding()
+                        .frame(width: UIScreen.main.bounds.width - 50)
+                        .background(.gray)
+                        .cornerRadius(15, antialiased: false)
                 }
                 FavoriteAddAnimationButton(addAction: {
                     addFavoriteAction()
@@ -107,9 +117,8 @@ struct ItemDetail_Previews: PreviewProvider {
                               _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
                               _rating: 2.5,
                               _id: "00003401",
-                              _discount: 0
-                             ), addFavoriteAction: {
-            print("hello")
+                                                                                _discount: 0, _inStock: 5
+              ), addFavoriteAction: {
         }, addToCartAction: {_ in 
             return true
         }, checkFavoriteAction: {

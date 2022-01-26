@@ -81,16 +81,16 @@ struct CartMiniViewer: View {
 
 struct CartFavoriteMiniViewer_Previews: PreviewProvider {
     static var previews: some View {
-        CartMiniViewer(cartItem: CartItem(_item: Item(_title: "Jordan 1",
-                                                          _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
-                                                          _price: 129.99,
-                                                          _sizes: [41,42,43,44,45,46,47],
-                                                          _availableSizes: [41,42,46,47],
-                                                          _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
-                                                          _rating: 2.5,
-                                                          _id: "00003401",
-                                                          _discount: 40
-                                                 ), _size: 45, _amount: 1, _id: "0000340146"),
+        CartMiniViewer(cartItem: CartItem(_item: Item(_title: "jordan 1",
+                                                      _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
+                                                      _price: 129.99,
+                                                      _sizes: [41,42,43,44,45,46,47],
+                                                      _availableSizes: [41,42,46,47],
+                                                      _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
+                                                      _rating: 2.5,
+                                                      _id: "00003401",
+                                                                                                        _discount: 0, _inStock: 5
+                                      ), _size: 45, _amount: 1, _id: "0000340146"),
                        uvm: UserViewModel())
                        }
 }

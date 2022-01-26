@@ -31,7 +31,11 @@ struct ShoppingCart: View {
                         .padding()
                     PaymentButton(addAction: {
                         //Normale Lieferung in 3 Tage
-                        uvm.createOrders(price: calculateCost(items: uvm.cartItems), deliveryDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date.now)
+                        Task {
+                            //Fetch Orders
+                            await uvm.createOrders(price: calculateCost(items: uvm.cartItems), deliveryDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date.now)
+                        }
+                        
                     })
                         .frame(width: UIScreen.main.bounds.width - 50)
                         .padding(.horizontal)

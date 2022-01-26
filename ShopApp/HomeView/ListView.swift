@@ -45,7 +45,7 @@ struct ListView_Previews: PreviewProvider {
                               _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
                               _rating: 2.5,
                               _id: "00003401",
-                              _discount: 0
+                                                                                _discount: 0, _inStock: 5
               )]
         )
     }

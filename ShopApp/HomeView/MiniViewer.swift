@@ -22,6 +22,11 @@ struct MiniViewer: View {
                 } placeholder: {
                     ProgressView()
                 }
+                if item.inStock <= 0 {
+                    //Mit dieser View wird signalisiert, dass der Artikel nicht verfügbar ist
+                    Rectangle()
+                        .foregroundColor(Color.gray.opacity(0.5))
+                }
             }
             .frame(width: UIScreen.main.bounds.width / 2.25, height: UIScreen.main.bounds.width / 2.25)
             HStack {
@@ -58,7 +63,7 @@ struct MiniViewer_Previews: PreviewProvider {
                                   _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
                                   _rating: 2.5,
                                   _id: "00003401",
-                                  _discount: 0
+                                                                                    _discount: 0, _inStock: 5
                   )
             )
             MiniViewer(item: Item(_title: "jordan 1",
@@ -69,7 +74,7 @@ struct MiniViewer_Previews: PreviewProvider {
                                   _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
                                   _rating: 2.5,
                                   _id: "00003401",
-                                  _discount: 0
+                                                                                    _discount: 0, _inStock: 5
                   )
             )
                 .previewDevice("iPhone 8")

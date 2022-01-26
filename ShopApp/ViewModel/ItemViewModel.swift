@@ -21,8 +21,9 @@ struct Item: Identifiable {
     var rating: Float
     var id: String
     var discount: Int
+    var inStock: Int
     
-    init(_title: String, _description: String, _price: Double, _sizes: [Int], _availableSizes: [Int], _imagePath: String, _rating: Float, _id: String, _discount: Int) {
+    init(_title: String, _description: String, _price: Double, _sizes: [Int], _availableSizes: [Int], _imagePath: String, _rating: Float, _id: String, _discount: Int, _inStock: Int) {
         title = _title
         description = _description
         price = _price
@@ -32,6 +33,7 @@ struct Item: Identifiable {
         rating = _rating
         id = _id
         discount = _discount
+        inStock = _inStock
     }
     
 
@@ -72,15 +74,17 @@ class ItemViewModel: ObservableObject {
                     let rating = document.data()["rating"] as? Float ?? 0.0
                     let id = document.documentID
                     let discount = document.data()["discount"] as? Int ?? 0
+                    let inStock = document.data()["inStock"] as? Int ?? 0
                     self.shoes.append(Item(_title: title,
-                                      _description: description,
-                                      _price: price,
-                                      _sizes: sizes,
-                                      _availableSizes: availableSizes,
-                                      _imagePath: imagePath,
-                                      _rating: rating,
-                                      _id: id,
-                                      _discount: discount))
+                                           _description: description,
+                                           _price: price,
+                                           _sizes: sizes,
+                                           _availableSizes: availableSizes,
+                                           _imagePath: imagePath,
+                                           _rating: rating,
+                                           _id: id,
+                                           _discount: discount,
+                                           _inStock: inStock))
                 }
             }
         }

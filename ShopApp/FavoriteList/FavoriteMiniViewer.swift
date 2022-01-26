@@ -94,7 +94,7 @@ struct FavoriteMiniViewer: View {
 
 struct FavoriteMiniViewer_Previews: PreviewProvider {
     static var previews: some View {
-        FavoriteMiniViewer(item: Item(_title: "Jordan 1",
+        FavoriteMiniViewer(item: Item(_title: "jordan 1",
                                       _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                                       _price: 129.99,
                                       _sizes: [41,42,43,44,45,46,47],
@@ -102,7 +102,7 @@ struct FavoriteMiniViewer_Previews: PreviewProvider {
                                       _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
                                       _rating: 2.5,
                                       _id: "00003401",
-                                      _discount: 0
-                                     ), uvm: UserViewModel(), showAddToCartView: .constant(true),deleteAction: {_ in})
+                                                                                        _discount: 0, _inStock: 5
+                      ), uvm: UserViewModel(), showAddToCartView: .constant(true),deleteAction: {_ in})
     }
 }
