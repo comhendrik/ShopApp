@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ShoppingCart: View {
     @StateObject var uvm: UserViewModel
+    @State private var showBuyingView = false
     var body: some View {
         NavigationView {
             ZStack {
@@ -29,22 +30,20 @@ struct ShoppingCart: View {
                         .fontWeight(.bold)
                         .font(.title2)
                         .padding()
-                    PaymentButton(addAction: {
-                        //Normale Lieferung in 3 Tage
-                        Task {
-                            //Fetch Orders
-                            await uvm.createOrders(price: calculateCost(items: uvm.cartItems), deliveryDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date.now)
+                    
+                    PaymentButton {
+                        withAnimation() {
+                            showBuyingView.toggle()
                         }
-                        
-                    })
-                        .frame(width: UIScreen.main.bounds.width - 50)
-                        .padding(.horizontal)
-                        .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
-                            Button("OK", role: .cancel) { }
-                        }
+                    }
+                    .frame(width: UIScreen.main.bounds.width - 50)
+
                 }
-                
-                }
+                //Diese View wird angezeigt, wenn ein Nutzer etwas kaufen möchte.
+                BuyingView(uvm: uvm, showBuyingView: $showBuyingView)
+                    .offset(y: showBuyingView ? 0 : 500)
+            }
+
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     HStack {

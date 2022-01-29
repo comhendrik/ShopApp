@@ -85,6 +85,7 @@ struct CartItem: Identifiable {
 @MainActor
 class UserViewModel: ObservableObject {
     @Published var mainUser = User(_firstName: "???", _lastName: "??", _birthday: Date.now, _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "??", _number: "???", _land: "??"),_email: "???", _memberId: "???")
+    @Published var coupon = ""
     @Published var showProgressView = false
     @Published var cartItems: [CartItem] = []
     @Published var favoriteItems: [Item] = []
@@ -195,6 +196,26 @@ class UserViewModel: ObservableObject {
             orders = newOrders
         } catch {
             print(error)
+        }
+    }
+    
+    func checkForCoupon(with coupon: String) async -> (Bool, Int?) {
+        if coupon == "no coupon" {
+            return (false, nil)
+        }
+        do {
+            let data = try await Firestore.firestore().collection("Coupons").getDocuments()
+            for document in data.documents {
+                let couponFromDB = document.data()["coupon"] as? String ?? "no coupon"
+                if coupon == couponFromDB {
+                    let discount = document.data()["discount"] as? Int ?? 0
+                    return (true, discount)
+                }
+            }
+            return (false,nil)
+        } catch {
+            print(error)
+            return (false,nil)
         }
     }
     

@@ -36,7 +36,6 @@ struct MiniViewer: View {
                     HStack {
                         Text("\(String(format: "%.2f", item.discount != 0 ? (item.price - (item.price/100.0) * Double(item.discount)): item.price)) $")
                             .foregroundColor(item.discount != 0 ? .red : .none)
-
                         if item.discount != 0 {
                             Text("\(String(format: "%.2f", item.price))")
                                 .strikethrough()
