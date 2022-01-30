@@ -39,6 +39,7 @@ struct ShoppingCart: View {
                     .frame(width: UIScreen.main.bounds.width - 50)
 
                 }
+                .blur(radius: showBuyingView ? 3 : 0)
                 //Diese View wird angezeigt, wenn ein Nutzer etwas kaufen möchte.
                 BuyingView(uvm: uvm, showBuyingView: $showBuyingView)
                     .offset(y: showBuyingView ? 0 : 500)

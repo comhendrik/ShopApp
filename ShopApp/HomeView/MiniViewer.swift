@@ -33,6 +33,7 @@ struct MiniViewer: View {
                 VStack(alignment: .leading) {
                     Text(item.title)
                         .fontWeight(.bold)
+                        .lineLimit(1)
                     HStack {
                         Text("\(String(format: "%.2f", item.discount != 0 ? (item.price - (item.price/100.0) * Double(item.discount)): item.price)) $")
                             .foregroundColor(item.discount != 0 ? .red : .none)

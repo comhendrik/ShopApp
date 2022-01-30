@@ -20,7 +20,8 @@ struct FavoritesView: View {
                                 deleteAction: {id in uvm.deleteFavoriteItem(with: id)})
                         }
                     }
-                    .blur(radius: showAddToCartView ? 5 : 0)
+                    .padding(.horizontal,10)
+                    .blur(radius: showAddToCartView ? 3 : 0)
                 } else {
                     VStack {
                         Spacer()

@@ -46,9 +46,6 @@ struct SelectSizeButton: View {
             if availableSizes.contains(changingSize) {
                 size = changingSize
                 
-            } else {
-                //TODO: Add alert or something
-                print("not available")
             }
         }, label: {
             Text("\(changingSize)")

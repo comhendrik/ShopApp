@@ -13,19 +13,6 @@ struct CartMiniViewer: View {
     var body: some View {
         VStack {
             HStack {
-                Text(cartItem.item.title)
-                    .fontWeight(.bold)
-                Spacer()
-                Button(action: {
-                    uvm.deleteCartItem(with: cartItem.id)
-                }, label: {
-                    Text("Delete")
-                        .fontWeight(.bold)
-                        .foregroundColor(.black)
-                })
-                
-            }
-            HStack {
                 ZStack {
                     Color.gray.opacity(0.05)
                     NavigationLink {
@@ -49,8 +36,20 @@ struct CartMiniViewer: View {
                     }
                 }
                 .frame(width: UIScreen.main.bounds.width / 2.5, height: UIScreen.main.bounds.width / 2.5)
-                Spacer()
-                VStack(alignment: .leading,spacing: 25) {
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text(cartItem.item.title)
+                            .fontWeight(.bold)
+                            .foregroundColor(.black)
+                        Spacer()
+                        Button(action: {
+                            uvm.deleteCartItem(with: cartItem.id)
+                        }, label: {
+                            Text("Delete")
+                                .fontWeight(.bold)
+                                .foregroundColor(.black)
+                        })
+                    }
                     Text("Size: \(cartItem.size)")
                     Text("\(String(format: "%.2f", cartItem.item.discount != 0 ? (cartItem.item.price - (cartItem.item.price/100.0) * Double(cartItem.item.discount)): cartItem.item.price)) $")
                     HStack {
@@ -60,22 +59,22 @@ struct CartMiniViewer: View {
                             }
                         }, label: {
                             Text("<")
-                                .foregroundColor(.black)
                         })
                         Text("\(cartItem.amount)")
                         Button(action: {
                             uvm.updateAmount(with: cartItem.id, amount: cartItem.amount+1)
                         }, label: {
                             Text(">")
-                                .foregroundColor(.black)
                         })
                     }
+                    Spacer()
                 }
-                Spacer()
+                .foregroundColor(.gray)
             }
+            .padding(.bottom, 5)
             Divider()
         }
-        .padding(.horizontal,10)
+        .padding()
     }
 }
 

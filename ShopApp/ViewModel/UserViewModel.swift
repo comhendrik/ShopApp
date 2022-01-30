@@ -147,7 +147,6 @@ class UserViewModel: ObservableObject {
     }
     
     func getOrders() async {
-        //TODO: Snapshot listener anstelle von getDocuments
         //In diesem Array werden die Bestellungen gespeichert
         var newOrders = [Order]()
         //do catch Block falls ein Fehler auftritt
@@ -194,6 +193,7 @@ class UserViewModel: ObservableObject {
             //Nun kann newOrders übergeben werden. Dank async await ist dies wieder an dieser Stelle möglich
             //Normalerweise tritt hier ein Fehler auf, da die Funktion auf einem Backgroundthread läuft und von dort aus nicht die UI geupdatet werden darf. Dank @MainActor am Anfang der Klasse laufen all Befehle auf dem Mainthread
             orders = newOrders
+            //TODO: nicht richtig sortiert. Die neuesten sollten ganz oben stehen.
         } catch {
             print(error)
         }
@@ -220,37 +220,45 @@ class UserViewModel: ObservableObject {
     }
     
     func createOrders(price: Double, deliveryDate: Date) async {
-        let id = Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").addDocument(data: ["price" : price,
-                                    "deliverydate": deliveryDate,
-                                    "user": Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid")]).documentID
+
         
         if cartItems.isEmpty {
             alertMessage = "Thank you for wanting to order, but please add some items."
             showAlert.toggle()
         } else {
-            for cartItem in cartItems {
-                do {
-                    //TODO: Von der Id des CartItem werden zwei entfernt, damit die originale Id des normalen Items verwendet werden kann. Eventuell ersetzen durch cartItem.item.id
-                    var cartItemID = cartItem.id
-                    _ = cartItemID.removeLast()
-                    _ = cartItemID.removeLast()
+            //überprüfen, ob ein Item nicht auf Lager ist.
+            do {
+                for cartItem in cartItems {
                     //data ist ein dictionary mit allen Werten von Firebase. Es wird überprüft, ob sich seid dem Hinzufügen etwas am Bestand geändert hat.
                     //TODO: Mehrere inStock Werte für die verschiedenen Größen
-                    let data = try await itemsRef.document(cartItemID).getDocument().data()
+                    let data = try await itemsRef.document(cartItem.item.id).getDocument().data()
                     if data?["inStock"] as? Int ?? 0 < cartItem.amount {
                         alertMessage = "The item \(cartItem.item.title) is not available. Try to reload or adjust the amount."
                         showAlert.toggle()
                         return
                     }
-
-                    
-                    Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").document(id).collection("Items")
+                }
+            } catch {
+                print(error)
+                alertMessage = error.localizedDescription
+                showAlert.toggle()
+                return
+            }
+            //Wird dieser Code ausgeführt können alle Produkte gekauft werden.
+            //Dem User wird eine Order hinzugefügt
+            let id = Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").addDocument(data: ["price" : price,
+                                        "deliverydate": deliveryDate,
+                                        "user": Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid")]).documentID
+            //Der Order werden die Produkte hinzugefügt
+            for cartItem in cartItems {
+                do {Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").document(id).collection("Items")
                         .addDocument(data: ["amount" : cartItem.amount,
-                                            "ref":cartItemID,
+                                            "ref":cartItem.item.id,
                                             "size": cartItem.size,
                                             "price": cartItem.item.discount != 0 ? cartItem.item.price - ((cartItem.item.price / 100.0) * Double(cartItem.item.discount)) : cartItem.item.price])
                     //Update Items auf Lager
-                    try await itemsRef.document(cartItemID).updateData(["inStock" : cartItem.item.inStock-1])
+                    try await itemsRef.document(cartItem.item.id).updateData(["inStock" : cartItem.item.inStock-1])
+                    //Lösche das Produkt aus dem Warenkorb
                     deleteCartItem(with: cartItem.id)
                 } catch {
                     print(error)
@@ -259,8 +267,12 @@ class UserViewModel: ObservableObject {
                     return
                 }
             }
-            alertMessage = "Thank you for ordering. We do our best to send the order to you as fast as possible!"
+            //Die Bestellung ist erfolgreich durchgeführt worden.
+            alertMessage = "Thank you for ordering. We do our best to send the order to you as fast as possible! \n OrderID: \(id)"
             showAlert.toggle()
+            //Neue Bestellung in die App laden.
+            await getOrders()
+            
             
         }
         

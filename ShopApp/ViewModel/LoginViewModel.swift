@@ -153,17 +153,17 @@ class LoginViewModel: ObservableObject {
             
             let user = Auth.auth().currentUser
             
-//            if !user!.isEmailVerified {
-//                self.alertMsg = "Please verify"
-//                self.alert.toggle()
-//                do {
-//                   try Auth.auth().signOut()
-//                } catch {
-//                    print(error)
-//                }
-//                return
-//
-//            }
+            if !user!.isEmailVerified {
+                self.alertMsg = "Please verify"
+                self.alert.toggle()
+                do {
+                   try Auth.auth().signOut()
+                } catch {
+                    print(error)
+                }
+                return
+
+            }
 
             self.db.collection("Users").whereField("uid", isEqualTo: Auth.auth().currentUser!.uid ).getDocuments { (snap, err) in
                 self.isLoading = true

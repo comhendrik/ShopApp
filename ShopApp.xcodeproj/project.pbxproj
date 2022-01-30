@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		24142C212779B34500195ADC /* CategorieNavigatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C202779B34500195ADC /* CategorieNavigatorView.swift */; };
 		24142C232779CAC800195ADC /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C222779CAC800195ADC /* HomeView.swift */; };
-		24142C252779CC3600195ADC /* ShopMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C242779CC3600195ADC /* ShopMap.swift */; };
 		24142C272779CC4100195ADC /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C262779CC4100195ADC /* AccountView.swift */; };
 		24142C292779CD7F00195ADC /* ShoppingCart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C282779CD7F00195ADC /* ShoppingCart.swift */; };
 		24142C2B2779CEDC00195ADC /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C2A2779CEDC00195ADC /* FavoritesView.swift */; };
@@ -59,7 +58,6 @@
 /* Begin PBXFileReference section */
 		24142C202779B34500195ADC /* CategorieNavigatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorieNavigatorView.swift; sourceTree = "<group>"; };
 		24142C222779CAC800195ADC /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		24142C242779CC3600195ADC /* ShopMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopMap.swift; sourceTree = "<group>"; };
 		24142C262779CC4100195ADC /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		24142C282779CD7F00195ADC /* ShoppingCart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingCart.swift; sourceTree = "<group>"; };
 		24142C2A2779CEDC00195ADC /* FavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
@@ -171,14 +169,6 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		245637D8277F384E008CEBA4 /* MapView */ = {
-			isa = PBXGroup;
-			children = (
-				24142C242779CC3600195ADC /* ShopMap.swift */,
-			);
-			path = MapView;
-			sourceTree = "<group>";
-		};
 		24603102275414D900FE98D8 = {
 			isa = PBXGroup;
 			children = (
@@ -205,7 +195,6 @@
 				2449C4F6278F605300B48FFF /* ShopView.swift */,
 				2449C4F3278F5E0D00B48FFF /* Login */,
 				24858AD52788423600583C65 /* Account */,
-				245637D8277F384E008CEBA4 /* MapView */,
 				242542F9277A5A3600FD8AA7 /* FavoriteList */,
 				242542EA277A4E2200FD8AA7 /* ShoppingCart */,
 				2491BFFA2757E89000BBEB9F /* HomeView */,
@@ -357,7 +346,6 @@
 				2417E6992787247C00593707 /* Constants.swift in Sources */,
 				2449C4F2278F5DC300B48FFF /* LoginViewModel.swift in Sources */,
 				245252BF275798DC006D534B /* SelectSize.swift in Sources */,
-				24142C252779CC3600195ADC /* ShopMap.swift in Sources */,
 				2455C702279097C200060522 /* ImagePicker.swift in Sources */,
 				24142C2B2779CEDC00195ADC /* FavoritesView.swift in Sources */,
 				245252C32757A17F006D534B /* StarsView.swift in Sources */,

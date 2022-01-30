@@ -43,14 +43,14 @@ struct LoginTextField: View {
                 }
                 .padding()
                 .overlay(RoundedRectangle(cornerRadius: 15).stroke().foregroundColor(isFocused ? .black : .gray))
-                .frame(width: UIScreen.main.bounds.width - 50)
+                .frame(width: UIScreen.main.bounds.width - 55)
             } else {
                 
                 TextField(title, text: $value)
                     .textInputAutocapitalization(TextInputAutocapitalization.never)
                     .padding()
                     .overlay(RoundedRectangle(cornerRadius: 15).stroke().foregroundColor(isFocused ? .black : .gray))
-                    .frame(width: UIScreen.main.bounds.width - 50)
+                    .frame(width: UIScreen.main.bounds.width - 55)
                     .focused($isFocused)
             }
         }

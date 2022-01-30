@@ -10,40 +10,41 @@ import SwiftUI
 struct SignUpView: View {
     @StateObject var lvm: LoginViewModel
     var body: some View {
-        Text("Welcome!")
-            .fontWeight(.bold)
-        Spacer()
-        Image("people-shopping-2")
-            .scaledToFit()
-        LoginTextField(isSecure: false, value: $lvm.email_SignUp, title: "email", systemImage: "envelope")
-        LoginTextField(isSecure: true, value: $lvm.password_SignUp, title: "password", systemImage: "lock")
-        LoginTextField(isSecure: true, value: $lvm.reEnterPassword, title: "re enter password", systemImage: "lock")
-        Spacer()
-        Button(action: {
-            lvm.SignUp()
-        }, label: {
-            Text("SignUp!")
-                .foregroundColor(.white)
-                .padding()
-                .frame(width: UIScreen.main.bounds.width - 50)
-                .background(.black)
-                .cornerRadius(15, antialiased: false)
-        })
-            .alert(lvm.alertMsg, isPresented: $lvm.alert) {
-                Button("OK", role: .cancel) { }
-            }
-        Button(action: {
-            withAnimation() {
-                lvm.signUpView.toggle()
-            }
-        }, label: {
-            Text("you have an account? signup!")
-                .foregroundColor(.black)
-                .padding()
-                .frame(width: UIScreen.main.bounds.width - 50)
-                .background(.gray.opacity(0.05))
-                .cornerRadius(15, antialiased: false)
-        })
+        ScrollView(showsIndicators: false) {
+            Text("Welcome!")
+                .fontWeight(.bold)
+            Spacer()
+            Image("people-shopping-2")
+                .scaledToFit()
+            LoginTextField(isSecure: false, value: $lvm.email_SignUp, title: "email", systemImage: "envelope")
+            LoginTextField(isSecure: true, value: $lvm.password_SignUp, title: "password", systemImage: "lock")
+            LoginTextField(isSecure: true, value: $lvm.reEnterPassword, title: "re enter password", systemImage: "lock")
+            Button(action: {
+                lvm.SignUp()
+            }, label: {
+                Text("SignUp!")
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(width: UIScreen.main.bounds.width - 50)
+                    .background(.black)
+                    .cornerRadius(15, antialiased: false)
+            })
+                .alert(lvm.alertMsg, isPresented: $lvm.alert) {
+                    Button("OK", role: .cancel) { }
+                }
+            Button(action: {
+                withAnimation() {
+                    lvm.signUpView.toggle()
+                }
+            }, label: {
+                Text("you have an account? login!")
+                    .foregroundColor(.black)
+                    .padding()
+                    .frame(width: UIScreen.main.bounds.width - 50)
+                    .background(.gray.opacity(0.05))
+                    .cornerRadius(15, antialiased: false)
+            })
+        }
         
     }
 }

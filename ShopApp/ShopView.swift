@@ -29,11 +29,6 @@ struct ShopView: View {
                     Image(systemName: "heart.text.square")
                     Text("Favorites")
                 }
-            MapView()
-                .tabItem {
-                    Image(systemName: "map.circle")
-                    Text("map")
-                }
             AccountView(uvm: uvm, lvm: lvm)
                 .tabItem {
                     Image(systemName: "person.crop.circle")
@@ -41,6 +36,7 @@ struct ShopView: View {
                 }
         }
         .onAppear {
+            print("yea")
             uvm.getUser()
             uvm.getCartItems()
             uvm.getFavoriteItems()

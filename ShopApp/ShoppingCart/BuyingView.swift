@@ -11,84 +11,73 @@ struct BuyingView: View {
     @StateObject var uvm: UserViewModel
     @Binding var showBuyingView: Bool
     var body: some View {
-        ZStack {
-            if showBuyingView {
-                Rectangle()
-                    .foregroundColor(.gray.opacity(0.5))
-                    .onTapGesture {
+        VStack {
+            Spacer()
+            VStack {
+                HStack {
+                    HStack {
+                        Image(systemName: "creditcard")
+                            .font(.subheadline)
+                        Text("Payment process")
+                            .fontWeight(.bold)
+                    }
+                    Spacer()
+                    Button {
                         withAnimation() {
                             showBuyingView.toggle()
                         }
+                    } label: {
+                        Image(systemName: "xmark")
                     }
-            }
-            VStack {
-                Spacer()
-                VStack {
-                    HStack {
-                        HStack {
-                            Image(systemName: "creditcard")
-                                .font(.subheadline)
-                            Text("Payment process")
-                                .fontWeight(.bold)
-                        }
-                        Spacer()
-                        Button {
+
+                }
+                .padding()
+                Divider()
+                HStack {
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Address:")
+                            .font(.body)
+                            .fontWeight(.bold)
+                        Text("\(uvm.mainUser.lastName), \(uvm.mainUser.firstName)")
+                        Text("\(uvm.mainUser.adress.street) \(uvm.mainUser.adress.number)")
+                        Text("\(String(uvm.mainUser.adress.zipCode)) \(uvm.mainUser.adress.city)")
+                        Text(uvm.mainUser.adress.land)
+                    }
+                    .font(.subheadline)
+                    Spacer()
+                }
+                .padding()
+                
+                Divider()
+                
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Sum:")
+                            .fontWeight(.bold)
+                        Text("\(String(format: "%.2f", calculateCost(items: uvm.cartItems)))$")
+                    }
+                    Spacer()
+                }
+                .padding()
+                PaymentButton(addAction: {
+                    //Normale Lieferung in 3 Tage
+                    Task {
+                        //Fetch Orders
+                        await uvm.createOrders(price: calculateCost(items: uvm.cartItems), deliveryDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date.now)
+                    }
+                })
+                    .frame(width: UIScreen.main.bounds.width - 50)
+                    .padding([.horizontal,.bottom])
+                    .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
+                        Button("OK", role: .cancel) {
                             withAnimation() {
                                 showBuyingView.toggle()
                             }
-                        } label: {
-                            Image(systemName: "xmark")
                         }
-
                     }
-                    .padding()
-                    Divider()
-                    HStack {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Address:")
-                                .font(.body)
-                                .fontWeight(.bold)
-                            Text("\(uvm.mainUser.lastName), \(uvm.mainUser.firstName)")
-                            Text("\(uvm.mainUser.adress.street) \(uvm.mainUser.adress.number)")
-                            Text("\(String(uvm.mainUser.adress.zipCode)) \(uvm.mainUser.adress.city)")
-                            Text(uvm.mainUser.adress.land)
-                        }
-                        .font(.subheadline)
-                        Spacer()
-                    }
-                    .padding()
-                    
-                    Divider()
-                    
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text("Sum:")
-                                .fontWeight(.bold)
-                            Text("\(String(format: "%.2f", calculateCost(items: uvm.cartItems)))$")
-                        }
-                        Spacer()
-                    }
-                    .padding()
-                    PaymentButton(addAction: {
-                        //Normale Lieferung in 3 Tage
-                        Task {
-                            //Fetch Orders
-                            await uvm.createOrders(price: calculateCost(items: uvm.cartItems), deliveryDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date.now)
-                        }
-                    })
-                        .frame(width: UIScreen.main.bounds.width - 50)
-                        .padding(.horizontal)
-                        .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
-                            Button("OK", role: .cancel) {
-                                withAnimation() {
-                                    showBuyingView.toggle()
-                                }
-                            }
-                        }
-                }
-                    .background(Color.white)
-                    .foregroundColor(.black)
-                }
+            }
+                .background(Color.white)
+                .foregroundColor(.black)
             }
         }
     }

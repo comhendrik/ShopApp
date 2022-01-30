@@ -40,7 +40,7 @@ struct AddToCartView: View {
                             showAddToCartView.toggle()
                         }
                     }, label: {
-                        Image(systemName: "xmark.circle")
+                        Image(systemName: "xmark")
                             .foregroundColor(.black)
                             .font(.title)
                         
@@ -55,9 +55,6 @@ struct AddToCartView: View {
                             Button(action: {
                                 if item.availableSizes.contains(item.sizes[size]) {
                                     shoeSize = item.sizes[size]
-                                } else {
-                                    print("not available")
-                                    //TODO: add alert for this case
                                 }
                             }, label: {
                                 Text("\(item.sizes[size])")
