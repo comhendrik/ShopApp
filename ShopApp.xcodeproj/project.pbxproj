@@ -135,14 +135,14 @@
 			path = DetailView;
 			sourceTree = "<group>";
 		};
-		242542F9277A5A3600FD8AA7 /* FavoriteList */ = {
+		242542F9277A5A3600FD8AA7 /* FavoriteView */ = {
 			isa = PBXGroup;
 			children = (
 				24142C2A2779CEDC00195ADC /* FavoritesView.swift */,
 				245637D4277F32B7008CEBA4 /* FavoriteMiniViewer.swift */,
 				24B5FABA2780A861002E3B09 /* AddToCartView.swift */,
 			);
-			path = FavoriteList;
+			path = FavoriteView;
 			sourceTree = "<group>";
 		};
 		2449C4F3278F5E0D00B48FFF /* Login */ = {
@@ -195,7 +195,7 @@
 				2449C4F6278F605300B48FFF /* ShopView.swift */,
 				2449C4F3278F5E0D00B48FFF /* Login */,
 				24858AD52788423600583C65 /* Account */,
-				242542F9277A5A3600FD8AA7 /* FavoriteList */,
+				242542F9277A5A3600FD8AA7 /* FavoriteView */,
 				242542EA277A4E2200FD8AA7 /* ShoppingCart */,
 				2491BFFA2757E89000BBEB9F /* HomeView */,
 				24603112275414D900FE98D8 /* Assets.xcassets */,

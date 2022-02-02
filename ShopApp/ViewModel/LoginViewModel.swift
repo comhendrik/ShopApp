@@ -8,21 +8,33 @@
 import Foundation
 import SwiftUI
 import Firebase
+import FirebaseFirestore
 
 class LoginViewModel: ObservableObject {
+    //Dieses ViewModel ermöglicht eine Anmeldung über Firebase Authentication.
+    //Wir brauchen mehrere Daten:
+    
+    //Login
+    
     @Published var email = ""
     @Published var password = ""
-    @Published var isSignUp = false
+    
+    //Signup
     @Published var email_SignUp = ""
     @Published var password_SignUp = ""
     @Published var reEnterPassword = ""
+    
+    //PasswordReset
     @Published var resetEmail = ""
-    @Published var isLinkSend = false
+    
+    //Diese Variable wird verwendet, um Laden anzuzeigen.
     @Published var isLoading = false
+    
+    //Diese Variable sorgt dafür, dass die richtige View angezeigt wird. Je nach dem, ob sich der Nutzer anmelden möchte, oder auch registrieren möchte
     @Published var signUpView = false
     
     
-    
+    //Um sich weiter zu registrieren wird Vorname und Nachname, sowie Geburtstag und Addresse als auch ein Profilbild gebraucht.
     @Published var firstName = ""
     @Published var lastName = ""
     @Published var birthday = Date.now
@@ -30,17 +42,18 @@ class LoginViewModel: ObservableObject {
     @Published var image_Data = Data(count: 0)
     @Published var picker = false
     
-    
-    
+    //Um Fehler anzuzeigen, wird ein Alert verwendet
     @Published var alert = false
     @Published var alertMsg = ""
     
+    //Siehe Erklärung ContentView:
     @AppStorage("log_status") var status = false
     @AppStorage("current_status") var statusofregister = false
     
     let db = Firestore.firestore()
     
     func UploadImage(imageData: Data, path: String, completion: @escaping (String) -> ()) {
+        //Diese Funktion ermöglicht das Hochladen eines Fotos in FirebaseStorage. Zusätzlich wird ein completionHandler verwendet, damit die URL später gespeichert werden kann.
         let storage = Storage.storage()
         let ref = storage.reference()
         let uid = Auth.auth().currentUser!.uid
@@ -82,11 +95,17 @@ class LoginViewModel: ObservableObject {
             alert.toggle()
             return
         }
+        
+        if image_Data.count == 0 {
+            alertMsg = "Please select an image."
+            alert.toggle()
+            return
+        }
         let uid = Auth.auth().currentUser!.uid
         
-        //Hochladen des bildes und dann wird mit dem Path im Storage ein Account erstellt.
+        //Hochladen des Bildes und dann wird mit dem Path im Storage ein Account erstellt.
         UploadImage(imageData: image_Data, path: "profilePics") { (url) in
-            
+            //Die Collection "Users" enthählt alle Nutzer mit den wichtigen Daten, sowie die URL des hochgeladenen Foto
             self.db.collection("Users").document(uid).setData([
                 "uid":uid,
                 "profilePic": url,
@@ -107,15 +126,16 @@ class LoginViewModel: ObservableObject {
                     return
                 }
                 self.isLoading = false
+                //Status kann auf true gesetzt werden, da sich der Nutzer registriert hat und der Shop angezeigt werden soll.
                 self.status = true
             }
         }
-        
+        //statusofregister kann auf false gesetzt werden, da sich der Nutzer registriert hat und der Shop angezeigt werden soll.
         statusofregister = false
-
     }
     
     func resetPassword() {
+        //Diese Funktion ermöglicht das Zurücksetzen des Passworts.
         resetEmail = email
         if resetEmail != "" {
             Auth.auth().sendPasswordReset(withEmail: resetEmail) { (err) in
@@ -135,14 +155,16 @@ class LoginViewModel: ObservableObject {
     }
     
     func login() {
+        //Diese Funktion ermöglicht ein Login
         self.isLoading = true
+        //Zuerst wird überpüft, ob email und Passwort und eingegeben wurden.
         if email == "" || password == "" {
             self.isLoading = false
             self.alertMsg = "Fill the contents properly"
             self.alert.toggle()
             return
         }
-        
+        //signIn per Firebase Auth
         Auth.auth().signIn(withEmail: email, password: password) { (res, err) in
             if err != nil {
                 self.isLoading = false
@@ -152,7 +174,7 @@ class LoginViewModel: ObservableObject {
             }
             
             let user = Auth.auth().currentUser
-            
+            //Der Nutzer muss sich per Email verifizieren, ist dem nicht so wird ein Alert getriggert und der User wird ausgeloggt.
             if !user!.isEmailVerified {
                 self.alertMsg = "Please verify"
                 self.alert.toggle()
@@ -162,9 +184,8 @@ class LoginViewModel: ObservableObject {
                     print(error)
                 }
                 return
-
             }
-
+            //Überprüfen, ob es ein Dokument in der "User" Collection gibt.
             self.db.collection("Users").whereField("uid", isEqualTo: Auth.auth().currentUser!.uid ).getDocuments { (snap, err) in
                 self.isLoading = true
                 if err != nil {
@@ -173,12 +194,13 @@ class LoginViewModel: ObservableObject {
                     return
                 }
                 if snap!.documents.isEmpty {
+                    //Gibt es kein Dokument wird statusofregister auf true gesetzt, damit sich ein Nutzer registrieren kann.
                     self.statusofregister = true
                     self.isLoading = false
                     return
                     
                 }
-                
+                //Ein Dokument ist vorhanden und status = true für die ShopView und statusofregister = false damit keine RegistrationView angezeigt wird.
                 self.statusofregister = false
                 self.status = true
                 self.isLoading = false
@@ -188,33 +210,34 @@ class LoginViewModel: ObservableObject {
     }
     
     func SignUp() {
-        
+        //Diese Funktion ermöglicht das registieren.
+        //Überprüfung, ob Werte eingegeben wurden.
         if email_SignUp == "" || password_SignUp == "" || reEnterPassword == "" {
             self.alertMsg = "Fill Content properly"
             self.alert.toggle()
             return
         }
-        
+        //Das Passwort muss zweimal richtig eingegeben werden.
         if password_SignUp != reEnterPassword {
             self.alertMsg = "password missmatch"
             self.alert.toggle()
             return
         }
-        
+        //createUser per FirebaseAuth
         Auth.auth().createUser(withEmail: email_SignUp, password: password_SignUp) { (res, err) in
             if err != nil {
                 self.alertMsg = err!.localizedDescription
                 self.alert.toggle()
                 return
             }
-            
+            //Es wird eine Verifizierungsemail an die verwendete Email gesendet.
             res?.user.sendEmailVerification(completion: { (err) in
                 if err != nil {
                     self.alertMsg = err!.localizedDescription
                     self.alert.toggle()
                     return
                 }
-                
+                //Benachrichtigung an den Nutzer per Alert, damit dieser weiß, was er danach tun muss.
                 self.alertMsg = "Verify Link has been sent. Verify your email and login after you did it"
                 self.alert.toggle()
                 
@@ -223,6 +246,7 @@ class LoginViewModel: ObservableObject {
     }
     
     func logOut() {
+        //Diese Funktion ermöglicht ein signOut. Alle Werte werden zurückgesetzt
         try! Auth.auth().signOut()
         
         self.status = false

@@ -84,12 +84,13 @@ struct CartItem: Identifiable {
 
 @MainActor
 class UserViewModel: ObservableObject {
+    //Dieses Viewmodel enthält alle Information für den Nutzer
     @Published var mainUser = User(_firstName: "???", _lastName: "??", _birthday: Date.now, _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "??", _number: "???", _land: "??"),_email: "???", _memberId: "???")
-    @Published var coupon = ""
     @Published var showProgressView = false
     @Published var cartItems: [CartItem] = []
     @Published var favoriteItems: [Item] = []
     @Published var orders: [Order] = []
+    //Das folgende Objekt wird verwendet, damit man bei der Favorites View ein neues Item zum Warenkorb hinzufügen kann. Es wird in der AddToCartView verwendet.
     @Published var placeholderItem =  Item(_title: "jordan 1",
                                            _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                                            _price: 129.99,
@@ -100,29 +101,24 @@ class UserViewModel: ObservableObject {
                                            _id: "00003401",
                                                                                              _discount: 0, _inStock: 5
                            )
-    @Published var placeholderCartItem = CartItem(_item: Item(_title: "jordan 1",
-                                                              _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
-                                                              _price: 129.99,
-                                                              _sizes: [41,42,43,44,45,46,47],
-                                                              _availableSizes: [41,42,46,47],
-                                                              _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
-                                                              _rating: 2.5,
-                                                              _id: "00003401",
-                                                                                                                _discount: 0, _inStock: 5
-                                              ), _size: 45, _amount: 1, _id: "0000340146")
     @Published var alertMessage = ""
     @Published var showAlert = false
+    let userID = Auth.auth().currentUser?.uid ?? "no uid"
     
 
     
     func getUser() {
         showProgressView = true
-        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").getDocument { snap, err in
+        //Es wird per .getDocument das Dokument, welches zur uid des angemeldeten Nutzers gehört.
+        Firestore.firestore().collection("Users").document(userID).getDocument { snap, err in
             self.mainUser = User(_firstName: "???", _lastName: "??", _birthday: Date.now, _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "???", _number: "???", _land: "???"), _email: "???", _memberId: "???")
             if let err = err {
                 //TODO: Handle this error properly!
+                self.showProgressView = false
                 print(err)
+                return
             } else {
+                //Daten werden innerhalb von MainUser gespeichert
                 let firstName = snap?.data()?["firstName"] as? String ?? "no firstName"
                 let lastName = snap?.data()?["lastName"] as? String ?? "no lastName"
                 let birthday = snap?.data()?["birthday"] as? Timestamp
@@ -199,30 +195,9 @@ class UserViewModel: ObservableObject {
         }
     }
     
-    func checkForCoupon(with coupon: String) async -> (Bool, Int?) {
-        if coupon == "no coupon" {
-            return (false, nil)
-        }
-        do {
-            let data = try await Firestore.firestore().collection("Coupons").getDocuments()
-            for document in data.documents {
-                let couponFromDB = document.data()["coupon"] as? String ?? "no coupon"
-                if coupon == couponFromDB {
-                    let discount = document.data()["discount"] as? Int ?? 0
-                    return (true, discount)
-                }
-            }
-            return (false,nil)
-        } catch {
-            print(error)
-            return (false,nil)
-        }
-    }
-    
     func createOrders(price: Double, deliveryDate: Date) async {
-
-        
         if cartItems.isEmpty {
+            //Überprüfung, ob ein Item vorhanden ist findet statt.
             alertMessage = "Thank you for wanting to order, but please add some items."
             showAlert.toggle()
         } else {
@@ -280,15 +255,19 @@ class UserViewModel: ObservableObject {
     }
     
     func getFavoriteItems() {
-        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Favorites").addSnapshotListener { snap, err in
+        //Die favorisierten Items werden per Snapshotlistener abgerufen, damit bei Änderung direkt die UI geändert wird, ohne dass noch mehr zu programmieren ist.
+        Firestore.firestore().collection("Users").document(userID).collection("Favorites").addSnapshotListener { snap, err in
             if let err = err {
                 //TODO: Handle this properly
                 print(err)
             } else {
+                //Wichtig ist es self.favoriteItems = [] zu setzen, da sonst doppelte Items auftreten können.
                 self.favoriteItems = []
                 for doc in snap!.documents {
+                    //Die Items sind in einer collection innerhalb des User Dokuments gespeichert. Das einzelne Dokument enthält eine Referenz zum Item, damit keine doppelte Speicherung in der Datenbank stattfindet.
                     let ref = doc.data()["ref"] as! DocumentReference
                     ref.getDocument { docSnap, err in
+                        //Wurde eine Referenz gefunden, wird das originale Item abgerufen mit .getDocument.
                         if let err = err {
                             //TODO: Handle this properly
                             print(err)
@@ -322,12 +301,14 @@ class UserViewModel: ObservableObject {
     }
     
     func addItemToFavorites(with id: String) {
-        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Favorites").document(id).setData(["ref" : itemsRef.document(id)])
+        //Diese Funktion fügt einen neune Favoriten hinzu, indem nur die Referenz des Items gespeichert. Der Button in ItemDetail mit der Beschreibung Add to Favorites führt diese Aktion aus.
+        Firestore.firestore().collection("Users").document(userID).collection("Favorites").document(id).setData(["ref" : itemsRef.document(id)])
         
     }
     
     func deleteFavoriteItem(with id: String) {
-        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Favorites").document(id).delete { err in
+        //Diese Funktion löscht eine favorisiertes Item, indem es per ID eines Items in der collection "Favorites" eines Nutzers gefunden wird.
+        Firestore.firestore().collection("Users").document(userID).collection("Favorites").document(id).delete { err in
             if let err = err {
                 //TODO: Handle this properly
                 print(err)
@@ -338,6 +319,7 @@ class UserViewModel: ObservableObject {
     }
     
     func checkIfItemIsAlreadyFavorite(with id: String) -> Bool {
+        //Diese Funktion wird verwendet, um zu überprüfen, ob ein Item bereits verfügbar ist. Dies ermöglicht eine Animation des Add To Favorites Button in ItemDetail, sowie die gewünschte Ausführung, von einer der beiden oberhalb definierten Funktionen(addItemToFavorites, deleteFavoriteItem)
         for item in favoriteItems {
             if item.id == id {
                 return true
@@ -348,14 +330,17 @@ class UserViewModel: ObservableObject {
     
     func getCartItems() {
         showProgressView = true
-        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").addSnapshotListener { cartItemsSnap, err in
+        //Durch diese Funktion werden alle Warenkorb Items abgefragt. Diese befinden sich in der "CartItems" Collection eines User Dokuments. Auch hier wird ein snapshotlistener verwendet, damit Echtzeitabfragen stattfinden können.
+        Firestore.firestore().collection("Users").document(userID).collection("CartItems").addSnapshotListener { cartItemsSnap, err in
             if let err = err {
                 //TODO: Handle this properly
                 print(err)
                 return
             } else {
                 self.cartItems = []
+                //Wichtig ist es self.cartItems = [] zu setzen, da sonst doppelte Items auftreten können.
                 for document in cartItemsSnap!.documents {
+                    //Zuerst werden die im Warenkorb spezifisch definierten Attribute abgerufen. Dann wird das dazugehörige Item abgefragt.
                     let itemReference = document.data()["itemReference"] as? String ?? "No id"
                     let size = document.data()["size"] as? Int ?? 0
                     let amount = document.data()["amount"] as? Int ?? 0

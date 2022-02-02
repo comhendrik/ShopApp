@@ -40,6 +40,7 @@ struct Item: Identifiable {
 }
 
 class ItemViewModel: ObservableObject {
+    //Dieses ViewModel lädt alle Items
     @Published var shoes: [Item] = []
     @Published var showProgressView = true
     //Beim initaliesieren werden alle Produkte geladen

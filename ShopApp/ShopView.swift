@@ -12,6 +12,8 @@ struct ShopView: View {
     @StateObject var uvm = UserViewModel()
     @StateObject var lvm: LoginViewModel
     var body: some View {
+        //Diese View enthält eine TabView mit allen Sektion in der App.
+        //Diew Views finden sich unter dem gleichnamigen Ordner wieder.
         TabView {
             HomeView(uvm: uvm, ivm: ivm, nameOfCustomer: uvm.mainUser.firstName)
                 .tabItem{
@@ -36,7 +38,7 @@ struct ShopView: View {
                 }
         }
         .onAppear {
-            print("yea")
+            //Wird diese View aufgerufen, werden diese Funktion aufgerufen, damit alle wichtigen Daten bereitgestellt werden.
             uvm.getUser()
             uvm.getCartItems()
             uvm.getFavoriteItems()

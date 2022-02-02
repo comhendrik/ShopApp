@@ -8,18 +8,22 @@
 import SwiftUI
 
 struct ContentView: View {
-
+    //Innerhalb dieser View wird geregelt, welche View angezeigt werden muss
     @StateObject var lvm = LoginViewModel()
     @AppStorage("log_status") var status = false
     @AppStorage("current_status") var statusofregister = false
     var body: some View {
         if lvm.isLoading {
+            //ProgressView, wenn etwas geladen werden muss
             ProgressView()
         } else {
             if status {
+                //status sorgt dafür, ob der Login Prozess angezeigt wird oder der normale Shop
                 ShopView(lvm: lvm)
             } else {
+                //Die Views für den Loginvorgang finden sich in dem Ordner Login.
                 if statusofregister {
+                    //ist statusofregister == true, dann wird die view angezeigt, um sich mit mehreren Daten, wie Adresse zu registrieren.
                     VStack {
                         RegisterView(lvm: lvm)
                         Button(action: {
@@ -38,6 +42,7 @@ struct ContentView: View {
                     }
                 } else {
                     if lvm.signUpView {
+                        //Der User kann sich anmelden, aber auch registrieren. Welche View gezeigt wird, wird über lvm.signUpView gesteuert.
                         SignUpView(lvm: lvm)
                     } else {
                         LoginView(lvm: lvm)
