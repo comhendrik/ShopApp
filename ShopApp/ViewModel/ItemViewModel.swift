@@ -41,15 +41,15 @@ struct Item: Identifiable {
 
 class ItemViewModel: ObservableObject {
     //Dieses ViewModel lädt alle Items
-    @Published var shoes: [Item] = []
+    @Published var allItems: [Item] = []
     @Published var showProgressView = true
     //Beim initaliesieren werden alle Produkte geladen
     init() {
-        self.getShoes()
+        self.getAllItems()
     }
     
     
-    func getShoes() {
+    func getAllItems() {
         //Diese Funktion lädt alle Schuhe
         showProgressView = true
         //Erstmal wird eine ProgressView angezeigt
@@ -76,7 +76,7 @@ class ItemViewModel: ObservableObject {
                     let id = document.documentID
                     let discount = document.data()["discount"] as? Int ?? 0
                     let inStock = document.data()["inStock"] as? Int ?? 0
-                    self.shoes.append(Item(_title: title,
+                    self.allItems.append(Item(_title: title,
                                            _description: description,
                                            _price: price,
                                            _sizes: sizes,

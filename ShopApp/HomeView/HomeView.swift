@@ -23,8 +23,9 @@ struct HomeView: View {
                 })
                 Spacer()
             } else {
-                ListView(nameOfCustomer: nameOfCustomer, uvm: uvm, items: ivm.shoes)
+                ItemScrollView(items: ivm.allItems, uvm: uvm, nameOfCustomer: nameOfCustomer)
                     .navigationBarHidden(true)
+                    .padding()
             }
             
         }

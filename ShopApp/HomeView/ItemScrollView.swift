@@ -10,10 +10,19 @@ import SwiftUI
 struct ItemScrollView: View {
     let items: [Item]
     @StateObject var uvm: UserViewModel
+    var nameOfCustomer: String
+    @State private var searchText = ""
     var body: some View {
         ScrollView(showsIndicators: false) {
+            HStack {
+                Text("Hi,\n\(nameOfCustomer)")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                Spacer()
+            }
+            LoginTextField(isSecure: false, value: $searchText, title: "search", systemImage: "")
             LazyVGrid(columns: [GridItem(), GridItem()]) {
-                ForEach(items) { item in
+                ForEach(items.filter { $0.title.contains(searchText) || searchText.isEmpty }) { item in
                     NavigationLink(destination: {
                         ItemDetail(item: item, addFavoriteAction: { 
                             if uvm.checkIfItemIsAlreadyFavorite(with: item.id) {
@@ -44,6 +53,6 @@ struct ItemScrollView: View {
 
 struct ItemScrollView_Previews: PreviewProvider {
     static var previews: some View {
-        ItemScrollView(items: [], uvm: UserViewModel())
+        ItemScrollView(items: [], uvm: UserViewModel(), nameOfCustomer: "???")
     }
 }

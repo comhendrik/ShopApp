@@ -25,10 +25,12 @@ struct LoginTextField: View {
                 HStack {
                     if showSecureField {
                         SecureField(title, text: $value)
+                            .disableAutocorrection(true)
                             .textInputAutocapitalization(TextInputAutocapitalization.never)
                             .focused($isFocused)
                     } else {
                         TextField(title, text: $value)
+                            .disableAutocorrection(true)
                             .textInputAutocapitalization(TextInputAutocapitalization.never)
                             .focused($isFocused)
                     }
@@ -47,6 +49,7 @@ struct LoginTextField: View {
             } else {
                 
                 TextField(title, text: $value)
+                    .disableAutocorrection(true)
                     .textInputAutocapitalization(TextInputAutocapitalization.never)
                     .padding()
                     .overlay(RoundedRectangle(cornerRadius: 15).stroke().foregroundColor(isFocused ? .black : .gray))
