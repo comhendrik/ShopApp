@@ -63,7 +63,7 @@ struct BuyingView: View {
                     //Normale Lieferung in 3 Tage
                     Task {
                         //Fetch Orders
-                        await uvm.createOrders(price: calculateCost(items: uvm.cartItems), deliveryDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date.now)
+                        await uvm.createOrders(price: calculateCost(items: uvm.cartItems))
                     }
                 })
                     .frame(width: UIScreen.main.bounds.width - 50)

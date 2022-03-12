@@ -22,7 +22,7 @@ struct OrderMiniViewer: View {
                         Text("ID: \(order.id)")
                             .font(.subheadline)
                             .foregroundColor(.gray)
-                        Text("expected Delivery: \(order.deliverydate.formatted(date: .numeric, time: .omitted))")
+                        Text("Date of order: \(order.orderDate.formatted(date: .numeric, time: .omitted))")
                             .font(.subheadline)
                             .foregroundColor(.gray)
                         
@@ -50,6 +50,6 @@ struct OrderMiniViewer_Previews: PreviewProvider {
                                                                                   _rating: 2.5,
                                                                                   _id: "00003401",
                                                                                                                                     _discount: 0, _inStock: 5
-                                                                  ), _size: 45, _amount: 1, _id: "asdf", _price: 129.99)], deliverydate: Date.now, id: "gsgadsg"))
+                                                                  ), _size: 45, _amount: 1, _id: "asdf", _price: 129.99)], orderDate: Date.now, id: "gsgadsg"))
     }
 }

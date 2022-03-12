@@ -14,65 +14,27 @@ struct AccountView: View {
         NavigationView {
             VStack {
                 
-                ZStack {
-                    Color.gray.opacity(0.05)
-                    AsyncImage(url: URL(string: uvm.mainUser.profilePicPath)) { image in
-                        image
-                            .resizable()
-                            .scaledToFit()
-                        
-                    } placeholder: {
-                        ProgressView()
-                    }
-                }
-                .clipShape(Circle())
-                .frame(width: UIScreen.main.bounds.width / 3, height: UIScreen.main.bounds.width / 3)
-                
                 Text("\(uvm.mainUser.firstName) \(uvm.mainUser.lastName)")
                     .fontWeight(.bold)
                     .font(.title2)
-                .padding()
+                Button(action: {
+                    lvm.logOut()
+                }, label: {
+                    Text("Logout")
+                        .fontWeight(.bold)
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                })
                 HStack {
-                    VStack {
-                        Text("email:")
-                            .foregroundColor(.black)
-                            .fontWeight(.bold)
-                        Text(uvm.mainUser.email)
-                            .font(.subheadline)
-                            .padding(.bottom)
-                        Text("memberId:")
-                            .foregroundColor(.black)
-                            .fontWeight(.bold)
-                        Text(uvm.mainUser.memberId)
-                            .font(.subheadline)
-                            .padding(.bottom)
-                        Text("birthday:")
-                            .foregroundColor(.black)
-                            .fontWeight(.bold)
-                        Text("\(uvm.mainUser.birthday.formatted(date: .numeric, time: .omitted))")
-                            .font(.subheadline)
-                            .padding(.bottom)
-                        Text("address:")
-                            .foregroundColor(.black)
-                            .fontWeight(.bold)
-                        Text("\(uvm.mainUser.adress.street) \(uvm.mainUser.adress.number) \(String(uvm.mainUser.adress.zipCode)) \(uvm.mainUser.adress.city)")
-                            .font(.subheadline)
-                            .padding(.bottom)
-                        Text("land:")
-                            .foregroundColor(.black)
-                            .fontWeight(.bold)
-                        Text(uvm.mainUser.adress.land)
-                            .font(.subheadline)
-
-                    }
-                    .foregroundColor(.gray)
-                    .padding()
+                    Text("Orders:")
+                        .fontWeight(.bold)
+                    Spacer()
                 }
-                
-                
-                
-                NavigationLink(destination: {
-                    ScrollView {
+                .padding()
+                ScrollView {
+                    if uvm.orders.count <= 0 {
+                        ProgressView()
+                    } else {
                         ForEach(uvm.orders) { order in
                             NavigationLink(destination: {
                                 OrderOverviewView(order: order, uvm: uvm)
@@ -81,24 +43,7 @@ struct AccountView: View {
                             })
                         }
                     }
-                }, label: {
-                    Text("Orders")
-                        .fontWeight(.bold)
-                        .font(.title2)
-                        .foregroundColor(.black)
-                })
-                    .padding()
-                
-                Button(action: {
-                    lvm.logOut()
-                }, label: {
-                    Text("Logout")
-                        .fontWeight(.bold)
-                        .font(.title2)
-                        .foregroundColor(.black)
-                })
-                    .padding()
-                Spacer()
+                }
             }
             .padding()
             .navigationBarHidden(true)

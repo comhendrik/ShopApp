@@ -47,6 +47,8 @@ struct OrderItemMiniViewer: View {
                     Text(orderItem.item.title)
                     Text("amount: \(orderItem.amount)")
                         .foregroundColor(.gray)
+                    Text("size: \(orderItem.size)")
+                        .foregroundColor(.gray)
                     Text(orderItem.item.id)
                         .font(.subheadline)
                         .foregroundColor(.gray)

@@ -48,7 +48,7 @@ struct Address {
 struct Order: Identifiable {
     var price: Double
     var items: [OrderItem]
-    var deliverydate: Date
+    var orderDate: Date
     var id: String
 }
 struct OrderItem: Identifiable {
@@ -152,13 +152,13 @@ class UserViewModel: ObservableObject {
             //folgender code wird für jede Bestellung ausgeführt
             for document in data.documents {
                 // Es wird eine Bestellung deklariert. Diese wird später verändert und dem Array von oben hinzugefügt
-                var order = Order(price: 0.0, items: [], deliverydate: Date.now, id: "")
+                var order = Order(price: 0.0, items: [], orderDate: Date.now, id: "")
                 let price = document.data()["price"] as? Double ?? 0.0
-                let deliveryDate = document.data()["deliverydata"] as? Timestamp ?? Timestamp(date: Date.now)
+                let orderDate = document.data()["orderDate"] as? Timestamp ?? Timestamp(date: Date.now)
                 let orderID = document.documentID
                 //Nachdem die Daten von Firestore geladen wurden, wird unsere Bestellung überschrieben
                 order.price = price
-                order.deliverydate = deliveryDate.dateValue()
+                order.orderDate = orderDate.dateValue()
                 order.id = orderID
                 //Neuer async await call, damit alle Artikel der Bestellung verfügbar sind
                 let items = try await Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").document(orderID).collection("Items").getDocuments()
@@ -188,14 +188,15 @@ class UserViewModel: ObservableObject {
             }
             //Nun kann newOrders übergeben werden. Dank async await ist dies wieder an dieser Stelle möglich
             //Normalerweise tritt hier ein Fehler auf, da die Funktion auf einem Backgroundthread läuft und von dort aus nicht die UI geupdatet werden darf. Dank @MainActor am Anfang der Klasse laufen all Befehle auf dem Mainthread
-            orders = newOrders
-            //TODO: nicht richtig sortiert. Die neuesten sollten ganz oben stehen.
+            //Zusätzlich werden die Bestellungen nach Datum sortiert, so dass die neuesten oben stehen.
+            orders = newOrders.sorted(by: { $0.orderDate > $1.orderDate })
+            
         } catch {
             print(error)
         }
     }
     
-    func createOrders(price: Double, deliveryDate: Date) async {
+    func createOrders(price: Double) async {
         if cartItems.isEmpty {
             //Überprüfung, ob ein Item vorhanden ist findet statt.
             alertMessage = "Thank you for wanting to order, but please add some items."
@@ -222,8 +223,8 @@ class UserViewModel: ObservableObject {
             //Wird dieser Code ausgeführt können alle Produkte gekauft werden.
             //Dem User wird eine Order hinzugefügt
             let id = Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").addDocument(data: ["price" : price,
-                                        "deliverydate": deliveryDate,
-                                        "user": Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid")]).documentID
+                                                                                                                                   "orderDate": Date.now.addingTimeInterval(TimeInterval(89000)),
+                                                                                                                                   "user": Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid")]).documentID
             //Der Order werden die Produkte hinzugefügt
             for cartItem in cartItems {
                 do {Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").document(id).collection("Items")
