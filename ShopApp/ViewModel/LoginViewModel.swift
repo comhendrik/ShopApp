@@ -37,9 +37,7 @@ class LoginViewModel: ObservableObject {
     //Um sich weiter zu registrieren wird Vorname und Nachname, sowie Geburtstag und Addresse als auch ein Profilbild gebraucht.
     @Published var firstName = ""
     @Published var lastName = ""
-    @Published var birthday = Date.now
     @Published var address = Address(_city: "", _zipCode: 0, _street: "", _number: "", _land: "")
-    @Published var image_Data = Data(count: 0)
     @Published var picker = false
     
     //Um Fehler anzuzeigen, wird ein Alert verwendet
@@ -51,27 +49,6 @@ class LoginViewModel: ObservableObject {
     @AppStorage("current_status") var statusofregister = false
     
     let db = Firestore.firestore()
-    
-    func UploadImage(imageData: Data, path: String, completion: @escaping (String) -> ()) {
-        //Diese Funktion ermöglicht das Hochladen eines Fotos in FirebaseStorage. Zusätzlich wird ein completionHandler verwendet, damit die URL später gespeichert werden kann.
-        let storage = Storage.storage()
-        let ref = storage.reference()
-        let uid = Auth.auth().currentUser!.uid
-        ref.child(path).child(uid).putData(imageData, metadata: nil) { (_, err) in
-            if err != nil {
-                completion("")
-                return
-            }
-            
-            ref.child(path).child(uid).downloadURL { (url, err) in
-                if err != nil {
-                    completion("")
-                    return
-                }
-                completion("\(url!)")
-            }
-        }
-    }
     
     func registerNewUserData() {
         //Überprüfe, ob alle Daten vorhanden sind
@@ -95,40 +72,28 @@ class LoginViewModel: ObservableObject {
             alert.toggle()
             return
         }
-        
-        if image_Data.count == 0 {
-            alertMsg = "Please select an image."
-            alert.toggle()
-            return
-        }
         let uid = Auth.auth().currentUser!.uid
-        
-        //Hochladen des Bildes und dann wird mit dem Path im Storage ein Account erstellt.
-        UploadImage(imageData: image_Data, path: "profilePics") { (url) in
-            //Die Collection "Users" enthählt alle Nutzer mit den wichtigen Daten, sowie die URL des hochgeladenen Foto
-            self.db.collection("Users").document(uid).setData([
-                "uid":uid,
-                "profilePic": url,
-                "firstName": self.firstName,
-                "lastName": self.lastName,
-                "birthday": self.birthday,
-                "memberStatus": "Bronze",
-                "street": self.address.street,
-                "number": self.address.number,
-                "city": self.address.city,
-                "zipcode": self.address.zipCode,
-                "land": self.address.land,
-                "email": Auth.auth().currentUser?.email ?? "errormail@notreal.com",
-            ]) {
-                (err) in
-                if err != nil {
-                    self.isLoading = false
-                    return
-                }
+        //Die Collection "Users" enthählt alle Nutzer mit den wichtigen Daten.
+        self.db.collection("Users").document(uid).setData([
+            "uid":uid,
+            "firstName": self.firstName,
+            "lastName": self.lastName,
+            "memberStatus": "Bronze",
+            "street": self.address.street,
+            "number": self.address.number,
+            "city": self.address.city,
+            "zipcode": self.address.zipCode,
+            "land": self.address.land,
+            "email": Auth.auth().currentUser?.email ?? "errormail@notreal.com",
+        ]) {
+            (err) in
+            if err != nil {
                 self.isLoading = false
-                //Status kann auf true gesetzt werden, da sich der Nutzer registriert hat und der Shop angezeigt werden soll.
-                self.status = true
+                return
             }
+            self.isLoading = false
+            //Status kann auf true gesetzt werden, da sich der Nutzer registriert hat und der Shop angezeigt werden soll.
+            self.status = true
         }
         //statusofregister kann auf false gesetzt werden, da sich der Nutzer registriert hat und der Shop angezeigt werden soll.
         statusofregister = false

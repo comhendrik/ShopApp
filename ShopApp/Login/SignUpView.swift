@@ -16,6 +16,8 @@ struct SignUpView: View {
             Spacer()
             Image("people-shopping-2")
                 .scaledToFit()
+            LoginTextField(isSecure: false, value: $lvm.firstName, title: "firstname", systemImage: "person.crop.square.fill")
+            LoginTextField(isSecure: false, value: $lvm.lastName, title: "lastname", systemImage: "")
             LoginTextField(isSecure: false, value: $lvm.email_SignUp, title: "email", systemImage: "envelope")
             LoginTextField(isSecure: true, value: $lvm.password_SignUp, title: "password", systemImage: "lock")
             LoginTextField(isSecure: true, value: $lvm.reEnterPassword, title: "re enter password", systemImage: "lock")

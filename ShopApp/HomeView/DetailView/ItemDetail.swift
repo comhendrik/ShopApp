@@ -72,13 +72,13 @@ struct ItemDetail: View {
                     .padding()
                 
                 SelectSize(actualSize: $shoeSize, item: item)
-                if item.inStock > 0 {
+                if item.amountOfSizes[item.sizes.firstIndex(of: shoeSize) ?? 0] > 0 {
                     AddAnimationButton {
                         return addToCartAction(shoeSize)
                     }
                 } else {
                     //Falls ein Artikel ausverkauft ist wird diese View angezeigt und der Kunde kann den Artikel nicht bestellen
-                    Text("Not in Stock")
+                    Text("Not available in this size")
                         .foregroundColor(.black)
                         .padding()
                         .frame(width: UIScreen.main.bounds.width - 50)
@@ -112,12 +112,12 @@ struct ItemDetail_Previews: PreviewProvider {
         ItemDetail(item: Item(_title: "jordan 1",
                               _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                               _price: 129.99,
-                              _sizes: [41,42,43,44,45,46,47],
-                              _availableSizes: [41,42,46,47],
+                              _sizes: [45,46,47,48],
+                              _amountOfSizes: [0,10,5,3,6],
                               _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
                               _rating: 2.5,
                               _id: "00003401",
-                                                                                _discount: 0, _inStock: 5
+                                                                                _discount: 0
               ), addFavoriteAction: {
         }, addToCartAction: {_ in 
             return true

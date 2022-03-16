@@ -16,6 +16,12 @@ struct ShoppingCart: View {
                 VStack {
                     if uvm.cartItems.count > 0 {
                         ShoppingCartListView(uvm: uvm)
+                        PaymentButton(addAction: {
+                            withAnimation(.easeIn(duration: 1)) {
+                                showBuyingView.toggle()
+                            }
+                        }, price: String(format: "%.2f", calculateCost(items: uvm.cartItems)))
+                            .disabled(showBuyingView || uvm.cartItems.count <= 0)
                     } else {
                         VStack {
                             Spacer()
@@ -26,25 +32,13 @@ struct ShoppingCart: View {
                             Spacer()
                         }
                     }
-                    Text("\(String(format: "%.2f", calculateCost(items: uvm.cartItems)))$")
-                        .fontWeight(.bold)
-                        .font(.title2)
-                        .padding()
                     
-                    PaymentButton {
-                        withAnimation() {
-                            showBuyingView.toggle()
-                        }
-                    }
-                    .frame(width: UIScreen.main.bounds.width - 50)
-
                 }
                 .blur(radius: showBuyingView ? 3 : 0)
                 //Diese View wird angezeigt, wenn ein Nutzer etwas kaufen möchte.
                 BuyingView(uvm: uvm, showBuyingView: $showBuyingView)
                     .offset(y: showBuyingView ? 0 : 500)
             }
-
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     HStack {

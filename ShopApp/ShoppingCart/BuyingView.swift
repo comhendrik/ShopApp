@@ -52,20 +52,19 @@ struct BuyingView: View {
                 
                 HStack {
                     VStack(alignment: .leading) {
-                        Text("Sum:")
+                        Text("Method:")
                             .fontWeight(.bold)
-                        Text("\(String(format: "%.2f", calculateCost(items: uvm.cartItems)))$")
+                        Text("Invoice")
                     }
                     Spacer()
                 }
                 .padding()
                 PaymentButton(addAction: {
-                    //Normale Lieferung in 3 Tage
                     Task {
-                        //Fetch Orders
-                        await uvm.createOrders(price: calculateCost(items: uvm.cartItems))
+                        //Create Order
+                        await uvm.createOrder(price: calculateCost(items: uvm.cartItems))
                     }
-                })
+                }, price: String(format: "%.2f", calculateCost(items: uvm.cartItems)))
                     .frame(width: UIScreen.main.bounds.width - 50)
                     .padding([.horizontal,.bottom])
                     .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {

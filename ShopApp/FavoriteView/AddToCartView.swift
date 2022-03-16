@@ -53,7 +53,7 @@ struct AddToCartView: View {
                     HStack {
                         ForEach(0 ..< item.sizes.count, id: \.self) { size in
                             Button(action: {
-                                if item.availableSizes.contains(item.sizes[size]) {
+                                if item.amountOfSizes[size] > 0 {
                                     shoeSize = item.sizes[size]
                                 }
                             }, label: {
@@ -61,7 +61,7 @@ struct AddToCartView: View {
                                     .font(.system(size: UIScreen.main.bounds.width / 20))
                                     .padding()
                                     .background(item.sizes[size] == shoeSize ? .gray.opacity(0.35) : .clear)
-                                    .foregroundColor(item.availableSizes.contains(item.sizes[size]) ? .black : .gray)
+                                    //.foregroundColor(item.availableSizes.contains(item.sizes[size]) ? .black : .gray)
                                     .cornerRadius(10, antialiased: false)
                             })
                             

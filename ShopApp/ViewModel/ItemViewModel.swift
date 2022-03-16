@@ -11,33 +11,33 @@ import FirebaseFirestore
 import FirebaseAuth
 
 struct Item: Identifiable {
-//Der Aufbau eines Item es muss nur Daten anzeigen können
+//Der Aufbau eines Item, es muss nur Daten anzeigen können
     var title: String
     var description: String
     var price: Double
     var sizes: [Int]
-    var availableSizes: [Int]
+    //amountOfSizes[0] zeigt die Anzahl der Größe an Stelle sizes[0]
+    var amountOfSizes: [Int]
     var imagePath: String
     var rating: Float
     var id: String
     var discount: Int
-    var inStock: Int
     
-    init(_title: String, _description: String, _price: Double, _sizes: [Int], _availableSizes: [Int], _imagePath: String, _rating: Float, _id: String, _discount: Int, _inStock: Int) {
+    init(_title: String, _description: String, _price: Double, _sizes: [Int], _amountOfSizes: [Int],_imagePath: String, _rating: Float, _id: String, _discount: Int) {
         title = _title
         description = _description
         price = _price
         sizes = _sizes
-        availableSizes = _availableSizes
+        amountOfSizes = _amountOfSizes
         imagePath = _imagePath
         rating = _rating
         id = _id
         discount = _discount
-        inStock = _inStock
     }
     
 
 }
+
 
 class ItemViewModel: ObservableObject {
     //Dieses ViewModel lädt alle Items
@@ -45,7 +45,7 @@ class ItemViewModel: ObservableObject {
     @Published var showProgressView = true
     //Beim initaliesieren werden alle Produkte geladen
     init() {
-        self.getAllItems()
+        getAllItems()
     }
     
     
@@ -70,22 +70,20 @@ class ItemViewModel: ObservableObject {
                     let description = document.data()["description"] as? String ?? "No description"
                     let price = document.data()["price"] as? Double ?? 0.00
                     let sizes = document.data()["sizes"] as? [Int] ?? []
-                    let availableSizes = document.data()["availableSizes"] as? [Int] ?? []
+                    let amountOfSizes = document.data()["amountOfSizes"] as? [Int] ?? []
                     let imagePath = document.data()["imagePath"] as? String ?? "No path"
                     let rating = document.data()["rating"] as? Float ?? 0.0
                     let id = document.documentID
                     let discount = document.data()["discount"] as? Int ?? 0
-                    let inStock = document.data()["inStock"] as? Int ?? 0
                     self.allItems.append(Item(_title: title,
                                            _description: description,
                                            _price: price,
                                            _sizes: sizes,
-                                           _availableSizes: availableSizes,
+                                           _amountOfSizes: amountOfSizes,
                                            _imagePath: imagePath,
                                            _rating: rating,
                                            _id: id,
-                                           _discount: discount,
-                                           _inStock: inStock))
+                                           _discount: discount))
                 }
             }
         }
@@ -93,3 +91,5 @@ class ItemViewModel: ObservableObject {
         showProgressView = false
     }
 }
+
+

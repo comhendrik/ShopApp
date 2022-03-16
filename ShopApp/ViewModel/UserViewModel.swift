@@ -12,17 +12,13 @@ import FirebaseAuth
 struct User {
     var firstName: String
     var lastName: String
-    var birthday: Date
-    var profilePicPath: String
     var adress: Address
     var email: String
     var memberId: String
     
-    init(_firstName: String, _lastName: String, _birthday: Date, _profilePicPath: String, _address: Address, _email: String, _memberId: String) {
+    init(_firstName: String, _lastName: String, _address: Address, _email: String, _memberId: String) {
         firstName = _firstName
         lastName = _lastName
-        birthday = _birthday
-        profilePicPath = _profilePicPath
         adress = _address
         email = _email
         memberId = _memberId
@@ -85,7 +81,7 @@ struct CartItem: Identifiable {
 @MainActor
 class UserViewModel: ObservableObject {
     //Dieses Viewmodel enthält alle Information für den Nutzer
-    @Published var mainUser = User(_firstName: "???", _lastName: "??", _birthday: Date.now, _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "??", _number: "???", _land: "??"),_email: "???", _memberId: "???")
+    @Published var mainUser = User(_firstName: "Loading...", _lastName: "Loading...", _address: Address(_city: "???", _zipCode: 0, _street: "Loading...", _number: "Loading...", _land: "Loading..."),_email: "Loading...", _memberId: "Loading...")
     @Published var showProgressView = false
     @Published var cartItems: [CartItem] = []
     @Published var favoriteItems: [Item] = []
@@ -94,12 +90,12 @@ class UserViewModel: ObservableObject {
     @Published var placeholderItem =  Item(_title: "jordan 1",
                                            _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                                            _price: 129.99,
-                                           _sizes: [41,42,43,44,45,46,47],
-                                           _availableSizes: [41,42,46,47],
+                                           _sizes: [45,46,47,48],
+                                           _amountOfSizes: [0,10,5,3,6],
                                            _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
                                            _rating: 2.5,
                                            _id: "00003401",
-                                                                                             _discount: 0, _inStock: 5
+                                                                                             _discount: 0
                            )
     @Published var alertMessage = ""
     @Published var showAlert = false
@@ -111,7 +107,7 @@ class UserViewModel: ObservableObject {
         showProgressView = true
         //Es wird per .getDocument das Dokument, welches zur uid des angemeldeten Nutzers gehört.
         Firestore.firestore().collection("Users").document(userID).getDocument { snap, err in
-            self.mainUser = User(_firstName: "???", _lastName: "??", _birthday: Date.now, _profilePicPath: "???", _address: Address(_city: "???", _zipCode: 0, _street: "???", _number: "???", _land: "???"), _email: "???", _memberId: "???")
+            self.mainUser = User(_firstName: "???", _lastName: "??", _address: Address(_city: "???", _zipCode: 0, _street: "???", _number: "???", _land: "???"), _email: "???", _memberId: "???")
             if let err = err {
                 //TODO: Handle this error properly!
                 self.showProgressView = false
@@ -121,8 +117,6 @@ class UserViewModel: ObservableObject {
                 //Daten werden innerhalb von MainUser gespeichert
                 let firstName = snap?.data()?["firstName"] as? String ?? "no firstName"
                 let lastName = snap?.data()?["lastName"] as? String ?? "no lastName"
-                let birthday = snap?.data()?["birthday"] as? Timestamp
-                let profilePicPath = snap?.data()?["profilePic"] as? String ?? "no profile pic"
                 let city = snap?.data()?["city"] as? String ?? "no city"
                 let zipCode = snap?.data()?["zipcode"] as? Int ?? 0
                 let street = snap?.data()?["street"] as? String ?? "no street"
@@ -133,8 +127,6 @@ class UserViewModel: ObservableObject {
                 self.mainUser.adress = Address(_city: city, _zipCode: zipCode, _street: street, _number: number, _land: land)
                 self.mainUser.firstName = firstName
                 self.mainUser.lastName = lastName
-                self.mainUser.birthday = birthday?.dateValue() ?? Date.now
-                self.mainUser.profilePicPath = profilePicPath
                 self.mainUser.email = email
                 self.mainUser.memberId = memberId ?? "no id"
             }
@@ -164,6 +156,7 @@ class UserViewModel: ObservableObject {
                 let items = try await Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").document(orderID).collection("Items").getDocuments()
                 //Nun werden sich wieder für jedes Item die Daten geholt
                 for item in items.documents {
+                    
                     let size = item.data()["size"] as? Int ?? 0
                     let amount = item.data()["amount"] as? Int ?? 0
                     let cartItemID = item.documentID
@@ -175,13 +168,12 @@ class UserViewModel: ObservableObject {
                     let description = itemData.data()?["description"] as? String ?? "No description"
                     let price = itemData.data()?["price"] as? Double ?? 0.00
                     let sizes = itemData.data()?["sizes"] as? [Int] ?? []
-                    let availableSizes = itemData.data()?["availableSizes"] as? [Int] ?? []
+                    let amountOfSizes = itemData.data()?["amountOfSizes"] as? [Int] ?? []
                     let imagePath = itemData.data()?["imagePath"] as? String ?? "No path"
                     let rating = itemData.data()?["rating"] as? Float ?? 0.0
                     let discount = itemData.data()?["discount"] as? Int ?? 0
-                    let inStock = itemData.data()?["inStock"] as? Int ?? 0
                     //Nun kann der Artikel der Bestellung hinzugefügt werden.
-                    order.items.append(OrderItem(_item: Item(_title: title, _description: description, _price: price, _sizes: sizes, _availableSizes: availableSizes, _imagePath: imagePath, _rating: rating, _id: itemId, _discount: discount, _inStock: inStock), _size: size, _amount: amount, _id: cartItemID, _price: orderedPrice))
+                    order.items.append(OrderItem(_item: Item(_title: title, _description: description, _price: price, _sizes: sizes, _amountOfSizes: amountOfSizes,_imagePath: imagePath, _rating: rating, _id: itemId, _discount: discount), _size: size, _amount: amount, _id: cartItemID, _price: orderedPrice))
                 }
                 //Dank async await kann hier die Bestellung dem Array hinzugefügt werden. Sonst würde alles "synchronous" ablaufen und dieser Befehl würde schon bevor alle Date vorhanden sind ausgeführt werden.
                 newOrders.append(order)
@@ -196,7 +188,7 @@ class UserViewModel: ObservableObject {
         }
     }
     
-    func createOrders(price: Double) async {
+    func createOrder(price: Double) async {
         if cartItems.isEmpty {
             //Überprüfung, ob ein Item vorhanden ist findet statt.
             alertMessage = "Thank you for wanting to order, but please add some items."
@@ -205,10 +197,13 @@ class UserViewModel: ObservableObject {
             //überprüfen, ob ein Item nicht auf Lager ist.
             do {
                 for cartItem in cartItems {
+                    let itemIndex = cartItem.item.sizes.firstIndex(of: cartItem.size) ?? 0
                     //data ist ein dictionary mit allen Werten von Firebase. Es wird überprüft, ob sich seid dem Hinzufügen etwas am Bestand geändert hat.
                     //TODO: Mehrere inStock Werte für die verschiedenen Größen
                     let data = try await itemsRef.document(cartItem.item.id).getDocument().data()
-                    if data?["inStock"] as? Int ?? 0 < cartItem.amount {
+                    //TODO: Erklärung an dieser Stelle
+                    let amountOfSizes = data?["amountOfSizes"] as! [Int]
+                    if amountOfSizes[itemIndex] < cartItem.amount {
                         alertMessage = "The item \(cartItem.item.title) is not available. Try to reload or adjust the amount."
                         showAlert.toggle()
                         return
@@ -232,8 +227,7 @@ class UserViewModel: ObservableObject {
                                             "ref":cartItem.item.id,
                                             "size": cartItem.size,
                                             "price": cartItem.item.discount != 0 ? cartItem.item.price - ((cartItem.item.price / 100.0) * Double(cartItem.item.discount)) : cartItem.item.price])
-                    //Update Items auf Lager
-                    try await itemsRef.document(cartItem.item.id).updateData(["inStock" : cartItem.item.inStock-1])
+                    //TODO: Update Items auf Lager
                     //Lösche das Produkt aus dem Warenkorb
                     deleteCartItem(with: cartItem.id)
                 } catch {
@@ -278,22 +272,20 @@ class UserViewModel: ObservableObject {
                             let description = document?["description"] as? String ?? "No description"
                             let price = document?["price"] as? Double ?? 0.00
                             let sizes = document?["sizes"] as? [Int] ?? []
-                            let availableSizes = document?["availableSizes"] as? [Int] ?? []
+                            let amountOfSizes = document?["amountOfSizes"] as? [Int] ?? []
                             let imagePath = document?["imagePath"] as? String ?? "No path"
                             let rating = document?["rating"] as? Float ?? 0.0
                             let id = docSnap?.documentID ?? "no id"
                             let discount = document?["discount"] as? Int ?? 0
-                            let inStock = document?["inStock"] as? Int ?? 0
                             self.favoriteItems.append(Item(_title: title,
                                                             _description: description,
                                                             _price: price,
-                                                            _sizes: sizes,
-                                                            _availableSizes: availableSizes,
+                                                           _sizes: sizes,
+                                                           _amountOfSizes: amountOfSizes,
                                                             _imagePath: imagePath,
                                                             _rating: rating,
                                                            _id: id,
-                                                           _discount: discount,
-                                                          _inStock: inStock))
+                                                           _discount: discount))
                         }
                     }
                 }
@@ -357,13 +349,12 @@ class UserViewModel: ObservableObject {
                             let description = document?["description"] as? String ?? "No description"
                             let price = document?["price"] as? Double ?? 0.00
                             let sizes = document?["sizes"] as? [Int] ?? []
-                            let availableSizes = document?["availableSizes"] as? [Int] ?? []
+                            let amountOfSizes = document?["amountOfSizes"] as? [Int] ?? []
                             let imagePath = document?["imagePath"] as? String ?? "No path"
                             let rating = document?["rating"] as? Float ?? 0.0
                             let item_id = docSnap?.documentID ?? "no id"
                             let discount = document?["discount"] as? Int ?? 0
-                            let inStock = document?["inStock"] as? Int ?? 0
-                            self.cartItems.append(CartItem(_item: Item(_title: title, _description: description, _price: price, _sizes: sizes, _availableSizes: availableSizes, _imagePath: imagePath, _rating: rating, _id: item_id, _discount: discount, _inStock: inStock), _size: size, _amount: amount,_id: id))
+                            self.cartItems.append(CartItem(_item: Item(_title: title, _description: description, _price: price, _sizes: sizes, _amountOfSizes: amountOfSizes, _imagePath: imagePath, _rating: rating, _id: item_id, _discount: discount), _size: size, _amount: amount,_id: id))
                         }
                     }
                     

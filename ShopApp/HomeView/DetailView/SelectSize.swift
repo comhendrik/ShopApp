@@ -15,7 +15,7 @@ struct SelectSize: View {
     var body: some View {
         LazyVGrid(columns: [GridItem(),GridItem(),GridItem(),GridItem()]) {
             ForEach(0 ..< item.sizes.count) { size in
-                SelectSizeButton(size: $actualSize, changingSize: item.sizes[size], availableSizes: item.availableSizes)
+                SelectSizeButton(size: $actualSize, sizes: item.sizes, changingSizeIndex: size, amountOfSizes: item.amountOfSizes)
             }
         }
     }
@@ -26,12 +26,12 @@ struct SelectSize_Previews: PreviewProvider {
         SelectSize(actualSize: .constant(0),item: Item(_title: "jordan 1",
                                                        _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                                                        _price: 129.99,
-                                                       _sizes: [41,42,43,44,45,46,47],
-                                                       _availableSizes: [41,42,46,47],
+                                                       _sizes: [45,46,47,48],
+                                                       _amountOfSizes: [0,10,5,3,6],
                                                        _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
                                                        _rating: 2.5,
                                                        _id: "00003401",
-                                                                                                         _discount: 0, _inStock: 5
+                                                                                                         _discount: 0
                                        )
         )
     }
@@ -39,21 +39,24 @@ struct SelectSize_Previews: PreviewProvider {
 
 struct SelectSizeButton: View {
     @Binding var size: Int
-    let changingSize: Int
-    let availableSizes: [Int]
+    let sizes: [Int]
+    let changingSizeIndex: Int
+    let amountOfSizes: [Int]
     var body: some View {
         Button(action: {
-            if availableSizes.contains(changingSize) {
-                size = changingSize
+            if amountOfSizes[changingSizeIndex] > 0 {
+                size = sizes[changingSizeIndex]
                 
             }
         }, label: {
-            Text("\(changingSize)")
+            Text("\(sizes[changingSizeIndex])")
                 .font(.system(size: UIScreen.main.bounds.width / 20))
                 .padding()
-                .background(size == changingSize ? .gray.opacity(0.35) : .clear)
-                .foregroundColor(availableSizes.contains(changingSize) ? .black : .gray)
+                .background(size == sizes[changingSizeIndex] ? .gray.opacity(0.35) : .clear)
+                .foregroundColor(amountOfSizes[changingSizeIndex] > 0 ? .black : .gray)
                 .cornerRadius(10, antialiased: false)
+                
         })
+            .disabled(amountOfSizes[changingSizeIndex] == 0)
     }
 }

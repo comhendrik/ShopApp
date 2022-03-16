@@ -15,7 +15,7 @@
 		241BA12127A5901600162877 /* BuyingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241BA12027A5901600162877 /* BuyingView.swift */; };
 		241CA8D72789E1BA009D698E /* OrderOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241CA8D62789E1BA009D698E /* OrderOverviewView.swift */; };
 		241CA8D92789E250009D698E /* OrderItemMiniViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241CA8D82789E250009D698E /* OrderItemMiniViewer.swift */; };
-		242542E9277A4C4900FD8AA7 /* ApplePayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242542E8277A4C4900FD8AA7 /* ApplePayButton.swift */; };
+		242542E9277A4C4900FD8AA7 /* PaymentButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242542E8277A4C4900FD8AA7 /* PaymentButton.swift */; };
 		242542FB277A5BC700FD8AA7 /* ShoppingCartListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242542FA277A5BC700FD8AA7 /* ShoppingCartListView.swift */; };
 		2433199D27942D0200200E1C /* AddAnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2433199C27942D0200200E1C /* AddAnimationButton.swift */; };
 		2433199F27943D4C00200E1C /* FavoriteAddAnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2433199E27943D4C00200E1C /* FavoriteAddAnimationButton.swift */; };
@@ -62,7 +62,7 @@
 		241BA12027A5901600162877 /* BuyingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyingView.swift; sourceTree = "<group>"; };
 		241CA8D62789E1BA009D698E /* OrderOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderOverviewView.swift; sourceTree = "<group>"; };
 		241CA8D82789E250009D698E /* OrderItemMiniViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemMiniViewer.swift; sourceTree = "<group>"; };
-		242542E8277A4C4900FD8AA7 /* ApplePayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayButton.swift; sourceTree = "<group>"; };
+		242542E8277A4C4900FD8AA7 /* PaymentButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentButton.swift; sourceTree = "<group>"; };
 		242542FA277A5BC700FD8AA7 /* ShoppingCartListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingCartListView.swift; sourceTree = "<group>"; };
 		2433199C27942D0200200E1C /* AddAnimationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAnimationButton.swift; sourceTree = "<group>"; };
 		2433199E27943D4C00200E1C /* FavoriteAddAnimationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteAddAnimationButton.swift; sourceTree = "<group>"; };
@@ -118,6 +118,7 @@
 				24142C282779CD7F00195ADC /* ShoppingCart.swift */,
 				241BA12027A5901600162877 /* BuyingView.swift */,
 				242542FA277A5BC700FD8AA7 /* ShoppingCartListView.swift */,
+				242542E8277A4C4900FD8AA7 /* PaymentButton.swift */,
 				245637D2277F2258008CEBA4 /* CartMiniViewer.swift */,
 				242542F6277A581800FD8AA7 /* DetailView */,
 			);
@@ -214,7 +215,6 @@
 				24142C262779CC4100195ADC /* AccountView.swift */,
 				24858AD62788424F00583C65 /* OrderMiniViewer.swift */,
 				241CA8D62789E1BA009D698E /* OrderOverviewView.swift */,
-				242542E8277A4C4900FD8AA7 /* ApplePayButton.swift */,
 				241CA8D82789E250009D698E /* OrderItemMiniViewer.swift */,
 			);
 			path = Account;
@@ -343,7 +343,7 @@
 				2455C702279097C200060522 /* ImagePicker.swift in Sources */,
 				24142C2B2779CEDC00195ADC /* FavoritesView.swift in Sources */,
 				245252C32757A17F006D534B /* StarsView.swift in Sources */,
-				242542E9277A4C4900FD8AA7 /* ApplePayButton.swift in Sources */,
+				242542E9277A4C4900FD8AA7 /* PaymentButton.swift in Sources */,
 				246562D9279D94AF00BBB830 /* ResetPasswordView.swift in Sources */,
 				2455C6FE2790884D00060522 /* SignUpView.swift in Sources */,
 				24142C232779CAC800195ADC /* HomeView.swift in Sources */,

@@ -44,12 +44,12 @@ struct OrderMiniViewer_Previews: PreviewProvider {
         OrderMiniViewer(order: Order(price: 129.99, items: [OrderItem(_item: Item(_title: "jordan 1",
                                                                                   _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                                                                                   _price: 129.99,
-                                                                                  _sizes: [41,42,43,44,45,46,47],
-                                                                                  _availableSizes: [41,42,46,47],
+                                                                                  _sizes: [45,46,45],
+                                                                                  _amountOfSizes: [0,3,4],
                                                                                   _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
                                                                                   _rating: 2.5,
                                                                                   _id: "00003401",
-                                                                                                                                    _discount: 0, _inStock: 5
+                                                                                                                                    _discount: 0
                                                                   ), _size: 45, _amount: 1, _id: "asdf", _price: 129.99)], orderDate: Date.now, id: "gsgadsg"))
     }
 }
