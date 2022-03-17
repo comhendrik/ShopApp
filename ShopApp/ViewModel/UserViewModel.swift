@@ -95,8 +95,7 @@ class UserViewModel: ObservableObject {
                                            _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
                                            _rating: 2.5,
                                            _id: "00003401",
-                                                                                             _discount: 0
-                           )
+                                           _discount: 0)
     @Published var alertMessage = ""
     @Published var showAlert = false
     let userID = Auth.auth().currentUser?.uid ?? "no uid"

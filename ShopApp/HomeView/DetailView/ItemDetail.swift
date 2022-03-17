@@ -109,16 +109,7 @@ struct ItemDetail: View {
 
 struct ItemDetail_Previews: PreviewProvider {
     static var previews: some View {
-        ItemDetail(item: Item(_title: "jordan 1",
-                              _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
-                              _price: 129.99,
-                              _sizes: [45,46,47,48],
-                              _amountOfSizes: [0,10,5,3,6],
-                              _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
-                              _rating: 2.5,
-                              _id: "00003401",
-                                                                                _discount: 0
-              ), addFavoriteAction: {
+        ItemDetail(item: previewItem, addFavoriteAction: {
         }, addToCartAction: {_ in 
             return true
         }, checkFavoriteAction: {
