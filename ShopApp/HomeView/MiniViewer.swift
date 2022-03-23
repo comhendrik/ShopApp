@@ -22,7 +22,7 @@ struct MiniViewer: View {
                 } placeholder: {
                     ProgressView()
                 }
-                if item.amountOfSizes.reduce(0, +) == 0 {
+                if calculateShoeSizeAmount(shoeSizes: item.sizes) == 0 {
                     //Mit dieser View wird signalisiert, dass der Artikel nicht verfügbar ist
                     Rectangle()
                         .foregroundColor(Color.gray.opacity(0.5))
@@ -49,6 +49,14 @@ struct MiniViewer: View {
                 Spacer()
             }
         }
+    }
+    
+    private func calculateShoeSizeAmount(shoeSizes: [ShoeSize]) -> Int {
+        var totalAmountOfSizes = 0
+        for size in shoeSizes {
+            totalAmountOfSizes += size.amount
+        }
+        return totalAmountOfSizes
     }
 }
 

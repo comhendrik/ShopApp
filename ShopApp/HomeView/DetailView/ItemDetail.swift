@@ -72,7 +72,7 @@ struct ItemDetail: View {
                     .padding()
                 
                 SelectSize(actualSize: $shoeSize, item: item)
-                if item.amountOfSizes[item.sizes.firstIndex(of: shoeSize) ?? 0] > 0 {
+                if calculateShoeSizeAmount(shoeSizes: item.sizes) > 0 {
                     AddAnimationButton {
                         return addToCartAction(shoeSize)
                     }
@@ -103,6 +103,14 @@ struct ItemDetail: View {
         .navigationTitle(item.title)
         .navigationBarTitleDisplayMode(.inline)
         
+    }
+    
+    private func calculateShoeSizeAmount(shoeSizes: [ShoeSize]) -> Int {
+        var totalAmountOfSizes = 0
+        for size in shoeSizes {
+            totalAmountOfSizes += size.amount
+        }
+        return totalAmountOfSizes
     }
     
 }

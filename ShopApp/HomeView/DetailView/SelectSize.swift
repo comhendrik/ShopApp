@@ -14,8 +14,8 @@ struct SelectSize: View {
     let item: Item
     var body: some View {
         LazyVGrid(columns: [GridItem(),GridItem(),GridItem(),GridItem()]) {
-            ForEach(0 ..< item.sizes.count) { size in
-                SelectSizeButton(size: $actualSize, sizes: item.sizes, changingSizeIndex: size, amountOfSizes: item.amountOfSizes)
+            ForEach(item.sizes) { size in
+                SelectSizeButton(size: $actualSize, shoeSize: size)
             }
         }
     }
@@ -29,24 +29,21 @@ struct SelectSize_Previews: PreviewProvider {
 
 struct SelectSizeButton: View {
     @Binding var size: Int
-    let sizes: [Int]
-    let changingSizeIndex: Int
-    let amountOfSizes: [Int]
+    let shoeSize: ShoeSize
     var body: some View {
         Button(action: {
-            if amountOfSizes[changingSizeIndex] > 0 {
-                size = sizes[changingSizeIndex]
-                
+            if shoeSize.amount > 0 {
+                size = shoeSize.size
             }
         }, label: {
-            Text("\(sizes[changingSizeIndex])")
+            Text("\(shoeSize.size)")
                 .font(.system(size: UIScreen.main.bounds.width / 20))
                 .padding()
-                .background(size == sizes[changingSizeIndex] ? .gray.opacity(0.35) : .clear)
-                .foregroundColor(amountOfSizes[changingSizeIndex] > 0 ? .black : .gray)
+                .background(size == shoeSize.size ? .gray.opacity(0.35) : .clear)
+                .foregroundColor(shoeSize.amount > 0 ? .black : .gray)
                 .cornerRadius(10, antialiased: false)
                 
         })
-            .disabled(amountOfSizes[changingSizeIndex] == 0)
+            .disabled(shoeSize.amount == 0)
     }
 }

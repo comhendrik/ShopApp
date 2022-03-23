@@ -51,16 +51,16 @@ struct AddToCartView: View {
                 Spacer()
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
-                        ForEach(0 ..< item.sizes.count, id: \.self) { size in
+                        ForEach(item.sizes) { size in
                             Button(action: {
-                                if item.amountOfSizes[size] > 0 {
-                                    shoeSize = item.sizes[size]
+                                if size.amount > 0 {
+                                    shoeSize = size.size
                                 }
                             }, label: {
-                                Text("\(item.sizes[size])")
+                                Text("\(size.size)")
                                     .font(.system(size: UIScreen.main.bounds.width / 20))
                                     .padding()
-                                    .background(item.sizes[size] == shoeSize ? .gray.opacity(0.35) : .clear)
+                                    .background(size.size == shoeSize ? .gray.opacity(0.35) : .clear)
                                     //.foregroundColor(item.availableSizes.contains(item.sizes[size]) ? .black : .gray)
                                     .cornerRadius(10, antialiased: false)
                             })

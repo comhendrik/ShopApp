@@ -90,8 +90,7 @@ class UserViewModel: ObservableObject {
     @Published var placeholderItem =  Item(_title: "jordan 1",
                                            _description: "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad min",
                                            _price: 129.99,
-                                           _sizes: [45,46,47,48],
-                                           _amountOfSizes: [0,10,5,3,6],
+                                           _sizes: [ShoeSize(_size: 45, _amount: 5), ShoeSize(_size: 46, _amount: 0), ShoeSize(_size: 47, _amount: 5), ShoeSize(_size: 48, _amount: 0)],
                                            _imagePath: "Off-White-x-Jordan-1-UNC-Blue-2_w900",
                                            _rating: 2.5,
                                            _id: "00003401",
@@ -154,25 +153,35 @@ class UserViewModel: ObservableObject {
                 //Neuer async await call, damit alle Artikel der Bestellung verfügbar sind
                 let items = try await Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").document(orderID).collection("Items").getDocuments()
                 //Nun werden sich wieder für jedes Item die Daten geholt
-                for item in items.documents {
-                    
-                    let size = item.data()["size"] as? Int ?? 0
-                    let amount = item.data()["amount"] as? Int ?? 0
-                    let cartItemID = item.documentID
-                    let itemId = item.data()["ref"] as? String ?? "no ref"
-                    let orderedPrice = item.data()["price"] as? Double ?? 0.0
+                
+                for itemOfOder in items.documents {
+                    let size = itemOfOder.data()["size"] as? Int ?? 0
+                    let amount = itemOfOder.data()["amount"] as? Int ?? 0
+                    let cartItemID = itemOfOder.documentID
+                    let itemId = itemOfOder.data()["ref"] as? String ?? "no ref"
+                    let orderedPrice = itemOfOder.data()["price"] as? Double ?? 0.0
                     //Nächster async await call, da nur die artikel id in einer Bestellung gespeichert wird
                     let itemData = try await itemsRef.document(itemId).getDocument()
-                    let title = itemData.data()?["title"] as? String ?? "No title"
-                    let description = itemData.data()?["description"] as? String ?? "No description"
-                    let price = itemData.data()?["price"] as? Double ?? 0.00
-                    let sizes = itemData.data()?["sizes"] as? [Int] ?? []
-                    let amountOfSizes = itemData.data()?["amountOfSizes"] as? [Int] ?? []
-                    let imagePath = itemData.data()?["imagePath"] as? String ?? "No path"
-                    let rating = itemData.data()?["rating"] as? Float ?? 0.0
-                    let discount = itemData.data()?["discount"] as? Int ?? 0
+                    var item = Item(_title: "", _description: "", _price: 0.0, _sizes: [], _imagePath: "", _rating: 0.0, _id: "", _discount: 0)
+                    item.title = itemData.data()?["title"] as? String ?? "No title"
+                    item.description = itemData.data()?["description"] as? String ?? "No description"
+                    item.price = itemData.data()?["price"] as? Double ?? 0.00
+                    item.imagePath = itemData.data()?["imagePath"] as? String ?? "No path"
+                    item.rating = itemData.data()?["rating"] as? Float ?? 0.0
+                    let docId = itemData.documentID
+                    item.id = docId
+                    item.discount = itemData.data()?["discount"] as? Int ?? 0
+                    //Neuer async await call, damit alle Artikel der Bestellung verfügbar sind
+                    let shoeSizeDocuments = try await Firestore.firestore().collection("Items").document(docId).collection("Sizes").getDocuments()
+                    //Nun werden sich wieder für jedes Item die Daten geholt
+                    //Nun müssen müssen noch Schuhgrößen gefetcht werden.
+                    for shoeSize in shoeSizeDocuments.documents {
+                        let size = shoeSize.data()["size"] as? Int ?? 0
+                        let amount = shoeSize.data()["amount"] as? Int ?? 0
+                        item.sizes.append(ShoeSize(_size: size, _amount: amount))
+                    }
                     //Nun kann der Artikel der Bestellung hinzugefügt werden.
-                    order.items.append(OrderItem(_item: Item(_title: title, _description: description, _price: price, _sizes: sizes, _amountOfSizes: amountOfSizes,_imagePath: imagePath, _rating: rating, _id: itemId, _discount: discount), _size: size, _amount: amount, _id: cartItemID, _price: orderedPrice))
+                    order.items.append(OrderItem(_item: item, _size: size, _amount: amount, _id: cartItemID, _price: orderedPrice))
                 }
                 //Dank async await kann hier die Bestellung dem Array hinzugefügt werden. Sonst würde alles "synchronous" ablaufen und dieser Befehl würde schon bevor alle Date vorhanden sind ausgeführt werden.
                 newOrders.append(order)
@@ -196,17 +205,8 @@ class UserViewModel: ObservableObject {
             //überprüfen, ob ein Item nicht auf Lager ist.
             do {
                 for cartItem in cartItems {
-                    let itemIndex = cartItem.item.sizes.firstIndex(of: cartItem.size) ?? 0
                     //data ist ein dictionary mit allen Werten von Firebase. Es wird überprüft, ob sich seid dem Hinzufügen etwas am Bestand geändert hat.
                     //TODO: Mehrere inStock Werte für die verschiedenen Größen
-                    let data = try await itemsRef.document(cartItem.item.id).getDocument().data()
-                    //TODO: Erklärung an dieser Stelle
-                    let amountOfSizes = data?["amountOfSizes"] as! [Int]
-                    if amountOfSizes[itemIndex] < cartItem.amount {
-                        alertMessage = "The item \(cartItem.item.title) is not available. Try to reload or adjust the amount."
-                        showAlert.toggle()
-                        return
-                    }
                 }
             } catch {
                 print(error)
@@ -221,7 +221,8 @@ class UserViewModel: ObservableObject {
                                                                                                                                    "user": Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid")]).documentID
             //Der Order werden die Produkte hinzugefügt
             for cartItem in cartItems {
-                do {Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").document(id).collection("Items")
+                do {
+                    Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").document(id).collection("Items")
                         .addDocument(data: ["amount" : cartItem.amount,
                                             "ref":cartItem.item.id,
                                             "size": cartItem.size,
@@ -248,48 +249,45 @@ class UserViewModel: ObservableObject {
         
     }
     
-    func getFavoriteItems() {
-        //Die favorisierten Items werden per Snapshotlistener abgerufen, damit bei Änderung direkt die UI geändert wird, ohne dass noch mehr zu programmieren ist.
-        Firestore.firestore().collection("Users").document(userID).collection("Favorites").addSnapshotListener { snap, err in
-            if let err = err {
-                //TODO: Handle this properly
-                print(err)
-            } else {
-                //Wichtig ist es self.favoriteItems = [] zu setzen, da sonst doppelte Items auftreten können.
-                self.favoriteItems = []
-                for doc in snap!.documents {
-                    //Die Items sind in einer collection innerhalb des User Dokuments gespeichert. Das einzelne Dokument enthält eine Referenz zum Item, damit keine doppelte Speicherung in der Datenbank stattfindet.
-                    let ref = doc.data()["ref"] as! DocumentReference
-                    ref.getDocument { docSnap, err in
-                        //Wurde eine Referenz gefunden, wird das originale Item abgerufen mit .getDocument.
-                        if let err = err {
-                            //TODO: Handle this properly
-                            print(err)
-                        } else {
-                            let document = docSnap?.data()
-                            let title = document?["title"] as? String ?? "No title"
-                            let description = document?["description"] as? String ?? "No description"
-                            let price = document?["price"] as? Double ?? 0.00
-                            let sizes = document?["sizes"] as? [Int] ?? []
-                            let amountOfSizes = document?["amountOfSizes"] as? [Int] ?? []
-                            let imagePath = document?["imagePath"] as? String ?? "No path"
-                            let rating = document?["rating"] as? Float ?? 0.0
-                            let id = docSnap?.documentID ?? "no id"
-                            let discount = document?["discount"] as? Int ?? 0
-                            self.favoriteItems.append(Item(_title: title,
-                                                            _description: description,
-                                                            _price: price,
-                                                           _sizes: sizes,
-                                                           _amountOfSizes: amountOfSizes,
-                                                            _imagePath: imagePath,
-                                                            _rating: rating,
-                                                           _id: id,
-                                                           _discount: discount))
-                        }
-                    }
+    func getFavoriteItems() async {
+        //In diesem Array werden die Bestellungen gespeichert
+        var newFavoriteItems = [Item]()
+        //do catch Block falls ein Fehler auftritt
+        do {
+            // Mit async await alle Bestellungen bekommen
+            let items = try await Firestore.firestore().collection("Users").document(userID).collection("Favorites").getDocuments()
+            //folgender code wird für jede Bestellung ausgeführt
+            for favoriteItem in items.documents {
+                // Es wird eine Bestellung deklariert. Diese wird später verändert und dem Array von oben hinzugefügt
+                let ref = favoriteItem.data()["ref"] as! DocumentReference
+                var item = Item(_title: "", _description: "", _price: 0.0, _sizes: [], _imagePath: "", _rating: 0.0, _id: "", _discount: 0)
+                let document  = try await ref.getDocument()
+                item.title = document.data()?["title"] as? String ?? "No title"
+                item.description = document.data()?["description"] as? String ?? "No description"
+                item.price = document.data()?["price"] as? Double ?? 0.00
+                item.imagePath = document.data()?["imagePath"] as? String ?? "No path"
+                item.rating = document.data()?["rating"] as? Float ?? 0.0
+                let docId = document.documentID
+                item.id = docId
+                item.discount = document.data()?["discount"] as? Int ?? 0
+                //Neuer async await call, damit alle Artikel der Bestellung verfügbar sind
+                let shoeSizeDocuments = try await Firestore.firestore().collection("Items").document(docId).collection("Sizes").getDocuments()
+                //Nun werden sich wieder für jedes Item die Daten geholt
+                for shoeSize in shoeSizeDocuments.documents {
+                    let size = shoeSize.data()["size"] as? Int ?? 0
+                    let amount = shoeSize.data()["amount"] as? Int ?? 0
+                    item.sizes.append(ShoeSize(_size: size, _amount: amount))
                 }
+                //Dank async await kann hier die Bestellung dem Array hinzugefügt werden. Sonst würde alles "synchronous" ablaufen und dieser Befehl würde schon bevor alle Date vorhanden sind ausgeführt werden.
+                newFavoriteItems.append(item)
             }
+            //Nun kann newOrders übergeben werden. Dank async await ist dies wieder an dieser Stelle möglich
+            //Normalerweise tritt hier ein Fehler auf, da die Funktion auf einem Backgroundthread läuft und von dort aus nicht die UI geupdatet werden darf. Dank @MainActor am Anfang der Klasse laufen all Befehle auf dem Mainthread            allItems = newItems
+            favoriteItems = newFavoriteItems
+        } catch {
+            print(error)
         }
+
     }
     
     func addItemToFavorites(with id: String) {
@@ -320,47 +318,46 @@ class UserViewModel: ObservableObject {
         return false
     }
     
-    func getCartItems() {
-        showProgressView = true
-        //Durch diese Funktion werden alle Warenkorb Items abgefragt. Diese befinden sich in der "CartItems" Collection eines User Dokuments. Auch hier wird ein snapshotlistener verwendet, damit Echtzeitabfragen stattfinden können.
-        Firestore.firestore().collection("Users").document(userID).collection("CartItems").addSnapshotListener { cartItemsSnap, err in
-            if let err = err {
-                //TODO: Handle this properly
-                print(err)
-                return
-            } else {
-                self.cartItems = []
-                //Wichtig ist es self.cartItems = [] zu setzen, da sonst doppelte Items auftreten können.
-                for document in cartItemsSnap!.documents {
-                    //Zuerst werden die im Warenkorb spezifisch definierten Attribute abgerufen. Dann wird das dazugehörige Item abgefragt.
-                    let itemReference = document.data()["itemReference"] as? String ?? "No id"
-                    let size = document.data()["size"] as? Int ?? 0
-                    let amount = document.data()["amount"] as? Int ?? 0
-                    let id = document.documentID
-                    itemsRef.document(itemReference).getDocument { docSnap, err in
-                        if let err = err {
-                            //TODO: Handle properly
-                            print(err)
-                            return
-                        } else {
-                            let document = docSnap?.data()
-                            let title = document?["title"] as? String ?? "No title"
-                            let description = document?["description"] as? String ?? "No description"
-                            let price = document?["price"] as? Double ?? 0.00
-                            let sizes = document?["sizes"] as? [Int] ?? []
-                            let amountOfSizes = document?["amountOfSizes"] as? [Int] ?? []
-                            let imagePath = document?["imagePath"] as? String ?? "No path"
-                            let rating = document?["rating"] as? Float ?? 0.0
-                            let item_id = docSnap?.documentID ?? "no id"
-                            let discount = document?["discount"] as? Int ?? 0
-                            self.cartItems.append(CartItem(_item: Item(_title: title, _description: description, _price: price, _sizes: sizes, _amountOfSizes: amountOfSizes, _imagePath: imagePath, _rating: rating, _id: item_id, _discount: discount), _size: size, _amount: amount,_id: id))
-                        }
-                    }
-                    
-                    
-                }
+    func getCartItems() async {
+        //In diesem Array werden die Bestellungen gespeichert
+        var newCartItems = [CartItem]()
+        //do catch Block falls ein Fehler auftritt
+        do {
+            // Mit async await alle Bestellungen bekommen
+            let data = try await Firestore.firestore().collection("Users").document(userID).collection("CartItems").getDocuments()
+            //folgender code wird für jede Bestellung ausgeführt
+            for document in data.documents {
+                var cartItem = CartItem(_item: Item(_title: "", _description: "", _price: 0.0, _sizes: [], _imagePath: "", _rating: 0.0, _id: "", _discount: 0), _size: 0, _amount: 0, _id: "")
+                let itemReference = document.data()["itemReference"] as? String ?? "No id"
+                cartItem.size = document.data()["size"] as? Int ?? 0
+                cartItem.amount = document.data()["amount"] as? Int ?? 0
+                cartItem.id = document.documentID
                 
+                let itemRef = try await Firestore.firestore().collection("Items").document(itemReference).getDocument()
+                cartItem.item.title = itemRef.data()?["title"] as? String ?? "No title"
+                cartItem.item.description = itemRef.data()?["description"] as? String ?? "No description"
+                cartItem.item.price = itemRef.data()?["price"] as? Double ?? 0.00
+                cartItem.item.imagePath = itemRef.data()?["imagePath"] as? String ?? "No path"
+                cartItem.item.rating = itemRef.data()?["rating"] as? Float ?? 0.0
+                let docId = itemRef.documentID
+                cartItem.item.id = docId
+                cartItem.item.discount = itemRef.data()?["discount"] as? Int ?? 0
+                //Neuer async await call, damit alle Artikel der Bestellung verfügbar sind
+                let shoeSizeDocuments = try await Firestore.firestore().collection("Items").document(docId).collection("Sizes").getDocuments()
+                //Nun werden sich wieder für jedes Item die Daten geholt
+                for shoeSize in shoeSizeDocuments.documents {
+                    let size = shoeSize.data()["size"] as? Int ?? 0
+                    let amount = shoeSize.data()["amount"] as? Int ?? 0
+                    cartItem.item.sizes.append(ShoeSize(_size: size, _amount: amount))
+                }
+                //Dank async await kann hier die Bestellung dem Array hinzugefügt werden. Sonst würde alles "synchronous" ablaufen und dieser Befehl würde schon bevor alle Date vorhanden sind ausgeführt werden.
+                newCartItems.append(cartItem)
             }
+            //Nun kann newOrders übergeben werden. Dank async await ist dies wieder an dieser Stelle möglich
+            //Normalerweise tritt hier ein Fehler auf, da die Funktion auf einem Backgroundthread läuft und von dort aus nicht die UI geupdatet werden darf. Dank @MainActor am Anfang der Klasse laufen all Befehle auf dem Mainthread            allItems = newItems
+            cartItems = newCartItems
+        } catch {
+            print(error)
         }
     }
     

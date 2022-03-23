@@ -11,40 +11,52 @@ struct ShopView: View {
     @StateObject var ivm = ItemViewModel()
     @StateObject var uvm = UserViewModel()
     @StateObject var lvm: LoginViewModel
+    @State private var showAppProgressView = false
     var body: some View {
         //Diese View enthält eine TabView mit allen Sektion in der App.
         //Diew Views finden sich unter dem gleichnamigen Ordner wieder.
         TabView {
-            HomeView(uvm: uvm, ivm: ivm, nameOfCustomer: uvm.mainUser.firstName)
-                .tabItem{
-                    Image(systemName: "house")
-                    Text("home")
-                        .foregroundColor(.black)
+            if showAppProgressView {
+                ProgressView()
+            } else {
+                NavigationView {
+                    ItemScrollView(items: ivm.allItems, uvm: uvm, nameOfCustomer: "hello")
                 }
-            ShoppingCart(uvm: uvm)
-                .tabItem {
-                    Image(systemName: "cart")
-                    Text("Cart")
-                }
-            FavoritesView(uvm: uvm)
-                .tabItem {
-                    Image(systemName: "heart.text.square")
-                    Text("Favorites")
-                }
-            AccountView(uvm: uvm, lvm: lvm)
-                .tabItem {
-                    Image(systemName: "person.crop.circle")
-                    Text("account")
-                }
+                    .tabItem{
+                        Image(systemName: "house")
+                        Text("home")
+                            .foregroundColor(.black)
+                    }
+                ShoppingCart(uvm: uvm)
+                    .tabItem {
+                        Image(systemName: "cart")
+                        Text("Cart")
+                    }
+                FavoritesView(uvm: uvm)
+                    .tabItem {
+                        Image(systemName: "heart.text.square")
+                        Text("Favorites")
+                    }
+                AccountView(uvm: uvm, lvm: lvm)
+                    .tabItem {
+                        Image(systemName: "person.crop.circle")
+                        Text("account")
+                    }
+            }
         }
         .onAppear {
+            showAppProgressView = true
             //Wird diese View aufgerufen, werden diese Funktion aufgerufen, damit alle wichtigen Daten bereitgestellt werden.
             uvm.getUser()
-            uvm.getCartItems()
-            uvm.getFavoriteItems()
+            
             Task {
-                //Fetch Orders
+                //Fetch Orders, CartItems, FavoriteItems
                 await uvm.getOrders()
+                await uvm.getCartItems()
+                print(uvm.cartItems.count)
+                await uvm.getFavoriteItems()
+                await ivm.getAllItems()
+                showAppProgressView = false
             }
         }
     }
