@@ -20,7 +20,9 @@ struct ShopView: View {
                 ProgressView()
             } else {
                 NavigationView {
-                    ItemScrollView(items: ivm.allItems, uvm: uvm, nameOfCustomer: "hello")
+                    ItemScrollView(items: ivm.allItems, uvm: uvm, nameOfCustomer: uvm.mainUser.firstName)
+                        .navigationBarHidden(true)
+                        .padding()
                 }
                     .tabItem{
                         Image(systemName: "house")

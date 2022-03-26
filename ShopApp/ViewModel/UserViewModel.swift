@@ -202,17 +202,6 @@ class UserViewModel: ObservableObject {
             alertMessage = "Thank you for wanting to order, but please add some items."
             showAlert.toggle()
         } else {
-            //überprüfen, ob ein Item nicht auf Lager ist.
-            do {
-                for cartItem in cartItems {
-                }
-            } catch {
-                print(error)
-                alertMessage = error.localizedDescription
-                showAlert.toggle()
-                return
-            }
-            //Wird dieser Code ausgeführt können alle Produkte gekauft werden.
             //Dem User wird eine Order hinzugefügt
             let id = Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").addDocument(data: ["price" : price,
                                                                                                                                    "orderDate": Date.now,
@@ -225,13 +214,26 @@ class UserViewModel: ObservableObject {
             
             for cartItem in cartItems {
                 do {
+                    //überprüfen, ob ein Item nicht auf Lager ist.
+                    let doc = try await Firestore.firestore().collection("Items").document(cartItem.item.id).collection("Sizes").document("\(cartItem.size)").getDocument()
+                    let amountInStock = doc.data()?["amount"] as? Int ?? 0
+                    if amountInStock < cartItem.amount {
+                        alertMessage = "Item '\(cartItem.item.title)' in size '\(cartItem.size)' is is not available in this quantity.\nin Stock: \(amountInStock)"
+                        showAlert.toggle()
+                        //Löschen der Order, weil ein Item nicht vorhanden ist in der Menge
+                        try await Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").document(id).delete()
+                        return
+                    }
+                    //Hinzufügen des Items zur Order, da Item vorhanden.
                     let itemId = Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").document(id).collection("Items")
                         .addDocument(data: ["amount" : cartItem.amount,
                                             "ref":cartItem.item.id,
                                             "size": cartItem.size,
                                             "price": cartItem.item.discount != 0 ? cartItem.item.price - ((cartItem.item.price / 100.0) * Double(cartItem.item.discount)) : cartItem.item.price]).documentID
-                    //TODO: Update Items auf Lager
+                    //Order Item innerhalb der App erstellen
                     newOrder.items.append(OrderItem(_item: cartItem.item, _size: cartItem.size, _amount: cartItem.amount, _id: itemId, _price: cartItem.item.discount != 0 ? cartItem.item.price - ((cartItem.item.price / 100.0) * Double(cartItem.item.discount)) : cartItem.item.price))
+                    //Menge innerhalb von Firestore updaten.
+                    try await Firestore.firestore().collection("Items").document(cartItem.item.id).collection("Sizes").document("\(cartItem.size)").updateData(["amount" : amountInStock-cartItem.amount])
                     //Lösche das Produkt aus dem Warenkorb
                     deleteCartItem(with: cartItem.id)
                 } catch {

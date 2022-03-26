@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		24142C232779CAC800195ADC /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C222779CAC800195ADC /* HomeView.swift */; };
 		24142C272779CC4100195ADC /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C262779CC4100195ADC /* AccountView.swift */; };
 		24142C292779CD7F00195ADC /* ShoppingCart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C282779CD7F00195ADC /* ShoppingCart.swift */; };
 		24142C2B2779CEDC00195ADC /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C2A2779CEDC00195ADC /* FavoritesView.swift */; };
@@ -54,7 +53,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		24142C222779CAC800195ADC /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		24142C262779CC4100195ADC /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		24142C282779CD7F00195ADC /* ShoppingCart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingCart.swift; sourceTree = "<group>"; };
 		24142C2A2779CEDC00195ADC /* FavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
@@ -236,7 +234,6 @@
 			isa = PBXGroup;
 			children = (
 				2491BFF92757E87700BBEB9F /* DetailView */,
-				24142C222779CAC800195ADC /* HomeView.swift */,
 				2449C4EF278F5C4C00B48FFF /* ItemScrollView.swift */,
 				2491BFFD2757EDC800BBEB9F /* MiniViewer.swift */,
 			);
@@ -346,7 +343,6 @@
 				242542E9277A4C4900FD8AA7 /* PaymentButton.swift in Sources */,
 				246562D9279D94AF00BBB830 /* ResetPasswordView.swift in Sources */,
 				2455C6FE2790884D00060522 /* SignUpView.swift in Sources */,
-				24142C232779CAC800195ADC /* HomeView.swift in Sources */,
 				245637D3277F2258008CEBA4 /* CartMiniViewer.swift in Sources */,
 				2449C4F0278F5C4C00B48FFF /* ItemScrollView.swift in Sources */,
 				241CA8D72789E1BA009D698E /* OrderOverviewView.swift in Sources */,

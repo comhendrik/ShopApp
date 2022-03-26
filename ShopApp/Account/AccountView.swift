@@ -31,17 +31,17 @@ struct AccountView: View {
                     Spacer()
                 }
                 .padding()
-                ScrollView {
-                    if uvm.orders.count <= 0 {
-                        VStack {
-                            Spacer()
-                            Text("No orders")
-                                .font(.title3)
-                            Image(systemName: "bag")
-                                .font(.largeTitle)
-                            Spacer()
-                        }
-                    } else {
+                if uvm.orders.count <= 0 {
+                    VStack {
+                        Spacer()
+                        Text("No orders")
+                            .font(.title3)
+                        Image(systemName: "bag")
+                            .font(.largeTitle)
+                        Spacer()
+                    }
+                } else {
+                    ScrollView {
                         ForEach(uvm.orders) { order in
                             NavigationLink(destination: {
                                 OrderOverviewView(order: order, uvm: uvm)
@@ -50,7 +50,9 @@ struct AccountView: View {
                             })
                         }
                     }
+                    
                 }
+                
             }
             .padding()
             .navigationBarHidden(true)

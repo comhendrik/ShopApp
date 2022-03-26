@@ -20,7 +20,6 @@ struct Item: Identifiable {
     var rating: Float
     var id: String
     var discount: Int
-    var temprar: Int
     
     init(_title: String, _description: String, _price: Double, _sizes: [ShoeSize],_imagePath: String, _rating: Float, _id: String, _discount: Int) {
         title = _title
@@ -31,7 +30,6 @@ struct Item: Identifiable {
         rating = _rating
         id = _id
         discount = _discount
-        temprar = _discount
     }
     
 
