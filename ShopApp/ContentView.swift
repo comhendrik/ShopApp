@@ -21,7 +21,7 @@ struct ContentView: View {
             if statusofregister {
                 //ist statusofregister == true, dann wird die view angezeigt, um sich mit mehreren Daten, wie Adresse zu registrieren.
                 VStack {
-                    RegisterView(lvm: lvm)
+                    RegisterView(lvm: lvm, isRegisterView: true)
                     Button(action: {
                         withAnimation() {
                             statusofregister.toggle()

@@ -95,6 +95,44 @@ class LoginViewModel: ObservableObject {
         statusofregister = false
     }
     
+    func updateUserAddress() {
+        if address.zipCode == 0 {
+            alertMsg = "Please use a valid zipcode and make sure that you filled all fields."
+            alert.toggle()
+            return
+        }
+        if address.street == "" || address.number == "" || address.city == "" || address.land == "" {
+            alertMsg = "Please tell us your address and make sure that you filled all fields."
+            alert.toggle()
+            return
+        }
+        if Auth.auth().currentUser == nil {
+            alertMsg = "There are problems with your account. Please make sure that you are logged in."
+            alert.toggle()
+            return
+        }
+        let uid = Auth.auth().currentUser!.uid
+        //Die Collection "Users" enthählt alle Nutzer mit den wichtigen Daten.
+        self.db.collection("Users").document(uid).updateData([
+            "street": self.address.street,
+            "number": self.address.number,
+            "city": self.address.city,
+            "zipcode": self.address.zipCode,
+            "land": self.address.land,
+        ]) {
+            (err) in
+            if err != nil {
+                self.alertMsg = "There are problems with your account. Please make sure that everything is working correctly"
+                self.alert.toggle()
+                return
+            }
+            
+            self.alertMsg = "Your addresss have been changed succesfully. Please reload the app to place an order when your address doesn't match your new one."
+            self.alert.toggle()
+            return
+        }
+    }
+    
     func resetPassword() {
         //Diese Funktion ermöglicht das Zurücksetzen des Passworts.
         resetEmail = email

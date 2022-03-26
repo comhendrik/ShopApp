@@ -10,9 +10,10 @@ import SwiftUI
 struct RegisterView: View {
     @StateObject var lvm: LoginViewModel
     @FocusState private var isFocused: Bool
+    let isRegisterView: Bool
     var body: some View {
         VStack {
-            Text("Your address:")
+            Text(isRegisterView ? "Please tell us your address:" : "Update your address:")
                 .fontWeight(.bold)
                 .font(.largeTitle)
             Spacer()
@@ -30,7 +31,11 @@ struct RegisterView: View {
             LoginTextField(isSecure: false, value: $lvm.address.land, title: "land", systemImage: "")
             Spacer()
             Button(action: {
-                lvm.registerNewUserData()
+                if isRegisterView {
+                    lvm.registerNewUserData()
+                } else {
+                    lvm.updateUserAddress()
+                }
             }, label: {
                 Text("Register")
                     .foregroundColor(.white)
@@ -48,6 +53,6 @@ struct RegisterView: View {
 
 struct RegisterView_Previews: PreviewProvider {
     static var previews: some View {
-        RegisterView(lvm: LoginViewModel())
+        RegisterView(lvm: LoginViewModel(), isRegisterView: true)
     }
 }

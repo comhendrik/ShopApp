@@ -10,13 +10,25 @@ import FirebaseAuth
 struct AccountView: View {
     @StateObject var uvm: UserViewModel
     @StateObject var lvm: LoginViewModel
+    @State private var showEditView = false
     var body: some View {
         NavigationView {
             VStack {
                 
-                Text("\(uvm.mainUser.firstName) \(uvm.mainUser.lastName)")
-                    .fontWeight(.bold)
-                    .font(.title2)
+                HStack {
+                    Text("\(uvm.mainUser.firstName) \(uvm.mainUser.lastName)")
+                        .fontWeight(.bold)
+                        .font(.title2)
+                    Button(action: {
+                        lvm.address = uvm.mainUser.adress
+                        showEditView.toggle()
+                    }, label: {
+                        Image(systemName: "ellipsis")
+                            .foregroundColor(.gray)
+                            .rotationEffect(.degrees(-90))
+                    })
+                        .sheet(isPresented: $showEditView, onDismiss: { uvm.mainUser.adress = lvm.address }, content: { RegisterView(lvm: lvm, isRegisterView: false).padding() })
+                }
                 Button(action: {
                     lvm.logOut()
                 }, label: {
