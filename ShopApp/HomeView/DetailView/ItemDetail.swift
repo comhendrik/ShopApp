@@ -9,7 +9,7 @@
 //    if uvm.checkIfItemIsAlreadyFavorite(with: item.id) {
 //        uvm.deleteFavoriteItem(with: item.id)
 //    } else {
-//        uvm.addItemToFavorites(with: item.id)
+//        uvm.addItemToFavorites(itemToAdd: item)
 //    }
 //}, addToCartAction: { number in
 //    uvm.addItemToCart(with: item.id, size: number, amount: 1)

@@ -10,7 +10,7 @@ import SwiftUI
 struct AddToCartView: View {
     @StateObject var uvm: UserViewModel
     @Binding var showAddToCartView: Bool
-    let addAction: (String, Int, Int) -> Bool
+    let addAction: (Item, Int) -> Bool
     @State private var shoeSize = 0
     let item: Item
     var body: some View {
@@ -71,7 +71,7 @@ struct AddToCartView: View {
                 
                 Button(action: {
                     //Funktion zum hinzufügen des Warenkorbs wird ausgeführt wenn eine Größe ausgewählt wurde. Innerhalb der addAction wird dies geregelt. Das einzige was die View machen muss ist die AddToCartView wieder zu entfernen.
-                    if addAction(item.id,1, shoeSize) {
+                    if addAction(item, shoeSize) {
                         withAnimation() {
                             showAddToCartView.toggle()
                         }

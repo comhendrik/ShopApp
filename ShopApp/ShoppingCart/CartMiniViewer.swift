@@ -18,9 +18,9 @@ struct CartMiniViewer: View {
                     NavigationLink {
                         ItemDetail(item: cartItem.item,
                                    addFavoriteAction: {
-                            uvm.addItemToFavorites(with: cartItem.item.id)
+                            uvm.addItemToFavorites(itemToAdd: cartItem.item)
                         }, addToCartAction: {number in
-                            return uvm.addItemToCart(with: cartItem.item.id, size: number, amount: 1)
+                            return uvm.addItemToCart(itemToAdd: cartItem.item, size: number, amount: 1)
                         }, checkFavoriteAction: {
                             return uvm.checkIfItemIsAlreadyFavorite(with: cartItem.item.id)
                         })

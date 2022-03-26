@@ -20,10 +20,10 @@ struct OrderItemMiniViewer: View {
                             if uvm.checkIfItemIsAlreadyFavorite(with: orderItem.item.id) {
                                 uvm.deleteFavoriteItem(with: orderItem.item.id)
                             } else {
-                                uvm.addItemToFavorites(with: orderItem.item.id)
+                                uvm.addItemToFavorites(itemToAdd: orderItem.item)
                             }
                         }, addToCartAction: { number in
-                            uvm.addItemToCart(with: orderItem.item.id, size: number, amount: 1)
+                            uvm.addItemToCart(itemToAdd: orderItem.item, size: number, amount: 1)
                         }, checkFavoriteAction: {
                             return uvm.checkIfItemIsAlreadyFavorite(with: orderItem.item.id)
                         })

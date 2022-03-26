@@ -35,8 +35,8 @@ struct FavoritesView: View {
                 VStack {
                     Spacer()
                     AddToCartView(uvm: uvm, showAddToCartView: $showAddToCartView,
-                                  addAction: { id,amount, size in
-                                       return uvm.addItemToCart(with: id, size: size, amount: amount)
+                                  addAction: { item, size in
+                        return uvm.addItemToCart(itemToAdd: item, size: size, amount: 1)
                     }, item: uvm.placeholderItem)
 
                 }

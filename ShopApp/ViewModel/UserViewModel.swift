@@ -205,8 +205,6 @@ class UserViewModel: ObservableObject {
             //überprüfen, ob ein Item nicht auf Lager ist.
             do {
                 for cartItem in cartItems {
-                    //data ist ein dictionary mit allen Werten von Firebase. Es wird überprüft, ob sich seid dem Hinzufügen etwas am Bestand geändert hat.
-                    //TODO: Mehrere inStock Werte für die verschiedenen Größen
                 }
             } catch {
                 print(error)
@@ -217,17 +215,23 @@ class UserViewModel: ObservableObject {
             //Wird dieser Code ausgeführt können alle Produkte gekauft werden.
             //Dem User wird eine Order hinzugefügt
             let id = Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").addDocument(data: ["price" : price,
-                                                                                                                                   "orderDate": Date.now.addingTimeInterval(TimeInterval(89000)),
+                                                                                                                                   "orderDate": Date.now,
                                                                                                                                    "user": Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid")]).documentID
             //Der Order werden die Produkte hinzugefügt
+            
+            //Variable für das Hinzufügen innerhalb der App erstellen:
+            var newOrder = Order(price: price, items: [], orderDate: Date.now, id: id)
+            
+            
             for cartItem in cartItems {
                 do {
-                    Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").document(id).collection("Items")
+                    let itemId = Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").document(id).collection("Items")
                         .addDocument(data: ["amount" : cartItem.amount,
                                             "ref":cartItem.item.id,
                                             "size": cartItem.size,
-                                            "price": cartItem.item.discount != 0 ? cartItem.item.price - ((cartItem.item.price / 100.0) * Double(cartItem.item.discount)) : cartItem.item.price])
+                                            "price": cartItem.item.discount != 0 ? cartItem.item.price - ((cartItem.item.price / 100.0) * Double(cartItem.item.discount)) : cartItem.item.price]).documentID
                     //TODO: Update Items auf Lager
+                    newOrder.items.append(OrderItem(_item: cartItem.item, _size: cartItem.size, _amount: cartItem.amount, _id: itemId, _price: cartItem.item.discount != 0 ? cartItem.item.price - ((cartItem.item.price / 100.0) * Double(cartItem.item.discount)) : cartItem.item.price))
                     //Lösche das Produkt aus dem Warenkorb
                     deleteCartItem(with: cartItem.id)
                 } catch {
@@ -240,8 +244,10 @@ class UserViewModel: ObservableObject {
             //Die Bestellung ist erfolgreich durchgeführt worden.
             alertMessage = "Thank you for ordering. We do our best to send the order to you as fast as possible! \n OrderID: \(id)"
             showAlert.toggle()
-            //Neue Bestellung in die App laden.
-            await getOrders()
+            //Innerhalb der App, die Items aus dem Warenkorb löschen und die Bestellung dem Array hinzufügen
+            cartItems = []
+            orders.insert(newOrder, at: 0)
+            
             
             
         }
@@ -290,9 +296,11 @@ class UserViewModel: ObservableObject {
 
     }
     
-    func addItemToFavorites(with id: String) {
+    func addItemToFavorites(itemToAdd: Item) {
         //Diese Funktion fügt einen neune Favoriten hinzu, indem nur die Referenz des Items gespeichert. Der Button in ItemDetail mit der Beschreibung Add to Favorites führt diese Aktion aus.
-        Firestore.firestore().collection("Users").document(userID).collection("Favorites").document(id).setData(["ref" : itemsRef.document(id)])
+        Firestore.firestore().collection("Users").document(userID).collection("Favorites").document(itemToAdd.id).setData(["ref" : itemsRef.document(itemToAdd.id)])
+        //Item innerhalb der App zu den Favoriten hinzufügen, damit keine weiteren Requests an den Server nötig sind, um die Daten darzustellen.
+        favoriteItems.append(itemToAdd)
         
     }
     
@@ -304,6 +312,13 @@ class UserViewModel: ObservableObject {
                 print(err)
             } else {
                 print("removed")
+            }
+        }
+        //Löschen des favorisiertem Items innerhalb der App, für das Update ist kein weiterer Request nötig.
+        for i in  0 ..< favoriteItems.count {
+            if id == favoriteItems[i].id {
+                favoriteItems.remove(at: i)
+                break
             }
         }
     }
@@ -371,14 +386,28 @@ class UserViewModel: ObservableObject {
                 print("removed")
             }
         }
+        
+        //Löschen des Items im Warenkorb innerhalb der App, für das Update ist kein weiterer Request nötig.
+        for i in  0 ..< cartItems.count {
+            if id == cartItems[i].id {
+                cartItems.remove(at: i)
+                break
+            }
+        }
     }
     
     func updateAmount(with id: String, amount: Int) {
         //Anzahl wird erhöht und. Als Id wird die ID eines CartItems benötigt.
         Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id).updateData(["amount" : amount])
+        //Update der Menge innerhalb der App:
+        for i in 0 ..< self.cartItems.count {
+            if self.cartItems[i].id == id {
+                self.cartItems[i].amount = amount
+            }
+        }
     }
     
-    func addItemToCart(with id: String, size: Int, amount: Int) -> Bool {
+    func addItemToCart(itemToAdd: Item, size: Int, amount: Int) -> Bool {
         if size == 0 {
             //Es wird übeprüft, ob eine größe ausgewählt wurde, wenn size == 0 ist wurde keine ausgewählt
             alertMessage = "Please select a size"
@@ -388,18 +417,29 @@ class UserViewModel: ObservableObject {
         }
         //Zuerst wird überprüft, ob sich der Artikel bereits im Warenkorb befindet.
         //Wir verwenden id+String(size) als Indikator, da wir so einzelne Größen eines Artikels speichern können. Hat der Artikel die Nummer 1HKLK0KJP wird der Artikel in der Größe 45 als 1HKLK0KJP45 gespeichert.
-        let docRef = Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id+String(size))
+        let docRef = Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(itemToAdd.id+String(size))
         docRef.getDocument { (document, error) in
             if document!.exists {
                 //Ist der Artikel vorhanden holen wir uns die Anzahl des Artikels, die im Warenkorb gespeichert wurde und erhöhen diese.
                 let oldAmount = document!.data()?["amount"] as? Int ?? 0
-                self.updateAmount(with: id+String(size), amount: oldAmount + amount)
+                self.updateAmount(with: itemToAdd.id+String(size), amount: oldAmount + amount)
+                
+                //Update der Menge innerhalb der App, wenn der Artikel bereits im Warenkorb gespeichert wurde.
+                for i in 0 ..< self.cartItems.count {
+                    if self.cartItems[i].id == itemToAdd.id+String(size) {
+                        self.cartItems[i].amount += amount
+                    }
+                }
               } else {
                   //Der Artikel ist nicht vorhanden und wird neu erstellt mit Größe, neuer Id, Anzahl = 1 und einem String der auf das richtige Item hinweist.
-                  Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id+String(size)).setData(["size" : size, "itemReference" : id, "amount": amount])
+                  Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(itemToAdd.id+String(size)).setData(["size" : size, "itemReference" : itemToAdd.id, "amount": amount])
+                  //Der Artikel wird neu hinzugefügt innerhalb der App, um einen weiteren Request zu verhindern, weil der Artikel nicht im Warenkorb vorhanden ist.
+                  self.cartItems.append(CartItem(_item: itemToAdd, _size: size, _amount: amount, _id: itemToAdd.id+String(size)))
               }
         }
+        
         return true
+        
         
     }
     

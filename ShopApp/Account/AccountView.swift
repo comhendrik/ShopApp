@@ -33,7 +33,14 @@ struct AccountView: View {
                 .padding()
                 ScrollView {
                     if uvm.orders.count <= 0 {
-                        ProgressView()
+                        VStack {
+                            Spacer()
+                            Text("No orders")
+                                .font(.title3)
+                            Image(systemName: "bag")
+                                .font(.largeTitle)
+                            Spacer()
+                        }
                     } else {
                         ForEach(uvm.orders) { order in
                             NavigationLink(destination: {

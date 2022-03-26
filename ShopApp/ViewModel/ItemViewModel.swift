@@ -91,8 +91,6 @@ class ItemViewModel: ObservableObject {
             //Nun kann newOrders übergeben werden. Dank async await ist dies wieder an dieser Stelle möglich
             //Normalerweise tritt hier ein Fehler auf, da die Funktion auf einem Backgroundthread läuft und von dort aus nicht die UI geupdatet werden darf. Dank @MainActor am Anfang der Klasse laufen all Befehle auf dem Mainthread            allItems = newItems
             allItems = newItems
-            print(allItems.count)
-            print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\"")
         } catch {
             print(error)
         }

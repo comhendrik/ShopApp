@@ -13,40 +13,35 @@ struct ContentView: View {
     @AppStorage("log_status") var status = false
     @AppStorage("current_status") var statusofregister = false
     var body: some View {
-        if lvm.isLoading {
-            //ProgressView, wenn etwas geladen werden muss
-            ProgressView()
+        if status {
+            //status sorgt dafür, ob der Login Prozess angezeigt wird oder der normale Shop
+            ShopView(lvm: lvm)
         } else {
-            if status {
-                //status sorgt dafür, ob der Login Prozess angezeigt wird oder der normale Shop
-                ShopView(lvm: lvm)
+            //Die Views für den Loginvorgang finden sich in dem Ordner Login.
+            if statusofregister {
+                //ist statusofregister == true, dann wird die view angezeigt, um sich mit mehreren Daten, wie Adresse zu registrieren.
+                VStack {
+                    RegisterView(lvm: lvm)
+                    Button(action: {
+                        withAnimation() {
+                            statusofregister.toggle()
+                        }
+                        lvm.logOut()
+                    }, label: {
+                        Text("Logout")
+                            .foregroundColor(.black)
+                            .padding()
+                            .frame(width: UIScreen.main.bounds.width - 50)
+                            .background(.gray.opacity(0.05))
+                            .cornerRadius(15, antialiased: false)
+                    })
+                }
             } else {
-                //Die Views für den Loginvorgang finden sich in dem Ordner Login.
-                if statusofregister {
-                    //ist statusofregister == true, dann wird die view angezeigt, um sich mit mehreren Daten, wie Adresse zu registrieren.
-                    VStack {
-                        RegisterView(lvm: lvm)
-                        Button(action: {
-                            withAnimation() {
-                                statusofregister.toggle()
-                            }
-                            lvm.logOut()
-                        }, label: {
-                            Text("Logout")
-                                .foregroundColor(.black)
-                                .padding()
-                                .frame(width: UIScreen.main.bounds.width - 50)
-                                .background(.gray.opacity(0.05))
-                                .cornerRadius(15, antialiased: false)
-                        })
-                    }
+                if lvm.signUpView {
+                    //Der User kann sich anmelden, aber auch registrieren. Welche View gezeigt wird, wird über lvm.signUpView gesteuert.
+                    SignUpView(lvm: lvm)
                 } else {
-                    if lvm.signUpView {
-                        //Der User kann sich anmelden, aber auch registrieren. Welche View gezeigt wird, wird über lvm.signUpView gesteuert.
-                        SignUpView(lvm: lvm)
-                    } else {
-                        LoginView(lvm: lvm)
-                    }
+                    LoginView(lvm: lvm)
                 }
             }
         }

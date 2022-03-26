@@ -27,9 +27,6 @@ class LoginViewModel: ObservableObject {
     //PasswordReset
     @Published var resetEmail = ""
     
-    //Diese Variable wird verwendet, um Laden anzuzeigen.
-    @Published var isLoading = false
-    
     //Diese Variable sorgt dafür, dass die richtige View angezeigt wird. Je nach dem, ob sich der Nutzer anmelden möchte, oder auch registrieren möchte
     @Published var signUpView = false
     
@@ -88,10 +85,9 @@ class LoginViewModel: ObservableObject {
         ]) {
             (err) in
             if err != nil {
-                self.isLoading = false
+                
                 return
             }
-            self.isLoading = false
             //Status kann auf true gesetzt werden, da sich der Nutzer registriert hat und der Shop angezeigt werden soll.
             self.status = true
         }
@@ -121,10 +117,8 @@ class LoginViewModel: ObservableObject {
     
     func login() {
         //Diese Funktion ermöglicht ein Login
-        self.isLoading = true
         //Zuerst wird überpüft, ob email und Passwort und eingegeben wurden.
         if email == "" || password == "" {
-            self.isLoading = false
             self.alertMsg = "Fill the contents properly"
             self.alert.toggle()
             return
@@ -132,7 +126,6 @@ class LoginViewModel: ObservableObject {
         //signIn per Firebase Auth
         Auth.auth().signIn(withEmail: email, password: password) { (res, err) in
             if err != nil {
-                self.isLoading = false
                 self.alertMsg = err!.localizedDescription
                 self.alert.toggle()
                 return
@@ -152,23 +145,19 @@ class LoginViewModel: ObservableObject {
             }
             //Überprüfen, ob es ein Dokument in der "User" Collection gibt.
             self.db.collection("Users").whereField("uid", isEqualTo: Auth.auth().currentUser!.uid ).getDocuments { (snap, err) in
-                self.isLoading = true
                 if err != nil {
                     self.statusofregister = true
-                    self.isLoading = false
                     return
                 }
                 if snap!.documents.isEmpty {
                     //Gibt es kein Dokument wird statusofregister auf true gesetzt, damit sich ein Nutzer registrieren kann.
                     self.statusofregister = true
-                    self.isLoading = false
                     return
                     
                 }
                 //Ein Dokument ist vorhanden und status = true für die ShopView und statusofregister = false damit keine RegistrationView angezeigt wird.
                 self.statusofregister = false
                 self.status = true
-                self.isLoading = false
             }
         }
             
