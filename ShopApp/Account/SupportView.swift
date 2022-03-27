@@ -13,29 +13,38 @@ struct SupportView: View {
     var body: some View {
         VStack {
             Text("Support:")
-            ForEach(order.items) { item in
+                .font(.largeTitle)
+            Text("Select id of Item:")
+                .fontWeight(.bold)
+            ForEach(order.items) { orderItem in
                 Button(action: {
-                    spm.itemID = item.id
+                    spm.itemID = orderItem.item.id
                 }, label: {
-                    Text(item.id)
+                    Text(orderItem.item.id)
+                        .foregroundColor(spm.itemID == orderItem.item.id ? .black : .gray)
                 })
             }
+            Text("Select Support Case:")
+                .fontWeight(.bold)
             ForEach(SupportCases.allCases , id: \.self) { supportCase in
                 Button(action: {
                     spm.supportCase = supportCase
                 }, label: {
                     Text("\(supportCase.stringDescription)")
+                        .foregroundColor(spm.supportCase == supportCase ? .black : .gray)
                 })
             }
             
             TextField("supportMessage", text: $spm.supportMessage)
             
             Button(action: {
-                print("\(spm.itemID), \(spm.supportCase.stringDescription), \(spm.supportMessage)")
                 spm.createSupportRequest(idOfOrder: order.id)
             }, label: {
                 Text("Create request")
             })
+                .alert(spm.alertMsg, isPresented: $spm.alert) {
+                    Button("OK", role: .cancel) { }
+                }
 
         }
     }

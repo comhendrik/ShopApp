@@ -74,14 +74,23 @@ class SupportViewModel: ObservableObject {
     @Published var supportCase: SupportCases = .noSpecificReason
     @Published var supportMessage: String = ""
     @Published var itemID: String = ""
+    @Published var alert: Bool = false
+    @Published var alertMsg: String = ""
     
     
     func createSupportRequest(idOfOrder: String) {
-        Firestore.firestore().collection("Support").addDocument(data: ["supportCase" : supportCase.caseStringDescription,
+        if itemID == "" {
+            alertMsg = "Please select an item."
+            alert.toggle()
+            return
+        }
+        let requestID = Firestore.firestore().collection("Support").addDocument(data: ["supportCase" : supportCase.caseStringDescription,
                                                                        "userID": userID,
                                                                        "supportMessage": supportMessage,
                                                                        "dateOfRequest": Date.now,
                                                                        "orderID": idOfOrder,
-                                                                       "itemID": itemID])
+                                                                       "itemID": itemID]).documentID
+        alertMsg = "Your support request about the item \(itemID) of the your order \(idOfOrder) with the support Case \(supportCase.caseStringDescription) has been sent succesfully! \n requestID:\(requestID)"
+        alert.toggle()
     }
 }
