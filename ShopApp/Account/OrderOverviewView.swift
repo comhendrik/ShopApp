@@ -10,6 +10,7 @@ import SwiftUI
 struct OrderOverviewView: View {
     let order: Order
     @StateObject var uvm: UserViewModel
+    @State private var showSupportView = false
     var body: some View {
         ScrollView {
             HStack {
@@ -31,7 +32,7 @@ struct OrderOverviewView: View {
             .padding()
             
             Button(action: {
-                //TODO: Add support action
+                showSupportView.toggle()
             }, label: {
                 Text("Problems? We can help you!")
                     .foregroundColor(.white)
@@ -40,6 +41,7 @@ struct OrderOverviewView: View {
                     .background(.black)
                     .cornerRadius(15, antialiased: false)
             })
+                .sheet(isPresented: $showSupportView, content: { SupportView(order: order) })
         }
     }
 }

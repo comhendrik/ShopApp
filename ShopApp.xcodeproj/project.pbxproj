@@ -37,6 +37,8 @@
 		2460311D2754155200FE98D8 /* ItemDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2460311C2754155200FE98D8 /* ItemDetail.swift */; };
 		246562D7279D8F9600BBB830 /* LoginTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 246562D6279D8F9600BBB830 /* LoginTextField.swift */; };
 		246562D9279D94AF00BBB830 /* ResetPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 246562D8279D94AF00BBB830 /* ResetPasswordView.swift */; };
+		246DE45727F0A8640096047C /* SupportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 246DE45627F0A8640096047C /* SupportViewModel.swift */; };
+		246DE45927F0AAE50096047C /* SupportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 246DE45827F0AAE50096047C /* SupportView.swift */; };
 		24844CC52781FFA4007EC96E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 24844CC42781FFA4007EC96E /* GoogleService-Info.plist */; };
 		24844CCE27820168007EC96E /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 24844CCD27820168007EC96E /* FirebaseAuth */; };
 		24844CD027820168007EC96E /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 24844CCF27820168007EC96E /* FirebaseAuthCombine-Community */; };
@@ -84,6 +86,8 @@
 		2460311C2754155200FE98D8 /* ItemDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetail.swift; sourceTree = "<group>"; };
 		246562D6279D8F9600BBB830 /* LoginTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTextField.swift; sourceTree = "<group>"; };
 		246562D8279D94AF00BBB830 /* ResetPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordView.swift; sourceTree = "<group>"; };
+		246DE45627F0A8640096047C /* SupportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportViewModel.swift; sourceTree = "<group>"; };
+		246DE45827F0AAE50096047C /* SupportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportView.swift; sourceTree = "<group>"; };
 		24844CC42781FFA4007EC96E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		24844CDF27820F7B007EC96E /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		24858AD62788424F00583C65 /* OrderMiniViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderMiniViewer.swift; sourceTree = "<group>"; };
@@ -159,6 +163,7 @@
 				245252C72757A995006D534B /* ItemViewModel.swift */,
 				24844CDF27820F7B007EC96E /* UserViewModel.swift */,
 				2449C4F1278F5DC300B48FFF /* LoginViewModel.swift */,
+				246DE45627F0A8640096047C /* SupportViewModel.swift */,
 				2417E6982787247C00593707 /* Constants.swift */,
 			);
 			path = ViewModel;
@@ -214,6 +219,7 @@
 				24858AD62788424F00583C65 /* OrderMiniViewer.swift */,
 				241CA8D62789E1BA009D698E /* OrderOverviewView.swift */,
 				241CA8D82789E250009D698E /* OrderItemMiniViewer.swift */,
+				246DE45827F0AAE50096047C /* SupportView.swift */,
 			);
 			path = Account;
 			sourceTree = "<group>";
@@ -340,6 +346,7 @@
 				2455C702279097C200060522 /* ImagePicker.swift in Sources */,
 				24142C2B2779CEDC00195ADC /* FavoritesView.swift in Sources */,
 				245252C32757A17F006D534B /* StarsView.swift in Sources */,
+				246DE45727F0A8640096047C /* SupportViewModel.swift in Sources */,
 				242542E9277A4C4900FD8AA7 /* PaymentButton.swift in Sources */,
 				246562D9279D94AF00BBB830 /* ResetPasswordView.swift in Sources */,
 				2455C6FE2790884D00060522 /* SignUpView.swift in Sources */,
@@ -353,6 +360,7 @@
 				2491BFFE2757EDC800BBEB9F /* MiniViewer.swift in Sources */,
 				2433199D27942D0200200E1C /* AddAnimationButton.swift in Sources */,
 				241CA8D92789E250009D698E /* OrderItemMiniViewer.swift in Sources */,
+				246DE45927F0AAE50096047C /* SupportView.swift in Sources */,
 				24142C272779CC4100195ADC /* AccountView.swift in Sources */,
 				2433199F27943D4C00200E1C /* FavoriteAddAnimationButton.swift in Sources */,
 				24142C292779CD7F00195ADC /* ShoppingCart.swift in Sources */,

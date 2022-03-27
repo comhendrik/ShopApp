@@ -20,3 +20,4 @@ let previewItem = Item(_title: "jordan 1",
                        _rating: 2.5,
                        _id: "00003401",
                        _discount: 0)
+let userID = Auth.auth().currentUser?.uid ?? "no uid"
