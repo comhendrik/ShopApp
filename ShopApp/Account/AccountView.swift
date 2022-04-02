@@ -27,7 +27,8 @@ struct AccountView: View {
                             .foregroundColor(.gray)
                             .rotationEffect(.degrees(-90))
                     })
-                        .sheet(isPresented: $showEditView, onDismiss: { uvm.mainUser.adress = lvm.address }, content: { RegisterView(lvm: lvm, isRegisterView: false).padding() })
+                        .sheet(isPresented: $showEditView, content: { RegisterView(lvm: lvm, isRegisterView: false).padding() })
+                        
                 }
                 Button(action: {
                     lvm.logOut()

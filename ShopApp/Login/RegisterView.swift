@@ -35,6 +35,7 @@ struct RegisterView: View {
                     lvm.registerNewUserData()
                 } else {
                     lvm.updateUserAddress()
+                    
                 }
             }, label: {
                 Text("Register")

@@ -16,7 +16,6 @@ protocol SupportCasesProtocol {
 }
 enum SupportCases: CaseIterable, SupportCasesProtocol {
     case wrongSize
-    case wrongArticle
     case notLikeExpected
     case qualityProblems
     case alreadyWorn
@@ -35,8 +34,6 @@ enum SupportCases: CaseIterable, SupportCasesProtocol {
         switch self {
         case .wrongSize:
             return "wrong Size"
-        case .wrongArticle:
-            return "wrong Article"
         case .notLikeExpected:
             return "not like expected"
         case .qualityProblems:
@@ -54,8 +51,6 @@ enum SupportCases: CaseIterable, SupportCasesProtocol {
         switch self {
         case .wrongSize:
             return "wrongSize"
-        case .wrongArticle:
-            return "wrongArticle"
         case .notLikeExpected:
             return "notLikeExpected"
         case .qualityProblems:
