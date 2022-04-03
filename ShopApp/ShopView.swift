@@ -55,7 +55,6 @@ struct ShopView: View {
                 //Fetch Orders, CartItems, FavoriteItems
                 await uvm.getOrders()
                 await uvm.getCartItems()
-                print(uvm.cartItems.count)
                 await uvm.getFavoriteItems()
                 await ivm.getAllItems()
                 showAppProgressView = false

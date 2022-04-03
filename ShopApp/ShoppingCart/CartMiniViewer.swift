@@ -16,14 +16,7 @@ struct CartMiniViewer: View {
                 ZStack {
                     Color.gray.opacity(0.05)
                     NavigationLink {
-                        ItemDetail(item: cartItem.item,
-                                   addFavoriteAction: {
-                            uvm.addItemToFavorites(itemToAdd: cartItem.item)
-                        }, addToCartAction: {number in
-                            return uvm.addItemToCart(itemToAdd: cartItem.item, size: number, amount: 1)
-                        }, checkFavoriteAction: {
-                            return uvm.checkIfItemIsAlreadyFavorite(with: cartItem.item.id)
-                        })
+                        ItemDetail(uvm: uvm, item: cartItem.item)
                     } label: {
                         AsyncImage(url: URL(string: cartItem.item.imagePath)) { image in
                             image

@@ -97,7 +97,6 @@ class UserViewModel: ObservableObject {
                                            _discount: 0)
     @Published var alertMessage = ""
     @Published var showAlert = false
-    let userID = Auth.auth().currentUser?.uid ?? "no uid"
     
 
     
@@ -138,7 +137,7 @@ class UserViewModel: ObservableObject {
         //do catch Block falls ein Fehler auftritt
         do {
             // Mit async await alle Bestellungen bekommen
-            let data = try await Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").getDocuments()
+            let data = try await Firestore.firestore().collection("Users").document(userID).collection("Orders").getDocuments()
             //folgender code wird für jede Bestellung ausgeführt
             for document in data.documents {
                 // Es wird eine Bestellung deklariert. Diese wird später verändert und dem Array von oben hinzugefügt
@@ -151,7 +150,7 @@ class UserViewModel: ObservableObject {
                 order.orderDate = orderDate.dateValue()
                 order.id = orderID
                 //Neuer async await call, damit alle Artikel der Bestellung verfügbar sind
-                let items = try await Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("Orders").document(orderID).collection("Items").getDocuments()
+                let items = try await Firestore.firestore().collection("Users").document(userID).collection("Orders").document(orderID).collection("Items").getDocuments()
                 //Nun werden sich wieder für jedes Item die Daten geholt
                 
                 for itemOfOder in items.documents {
@@ -205,7 +204,7 @@ class UserViewModel: ObservableObject {
             //Dem User wird eine Order hinzugefügt
             let id = Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").addDocument(data: ["price" : price,
                                                                                                                                    "orderDate": Date.now,
-                                                                                                                                   "user": Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid")]).documentID
+                                                                                                                                   "user": Firestore.firestore().collection("Users").document(userID)]).documentID
             //Der Order werden die Produkte hinzugefügt
             
             //Variable für das Hinzufügen innerhalb der App erstellen:
@@ -380,7 +379,7 @@ class UserViewModel: ObservableObject {
     
     func deleteCartItem(with id: String) {
         //Löschen eines Items im Warenkorb. Es wird die ID eines CartItems benötigt
-        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id).delete { err in
+        Firestore.firestore().collection("Users").document(userID).collection("CartItems").document(id).delete { err in
             if let err = err {
                 //TODO: Handle this properly
                 print(err)
@@ -400,7 +399,7 @@ class UserViewModel: ObservableObject {
     
     func updateAmount(with id: String, amount: Int) {
         //Anzahl wird erhöht und. Als Id wird die ID eines CartItems benötigt.
-        Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(id).updateData(["amount" : amount])
+        Firestore.firestore().collection("Users").document(userID).collection("CartItems").document(id).updateData(["amount" : amount])
         //Update der Menge innerhalb der App:
         for i in 0 ..< self.cartItems.count {
             if self.cartItems[i].id == id {
@@ -419,7 +418,7 @@ class UserViewModel: ObservableObject {
         }
         //Zuerst wird überprüft, ob sich der Artikel bereits im Warenkorb befindet.
         //Wir verwenden id+String(size) als Indikator, da wir so einzelne Größen eines Artikels speichern können. Hat der Artikel die Nummer 1HKLK0KJP wird der Artikel in der Größe 45 als 1HKLK0KJP45 gespeichert.
-        let docRef = Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(itemToAdd.id+String(size))
+        let docRef = Firestore.firestore().collection("Users").document(userID).collection("CartItems").document(itemToAdd.id+String(size))
         docRef.getDocument { (document, error) in
             if document!.exists {
                 //Ist der Artikel vorhanden holen wir uns die Anzahl des Artikels, die im Warenkorb gespeichert wurde und erhöhen diese.
@@ -434,7 +433,7 @@ class UserViewModel: ObservableObject {
                 }
               } else {
                   //Der Artikel ist nicht vorhanden und wird neu erstellt mit Größe, neuer Id, Anzahl = 1 und einem String der auf das richtige Item hinweist.
-                  Firestore.firestore().collection("Users").document(Auth.auth().currentUser?.uid ?? "no uid").collection("CartItems").document(itemToAdd.id+String(size)).setData(["size" : size, "itemReference" : itemToAdd.id, "amount": amount])
+                  Firestore.firestore().collection("Users").document(userID).collection("CartItems").document(itemToAdd.id+String(size)).setData(["size" : size, "itemReference" : itemToAdd.id, "amount": amount])
                   //Der Artikel wird neu hinzugefügt innerhalb der App, um einen weiteren Request zu verhindern, weil der Artikel nicht im Warenkorb vorhanden ist.
                   self.cartItems.append(CartItem(_item: itemToAdd, _size: size, _amount: amount, _id: itemToAdd.id+String(size)))
               }

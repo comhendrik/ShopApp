@@ -27,7 +27,6 @@
 		245252C82757A995006D534B /* ItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245252C72757A995006D534B /* ItemViewModel.swift */; };
 		2455C6FE2790884D00060522 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2455C6FD2790884D00060522 /* SignUpView.swift */; };
 		2455C7002790949900060522 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2455C6FF2790949900060522 /* RegisterView.swift */; };
-		2455C702279097C200060522 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2455C701279097C200060522 /* ImagePicker.swift */; };
 		245637D3277F2258008CEBA4 /* CartMiniViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245637D2277F2258008CEBA4 /* CartMiniViewer.swift */; };
 		245637D5277F32B7008CEBA4 /* FavoriteMiniViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245637D4277F32B7008CEBA4 /* FavoriteMiniViewer.swift */; };
 		2460310F275414D900FE98D8 /* ShopAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2460310E275414D900FE98D8 /* ShopAppApp.swift */; };
@@ -75,7 +74,6 @@
 		245252C72757A995006D534B /* ItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemViewModel.swift; sourceTree = "<group>"; };
 		2455C6FD2790884D00060522 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		2455C6FF2790949900060522 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
-		2455C701279097C200060522 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		245637D2277F2258008CEBA4 /* CartMiniViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartMiniViewer.swift; sourceTree = "<group>"; };
 		245637D4277F32B7008CEBA4 /* FavoriteMiniViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteMiniViewer.swift; sourceTree = "<group>"; };
 		2460310B275414D900FE98D8 /* ShopApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShopApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -151,7 +149,6 @@
 				2455C6FD2790884D00060522 /* SignUpView.swift */,
 				246562D8279D94AF00BBB830 /* ResetPasswordView.swift */,
 				2455C6FF2790949900060522 /* RegisterView.swift */,
-				2455C701279097C200060522 /* ImagePicker.swift */,
 				246562D6279D8F9600BBB830 /* LoginTextField.swift */,
 			);
 			path = Login;
@@ -343,7 +340,6 @@
 				2417E6992787247C00593707 /* Constants.swift in Sources */,
 				2449C4F2278F5DC300B48FFF /* LoginViewModel.swift in Sources */,
 				245252BF275798DC006D534B /* SelectSize.swift in Sources */,
-				2455C702279097C200060522 /* ImagePicker.swift in Sources */,
 				24142C2B2779CEDC00195ADC /* FavoritesView.swift in Sources */,
 				245252C32757A17F006D534B /* StarsView.swift in Sources */,
 				246DE45727F0A8640096047C /* SupportViewModel.swift in Sources */,

@@ -59,7 +59,7 @@ struct BuyingView: View {
                     Spacer()
                 }
                 .padding()
-                PaymentButton(addAction: {
+                PaymentButton(payBtnAction: {
                     Task {
                         //Create Order
                         await uvm.createOrder(price: calculateCost(items: uvm.cartItems))

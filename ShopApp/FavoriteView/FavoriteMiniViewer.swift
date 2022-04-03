@@ -18,17 +18,7 @@ struct FavoriteMiniViewer: View {
                 ZStack {
                     Color.gray.opacity(0.05)
                     NavigationLink {
-                        ItemDetail(item: item, addFavoriteAction: {
-                            if uvm.checkIfItemIsAlreadyFavorite(with: item.id) {
-                                uvm.deleteFavoriteItem(with: item.id)
-                            } else {
-                                uvm.addItemToFavorites(itemToAdd: item)
-                            }
-                        }, addToCartAction: { number in
-                            uvm.addItemToCart(itemToAdd: item, size: number, amount: 1)
-                        }, checkFavoriteAction: {
-                            return uvm.checkIfItemIsAlreadyFavorite(with: item.id)
-                        })
+                        ItemDetail(uvm: uvm, item: item)
                             .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
                                 Button("Ok", role: .cancel) {}
                             }

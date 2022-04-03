@@ -16,7 +16,7 @@ struct ShoppingCart: View {
                 VStack {
                     if uvm.cartItems.count > 0 {
                         ShoppingCartListView(uvm: uvm)
-                        PaymentButton(addAction: {
+                        PaymentButton(payBtnAction: {
                             withAnimation(.easeIn(duration: 1)) {
                                 showBuyingView.toggle()
                             }

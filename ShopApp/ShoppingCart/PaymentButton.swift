@@ -9,12 +9,11 @@ import SwiftUI
 import UIKit
 
 struct PaymentButton: View {
-    let addAction: () -> Void
+    let payBtnAction: () -> Void
     let price: String
     var body: some View {
         Button(action: {
-            addAction()
-            /* Your custom payment code here */
+            payBtnAction()
         }, label: {
             Text("$ \(price) | Purchase")
                 .foregroundColor(.white)
