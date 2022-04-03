@@ -35,6 +35,7 @@ struct SupportView: View {
             
             ScrollView(showsIndicators: false) {
                 ForEach(order.items) { orderItem in
+                    //Eine View für jeden Artikel der Bestellung, damit der User den Artikel auswählen kann mit dem dieser Probleme hat.
                     SupportViewItemSelection(orderItem: orderItem, selectedItemID: $spm.itemID)
                     Divider()
                 }
@@ -47,6 +48,7 @@ struct SupportView: View {
                     LazyVGrid(columns: [GridItem(), GridItem()]) {
                         ForEach(SupportCases.allCases , id: \.self) { supportCase in
                             Button(action: {
+                                //Button für jeden SupportCase, welcher dafür sorgt, dass der Nutzer eben diesen auswählen kann
                                 spm.supportCase = supportCase
                             }, label: {
                                 Text("\(supportCase.stringDescription)")
@@ -71,6 +73,7 @@ struct SupportView: View {
             }
             
             Button(action: {
+                //Dieser Button erstellt eine Support Anfrage
                 spm.createSupportRequest(idOfOrder: order.id)
             }, label: {
                 Text("Create request")
@@ -100,6 +103,7 @@ struct SupportViewItemSelection: View {
     var body: some View {
         HStack {
             Button(action: {
+                //Setzt spm.itemID 0 orderItem.id siehe Zeile 39
                 selectedItemID = orderItem.id
             }, label: {
                 Image(systemName: orderItem.id == selectedItemID ? "circle.inset.filled" : "circle")

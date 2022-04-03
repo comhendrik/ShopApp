@@ -10,6 +10,7 @@ import SwiftUI
 struct OrderMiniViewer: View {
     let order: Order
     var body: some View {
+        //Diese View wird angezeigt, um die wichtigsten Daten einer Bestellung innerhalb der ScrollView in der AccountView darzustellen.
         VStack {
             HStack {
                     VStack(alignment: .leading) {

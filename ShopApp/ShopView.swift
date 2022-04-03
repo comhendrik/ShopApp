@@ -16,14 +16,11 @@ struct ShopView: View {
         //Diese View enthält eine TabView mit allen Sektion in der App.
         //Diew Views finden sich unter dem gleichnamigen Ordner wieder.
         TabView {
+            //Während die Daten laden wird eine ProgressView angezeigt.
             if showAppProgressView {
                 ProgressView()
             } else {
-                NavigationView {
-                    ItemScrollView(items: ivm.allItems, uvm: uvm, nameOfCustomer: uvm.mainUser.firstName)
-                        .navigationBarHidden(true)
-                        .padding()
-                }
+                HomeView(items: ivm.allItems, uvm: uvm, nameOfCustomer: uvm.mainUser.firstName)
                     .tabItem{
                         Image(systemName: "house")
                         Text("home")

@@ -9,7 +9,7 @@ import Foundation
 import Firebase
 import FirebaseAuth
 import FirebaseFirestore
-
+//Diese Datei entählt Konstanten, die immer wieder verwendet werden.
 let itemsRef = Firestore.firestore().collection("Items")
 let orderRef = Firestore.firestore().collection("Orders")
 let previewItem = Item(_title: "jordan 1",

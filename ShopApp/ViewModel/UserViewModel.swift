@@ -101,34 +101,29 @@ class UserViewModel: ObservableObject {
 
     
     func getUser() {
-        showProgressView = true
-        //Es wird per .getDocument das Dokument, welches zur uid des angemeldeten Nutzers gehört.
+        //Es wird per .getDocument das Dokument, welches zur uid des angemeldeten Nutzers gehört, geholt.
         Firestore.firestore().collection("Users").document(userID).getDocument { snap, err in
             self.mainUser = User(_firstName: "???", _lastName: "??", _address: Address(_city: "???", _zipCode: 0, _street: "???", _number: "???", _land: "???"), _email: "???", _memberId: "???")
             if let err = err {
                 //TODO: Handle this error properly!
-                self.showProgressView = false
                 print(err)
                 return
             } else {
                 //Daten werden innerhalb von MainUser gespeichert
-                let firstName = snap?.data()?["firstName"] as? String ?? "no firstName"
-                let lastName = snap?.data()?["lastName"] as? String ?? "no lastName"
+                //Für die Addresse werden die Daten in einer Variable für die Übersicht gespeichert.
                 let city = snap?.data()?["city"] as? String ?? "no city"
                 let zipCode = snap?.data()?["zipcode"] as? Int ?? 0
                 let street = snap?.data()?["street"] as? String ?? "no street"
                 let number = snap?.data()?["number"] as? String ?? "no number"
                 let land = snap?.data()?["land"] as? String ?? "no land"
-                let email = snap?.data()?["email"] as? String ?? "no email"
                 let memberId = snap?.documentID
                 self.mainUser.adress = Address(_city: city, _zipCode: zipCode, _street: street, _number: number, _land: land)
-                self.mainUser.firstName = firstName
-                self.mainUser.lastName = lastName
-                self.mainUser.email = email
+                self.mainUser.firstName = snap?.data()?["firstName"] as? String ?? "no firstName"
+                self.mainUser.lastName = snap?.data()?["lastName"] as? String ?? "no lastName"
+                self.mainUser.email = snap?.data()?["email"] as? String ?? "no email"
                 self.mainUser.memberId = memberId ?? "no id"
             }
         }
-        showProgressView = false
     }
     
     func getOrders() async {
@@ -159,7 +154,7 @@ class UserViewModel: ObservableObject {
                     let cartItemID = itemOfOder.documentID
                     let itemId = itemOfOder.data()["ref"] as? String ?? "no ref"
                     let orderedPrice = itemOfOder.data()["price"] as? Double ?? 0.0
-                    //Nächster async await call, da nur die artikel id in einer Bestellung gespeichert wird
+                    //Nächster async await call, da nur die artikel id in einer Bestellung gespeichert wird, deshalb muss das Item selber aus der Items Collection geholt werden.
                     let itemData = try await itemsRef.document(itemId).getDocument()
                     var item = Item(_title: "", _description: "", _price: 0.0, _sizes: [], _imagePath: "", _rating: 0.0, _id: "", _discount: 0)
                     item.title = itemData.data()?["title"] as? String ?? "No title"
@@ -170,19 +165,19 @@ class UserViewModel: ObservableObject {
                     let docId = itemData.documentID
                     item.id = docId
                     item.discount = itemData.data()?["discount"] as? Int ?? 0
-                    //Neuer async await call, damit alle Artikel der Bestellung verfügbar sind
+                    //Neuer async await call, damit alle Schugrößen des Artikel verfügbar sind
                     let shoeSizeDocuments = try await Firestore.firestore().collection("Items").document(docId).collection("Sizes").getDocuments()
-                    //Nun werden sich wieder für jedes Item die Daten geholt
-                    //Nun müssen müssen noch Schuhgrößen gefetcht werden.
+                    //Nun werden sich wieder für jede Schuhgröße die Daten geholt
                     for shoeSize in shoeSizeDocuments.documents {
-                        let size = shoeSize.data()["size"] as? Int ?? 0
+                        //TODO: Ui Verbesserung, wenn die Größe 0 ist
+                        let size = Int(shoeSize.documentID) ?? 0
                         let amount = shoeSize.data()["amount"] as? Int ?? 0
                         item.sizes.append(ShoeSize(_size: size, _amount: amount))
                     }
                     //Nun kann der Artikel der Bestellung hinzugefügt werden.
                     order.items.append(OrderItem(_item: item, _size: size, _amount: amount, _id: cartItemID, _price: orderedPrice))
                 }
-                //Dank async await kann hier die Bestellung dem Array hinzugefügt werden. Sonst würde alles "synchronous" ablaufen und dieser Befehl würde schon bevor alle Date vorhanden sind ausgeführt werden.
+                //Dank async await kann hier die Bestellung dem Array hinzugefügt werden. Sonst würde alles "synchronous" ablaufen und dieser Befehl würde schon, bevor alle Daten vorhanden sind, ausgeführt werden.
                 newOrders.append(order)
             }
             //Nun kann newOrders übergeben werden. Dank async await ist dies wieder an dieser Stelle möglich
@@ -201,21 +196,23 @@ class UserViewModel: ObservableObject {
             alertMessage = "Thank you for wanting to order, but please add some items."
             showAlert.toggle()
         } else {
-            //Dem User wird eine Order hinzugefügt
+            //Dem User wird eine Order mit Summe, Datum der Bestellung und einer DocumentReference zum User hinzugefügt.
             let id = Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").addDocument(data: ["price" : price,
                                                                                                                                    "orderDate": Date.now,
                                                                                                                                    "user": Firestore.firestore().collection("Users").document(userID)]).documentID
-            //Der Order werden die Produkte hinzugefügt
             
-            //Variable für das Hinzufügen innerhalb der App erstellen:
+            //Variable, für das Hinzufügen innerhalb der App, erstellen:
             var newOrder = Order(price: price, items: [], orderDate: Date.now, id: id)
             
-            
+            //Folgender Code wird für jedes Item, welches im Warenkorb ist, durchgeführt
             for cartItem in cartItems {
                 do {
                     //überprüfen, ob ein Item nicht auf Lager ist.
+                    //Zuerst wird das Dokument vom Server geladen, weil die Menge des Artikel innerhaln der App nicht auf dem neuesten Stand sein kann.
                     let doc = try await Firestore.firestore().collection("Items").document(cartItem.item.id).collection("Sizes").document("\(cartItem.size)").getDocument()
+                    //In einer Variable wird die akktuelle Menge des Artikel gespeichert.
                     let amountInStock = doc.data()?["amount"] as? Int ?? 0
+                    //Wenn nun die gewünschte Menge(cartItem.amount) größer ist als die tatsächliche Menge, wird ein Alert aufgerufen und die Bestellung wird vom Server gelöscht.
                     if amountInStock < cartItem.amount {
                         alertMessage = "Item '\(cartItem.item.title)' in size '\(cartItem.size)' is is not available in this quantity.\nin Stock: \(amountInStock)"
                         showAlert.toggle()
@@ -223,20 +220,21 @@ class UserViewModel: ObservableObject {
                         try await Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").document(id).delete()
                         return
                     }
-                    //Hinzufügen des Items zur Order, da Item vorhanden.
+                    //Wird der Code weiterhin ausgeführt ist das Item an dieser Stelle vorhanden.
+                    //Der Artikel wird innerhalb einer Collection im Eintrag der Bestellung gespeichert
                     let itemId = Firestore.firestore().collection("Users").document(mainUser.memberId).collection("Orders").document(id).collection("Items")
                         .addDocument(data: ["amount" : cartItem.amount,
                                             "ref":cartItem.item.id,
                                             "size": cartItem.size,
                                             "price": cartItem.item.discount != 0 ? cartItem.item.price - ((cartItem.item.price / 100.0) * Double(cartItem.item.discount)) : cartItem.item.price]).documentID
-                    //Order Item innerhalb der App erstellen
+                    //Artikel der Bestellung innerhalb der App erstellen
                     newOrder.items.append(OrderItem(_item: cartItem.item, _size: cartItem.size, _amount: cartItem.amount, _id: itemId, _price: cartItem.item.discount != 0 ? cartItem.item.price - ((cartItem.item.price / 100.0) * Double(cartItem.item.discount)) : cartItem.item.price))
                     //Menge innerhalb von Firestore updaten.
+                    //TODO: Aktualisierung der Menge auf die alte Menge, wenn ein späteres Artikel nicht verfügbar ist. Akktuell ist es so, wenn ein nächster Artikel nicht verfügbar ist, werden die Mengen der vorherigen Artikel in Firebase aktualisiert. Außerdem werden die vorherigen Artikel aus dem Warenkorb gelöscht
                     try await Firestore.firestore().collection("Items").document(cartItem.item.id).collection("Sizes").document("\(cartItem.size)").updateData(["amount" : amountInStock-cartItem.amount])
                     //Lösche das Produkt aus dem Warenkorb
                     deleteCartItem(with: cartItem.id)
                 } catch {
-                    print(error)
                     alertMessage = error.localizedDescription
                     showAlert.toggle()
                     return
@@ -245,8 +243,7 @@ class UserViewModel: ObservableObject {
             //Die Bestellung ist erfolgreich durchgeführt worden.
             alertMessage = "Thank you for ordering. We do our best to send the order to you as fast as possible! \n OrderID: \(id)"
             showAlert.toggle()
-            //Innerhalb der App, die Items aus dem Warenkorb löschen und die Bestellung dem Array hinzufügen
-            cartItems = []
+            //Innerhalb der App: die Artikel werden aus dem Warenkorb gelöscht und die Bestellung dem Array orders hinzugefügt.
             orders.insert(newOrder, at: 0)
             
             
@@ -257,15 +254,15 @@ class UserViewModel: ObservableObject {
     }
     
     func getFavoriteItems() async {
-        //In diesem Array werden die Bestellungen gespeichert
+        //In diesem Array werden die Favoriten gespeichert
         var newFavoriteItems = [Item]()
         //do catch Block falls ein Fehler auftritt
         do {
-            // Mit async await alle Bestellungen bekommen
+            // Mit async await alle Favoriten bekommen
             let items = try await Firestore.firestore().collection("Users").document(userID).collection("Favorites").getDocuments()
-            //folgender code wird für jede Bestellung ausgeführt
+            //Folgender code wird für jede Bestellung ausgeführt
             for favoriteItem in items.documents {
-                // Es wird eine Bestellung deklariert. Diese wird später verändert und dem Array von oben hinzugefügt
+                // Es wird ein Favorit deklariert. Diese wird später verändert und dem Array von oben hinzugefügt
                 let ref = favoriteItem.data()["ref"] as! DocumentReference
                 var item = Item(_title: "", _description: "", _price: 0.0, _sizes: [], _imagePath: "", _rating: 0.0, _id: "", _discount: 0)
                 let document  = try await ref.getDocument()
@@ -277,19 +274,19 @@ class UserViewModel: ObservableObject {
                 let docId = document.documentID
                 item.id = docId
                 item.discount = document.data()?["discount"] as? Int ?? 0
-                //Neuer async await call, damit alle Artikel der Bestellung verfügbar sind
+                //Neuer async await call, damit alle Schugrößen eines Favoriten verfügbar sind
                 let shoeSizeDocuments = try await Firestore.firestore().collection("Items").document(docId).collection("Sizes").getDocuments()
                 //Nun werden sich wieder für jedes Item die Daten geholt
                 for shoeSize in shoeSizeDocuments.documents {
-                    let size = shoeSize.data()["size"] as? Int ?? 0
+                    let size = Int(shoeSize.documentID) ?? 0
                     let amount = shoeSize.data()["amount"] as? Int ?? 0
                     item.sizes.append(ShoeSize(_size: size, _amount: amount))
                 }
-                //Dank async await kann hier die Bestellung dem Array hinzugefügt werden. Sonst würde alles "synchronous" ablaufen und dieser Befehl würde schon bevor alle Date vorhanden sind ausgeführt werden.
+                //Dank async await kann hier der Favorit dem Array hinzugefügt werden. Sonst würde alles "synchronous" ablaufen und dieser Befehl würde schon bevor alle Date vorhanden sind ausgeführt werden.
                 newFavoriteItems.append(item)
             }
-            //Nun kann newOrders übergeben werden. Dank async await ist dies wieder an dieser Stelle möglich
-            //Normalerweise tritt hier ein Fehler auf, da die Funktion auf einem Backgroundthread läuft und von dort aus nicht die UI geupdatet werden darf. Dank @MainActor am Anfang der Klasse laufen all Befehle auf dem Mainthread            allItems = newItems
+            //Nun kann newFavoriteItems übergeben werden. Dank async await ist dies wieder an dieser Stelle möglich
+            //Normalerweise tritt hier ein Fehler auf, da die Funktion auf einem Backgroundthread läuft und von dort aus nicht die UI geupdatet werden darf. Dank @MainActor am Anfang der Klasse laufen all Befehle auf dem Mainthread
             favoriteItems = newFavoriteItems
         } catch {
             print(error)
@@ -298,7 +295,7 @@ class UserViewModel: ObservableObject {
     }
     
     func addItemToFavorites(itemToAdd: Item) {
-        //Diese Funktion fügt einen neune Favoriten hinzu, indem nur die Referenz des Items gespeichert. Der Button in ItemDetail mit der Beschreibung Add to Favorites führt diese Aktion aus.
+        //Diese Funktion fügt einen neuen Favoriten hinzu, indem nur die Referenz des Items gespeichert. Der Button in ItemDetail mit der Beschreibung Add to Favorites führt diese Aktion aus.
         Firestore.firestore().collection("Users").document(userID).collection("Favorites").document(itemToAdd.id).setData(["ref" : itemsRef.document(itemToAdd.id)])
         //Item innerhalb der App zu den Favoriten hinzufügen, damit keine weiteren Requests an den Server nötig sind, um die Daten darzustellen.
         favoriteItems.append(itemToAdd)
@@ -335,20 +332,20 @@ class UserViewModel: ObservableObject {
     }
     
     func getCartItems() async {
-        //In diesem Array werden die Bestellungen gespeichert
+        //In diesem Array werden die Artikel im Warenkorb gespeichert
         var newCartItems = [CartItem]()
         //do catch Block falls ein Fehler auftritt
         do {
-            // Mit async await alle Bestellungen bekommen
+            // Mit async await alle Artikel bekommen
             let data = try await Firestore.firestore().collection("Users").document(userID).collection("CartItems").getDocuments()
-            //folgender code wird für jede Bestellung ausgeführt
+            //folgender code wird für jeden Artikel ausgeführt
             for document in data.documents {
                 var cartItem = CartItem(_item: Item(_title: "", _description: "", _price: 0.0, _sizes: [], _imagePath: "", _rating: 0.0, _id: "", _discount: 0), _size: 0, _amount: 0, _id: "")
                 let itemReference = document.data()["itemReference"] as? String ?? "No id"
                 cartItem.size = document.data()["size"] as? Int ?? 0
                 cartItem.amount = document.data()["amount"] as? Int ?? 0
                 cartItem.id = document.documentID
-                
+                //Der Eintrag zu dem Artikel im Warenkorb enthält nur eine DocumentReference zum Artikel. Dieser muss mittels async await von der Items Collection geholt werden
                 let itemRef = try await Firestore.firestore().collection("Items").document(itemReference).getDocument()
                 cartItem.item.title = itemRef.data()?["title"] as? String ?? "No title"
                 cartItem.item.description = itemRef.data()?["description"] as? String ?? "No description"
@@ -358,7 +355,7 @@ class UserViewModel: ObservableObject {
                 let docId = itemRef.documentID
                 cartItem.item.id = docId
                 cartItem.item.discount = itemRef.data()?["discount"] as? Int ?? 0
-                //Neuer async await call, damit alle Artikel der Bestellung verfügbar sind
+                //Neuer async await call, damit alle Schuhgrößen des Artikel verfügbar sind
                 let shoeSizeDocuments = try await Firestore.firestore().collection("Items").document(docId).collection("Sizes").getDocuments()
                 //Nun werden sich wieder für jedes Item die Daten geholt
                 for shoeSize in shoeSizeDocuments.documents {
@@ -366,11 +363,11 @@ class UserViewModel: ObservableObject {
                     let amount = shoeSize.data()["amount"] as? Int ?? 0
                     cartItem.item.sizes.append(ShoeSize(_size: size, _amount: amount))
                 }
-                //Dank async await kann hier die Bestellung dem Array hinzugefügt werden. Sonst würde alles "synchronous" ablaufen und dieser Befehl würde schon bevor alle Date vorhanden sind ausgeführt werden.
+                //Dank async await kann hier die Item des Warenkorbs dem Array hinzugefügt werden. Sonst würde alles "synchronous" ablaufen und dieser Befehl würde schon bevor alle Date vorhanden sind ausgeführt werden.
                 newCartItems.append(cartItem)
             }
-            //Nun kann newOrders übergeben werden. Dank async await ist dies wieder an dieser Stelle möglich
-            //Normalerweise tritt hier ein Fehler auf, da die Funktion auf einem Backgroundthread läuft und von dort aus nicht die UI geupdatet werden darf. Dank @MainActor am Anfang der Klasse laufen all Befehle auf dem Mainthread            allItems = newItems
+            //Nun kann newCartItems übergeben werden. Dank async await ist dies wieder an dieser Stelle möglich
+            //Normalerweise tritt hier ein Fehler auf, da die Funktion auf einem Backgroundthread läuft und von dort aus nicht die UI geupdatet werden darf. Dank @MainActor am Anfang der Klasse laufen all Befehle auf dem Mainthread
             cartItems = newCartItems
         } catch {
             print(error)
@@ -440,6 +437,7 @@ class UserViewModel: ObservableObject {
         }
         
         return true
+        //Es wird true zurückgegeben, damit keine Animation in der View getriggert wird.
         
         
     }

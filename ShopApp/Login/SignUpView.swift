@@ -11,6 +11,7 @@ struct SignUpView: View {
     @StateObject var lvm: LoginViewModel
     var body: some View {
         ScrollView(showsIndicators: false) {
+            //UI zum Account erstellen.
             Text("Welcome!")
                 .fontWeight(.bold)
             Spacer()
@@ -22,6 +23,7 @@ struct SignUpView: View {
             LoginTextField(isSecure: true, value: $lvm.password_SignUp, title: "password", systemImage: "lock")
             LoginTextField(isSecure: true, value: $lvm.reEnterPassword, title: "re enter password", systemImage: "lock")
             Button(action: {
+                //Account erstellung
                 lvm.SignUp()
             }, label: {
                 Text("SignUp!")
@@ -35,6 +37,7 @@ struct SignUpView: View {
                     Button("OK", role: .cancel) { }
                 }
             Button(action: {
+                //Anzeigen der AnmeldeView
                 withAnimation() {
                     lvm.signUpView.toggle()
                 }

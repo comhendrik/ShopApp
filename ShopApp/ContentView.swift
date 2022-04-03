@@ -19,7 +19,7 @@ struct ContentView: View {
         } else {
             //Die Views für den Loginvorgang finden sich in dem Ordner Login.
             if statusofregister {
-                //ist statusofregister == true, dann wird die view angezeigt, um sich mit mehreren Daten, wie Adresse zu registrieren.
+                //ist statusofregister == true, dann wird die view angezeigt, um sich mit der Adresse zu registrieren.
                 VStack {
                     RegisterView(lvm: lvm, isRegisterView: true)
                     Button(action: {

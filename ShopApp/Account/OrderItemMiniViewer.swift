@@ -11,11 +11,13 @@ struct OrderItemMiniViewer: View {
     let orderItem: OrderItem
     @StateObject var uvm: UserViewModel
     var body: some View {
+        //Diese View zeigt Information zu den Artikeln einer Bestellung an
         VStack {
             HStack {
                 ZStack {
                     Color.gray.opacity(0.05)
                     NavigationLink(destination: {
+                        //Über diesen NavigationLink wird die normale View eines Artikels angezeigt
                         ItemDetail(uvm: uvm, item: orderItem.item)
                             .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
                                 Button("Ok", role: .cancel) {}

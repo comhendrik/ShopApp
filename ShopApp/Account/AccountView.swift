@@ -14,7 +14,6 @@ struct AccountView: View {
     var body: some View {
         NavigationView {
             VStack {
-                
                 HStack {
                     Text("\(uvm.mainUser.firstName) \(uvm.mainUser.lastName)")
                         .fontWeight(.bold)
@@ -31,6 +30,7 @@ struct AccountView: View {
                         
                 }
                 Button(action: {
+                    //Button zum Abmelden
                     lvm.logOut()
                 }, label: {
                     Text("Logout")
@@ -44,6 +44,7 @@ struct AccountView: View {
                     Spacer()
                 }
                 .padding()
+                //Wenn man auf die AccountView geht, sieht man alle getätigten Bestellungen
                 if uvm.orders.count <= 0 {
                     VStack {
                         Spacer()

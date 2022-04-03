@@ -14,6 +14,7 @@ struct ResetPasswordView: View {
         LoginTextField(isSecure: false, value: $lvm.email, title: "email", systemImage: "envelope")
         Spacer()
         Button(action: {
+            //Passwort zurücksetzen
             lvm.resetPassword()
         }, label: {
             Text("Reset")
@@ -28,6 +29,7 @@ struct ResetPasswordView: View {
             }
         Button(action: {
             withAnimation() {
+                //Anzeigen der LoginView
                 showResetPasswordview.toggle()
             }
         }, label: {

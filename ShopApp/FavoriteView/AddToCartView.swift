@@ -14,6 +14,7 @@ struct AddToCartView: View {
     @State private var shoeSize = 0
     let item: Item
     var body: some View {
+        //Diese View ermöglicht es dem User einen Favoriten zum Warenkorb hinzuzufügen
         ZStack {
             Rectangle()
                 .foregroundColor(.white)
@@ -63,6 +64,7 @@ struct AddToCartView: View {
                                     .background(size.size == shoeSize ? .gray.opacity(0.35) : .clear)
                                     //.foregroundColor(item.availableSizes.contains(item.sizes[size]) ? .black : .gray)
                                     .cornerRadius(10, antialiased: false)
+                                    .foregroundColor(.black)
                             })
                             
                         }

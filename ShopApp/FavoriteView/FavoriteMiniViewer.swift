@@ -13,6 +13,7 @@ struct FavoriteMiniViewer: View {
     @Binding var showAddToCartView: Bool
     let deleteAction: (String) -> Void
     var body: some View {
+        //UI für einen Favoriten
         VStack {
             HStack {
                 ZStack {
@@ -44,6 +45,8 @@ struct FavoriteMiniViewer: View {
                 Spacer()
                 VStack {
                     Button(action: {
+                        //Dieser Knopf ruft die AddToCartView in der FavoritesView auf.
+                        //uvm.placeholderItem = item, damit der User auswählen kann in welcher Größe der Artikel hinzugefügt wird
                         uvm.placeholderItem = item
                         withAnimation() {
                             showAddToCartView.toggle()
@@ -59,13 +62,8 @@ struct FavoriteMiniViewer: View {
                     })
                     Spacer()
                     Button(action: {
+                        //Dieser Button löscht das Item von den Favoriten
                         deleteAction(item.id)
-                        for i in 0 ..< uvm.favoriteItems.count {
-                            if uvm.favoriteItems[i].id == item.id {
-                                uvm.favoriteItems.remove(at: i)
-                                break
-                            }
-                        }
                     }, label: {
                         Image(systemName: "trash")
                             .font(.title2)

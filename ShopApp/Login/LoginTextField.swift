@@ -15,6 +15,7 @@ struct LoginTextField: View {
     @FocusState private var isFocused: Bool
     @State private var showSecureField = true
     var body: some View {
+        //UI für das Design des Textfeldes.
         VStack(alignment: .leading) {
             if systemImage != "" {
                 Image(systemName: systemImage)

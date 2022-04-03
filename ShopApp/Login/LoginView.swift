@@ -11,6 +11,7 @@ struct LoginView: View {
     @StateObject var lvm: LoginViewModel
     @State private var showResetPasswordView = false
     var body: some View {
+        //UI zum Anmelden.
         ScrollView(showsIndicators: false) {
             Text("Welcome!")
                 .fontWeight(.bold)
@@ -18,12 +19,14 @@ struct LoginView: View {
                 .scaledToFit()
                 .padding()
             Spacer()
+            //Wenn der User sein Passwort zurücksetzen möchte, kann er das über die ResetPasswordView tun.
             if showResetPasswordView {
                 ResetPasswordView(showResetPasswordview: $showResetPasswordView, lvm: lvm)
             } else {
                 LoginTextField(isSecure: false, value: $lvm.email, title: "email", systemImage: "envelope")
                 LoginTextField(isSecure: true, value: $lvm.password, title: "password", systemImage: "lock")
                 Button(action: {
+                    //Anmelden
                     lvm.login()
                 }, label: {
                     Text("Login")
@@ -37,6 +40,7 @@ struct LoginView: View {
                         Button("OK", role: .cancel) { }
                     }
                 Button(action: {
+                    //Anzeigen der SignUpView
                     withAnimation() {
                         lvm.signUpView.toggle()
                     }
@@ -49,6 +53,7 @@ struct LoginView: View {
                         .cornerRadius(15, antialiased: false)
                 })
                 Button(action: {
+                    //Anzeigen der ResetPasswordView
                     withAnimation() {
                         showResetPasswordView.toggle()
                     }

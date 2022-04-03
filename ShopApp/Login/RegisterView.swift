@@ -12,6 +12,7 @@ struct RegisterView: View {
     @FocusState private var isFocused: Bool
     let isRegisterView: Bool
     var body: some View {
+        //UI zum Ändern und Eingeben der Adresse.
         VStack {
             Text(isRegisterView ? "Please tell us your address:" : "Update your address:")
                 .fontWeight(.bold)
@@ -31,6 +32,7 @@ struct RegisterView: View {
             LoginTextField(isSecure: false, value: $lvm.address.land, title: "land", systemImage: "")
             Spacer()
             Button(action: {
+                //Wird die View beim Registrationsvorgang verwenden muss lvm.registerNewUserData() ausgeführt werden. Wird die View zur Änderung der Adresse verwendet muss lvm.updateUserAddress() ausgeführt werden.
                 if isRegisterView {
                     lvm.registerNewUserData()
                 } else {

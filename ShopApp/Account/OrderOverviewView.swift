@@ -12,6 +12,7 @@ struct OrderOverviewView: View {
     @StateObject var uvm: UserViewModel
     @State private var showSupportView = false
     var body: some View {
+        //Diese View stellt die Information der Bestellung in einer neuen View dar.
         ScrollView {
             HStack {
                 Text(order.id)
@@ -32,6 +33,7 @@ struct OrderOverviewView: View {
             .padding()
             
             Button(action: {
+                //Dieser Button zeigt den View, um eine Support Anfrage zu stellen.
                 showSupportView.toggle()
             }, label: {
                 Text("Problems? We can help you!")

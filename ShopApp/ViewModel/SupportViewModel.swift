@@ -74,17 +74,21 @@ class SupportViewModel: ObservableObject {
     
     
     func createSupportRequest(idOfOrder: String) {
+    //TODO: Eventuell Zeile ändern.
+        //Bevor eine Anfrage an den Support gestellt werden kann muss überprüft werden, ob ein Artikel ausgewählt wurde(Dem String itemID wird in der SupportView die zugehörige ID per Button hinterlegt siehe SupportView.swift/Zeile 50. Die ItemId entspricht nicht der original Item ID aus der Items Collection, sondern der ItemId, welche bei einem Eintrag für eine Bestellung in der dazugehörigen Items collection hinterlegt wurde.
         if itemID == "" {
             alertMsg = "Please select an item."
             alert.toggle()
             return
         }
+        //Nun wird in einer eigenen Collection namens Support eine Anfrage mit dem supportCase, welcher durch eine Enumeration innerhalb der App dargestellt wird(siehe Beginn dieser Datei) erstellt. Dazu wird die userID, eine vom Nutzer eingegebene Nachricht, das Datum der Anfrage, die Id der Bestellung und die ID(wie oben erwähnt) des Artikel hinterlegt
         let requestID = Firestore.firestore().collection("Support").addDocument(data: ["supportCase" : supportCase.caseStringDescription,
                                                                        "userID": userID,
                                                                        "supportMessage": supportMessage,
                                                                        "dateOfRequest": Date.now,
                                                                        "orderID": idOfOrder,
                                                                        "itemID": itemID]).documentID
+        //Das Hinzufügen war erfolgreich und ein Alert wird getriggert, um dem Nutzer zu signalisieren, dass die Anfrage eingegangen ist.
         alertMsg = "Your support request about the item \(itemID) of the your order \(idOfOrder) with the support Case \(supportCase.caseStringDescription) has been sent succesfully! \n requestID:\(requestID)"
         alert.toggle()
     }

@@ -11,6 +11,7 @@ struct FavoritesView: View {
     @StateObject var uvm: UserViewModel
     @State private var showAddToCartView = false
     var body: some View {
+        //UI, um alle Favoriten anzuzeigen
         NavigationView {
             ZStack {
                 if uvm.favoriteItems.count > 0 {
@@ -34,6 +35,7 @@ struct FavoritesView: View {
                 }
                 VStack {
                     Spacer()
+                    //AddToCart lässt den Nutzer einen Favoriten dem Warenkorb hinzufügen.
                     AddToCartView(uvm: uvm, showAddToCartView: $showAddToCartView,
                                   addAction: { item, size in
                         return uvm.addItemToCart(itemToAdd: item, size: size, amount: 1)

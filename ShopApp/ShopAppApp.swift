@@ -10,6 +10,7 @@ import Firebase
 
 @main
 struct ShopAppApp: App {
+    //Firebase wird in dieser Datei initialisiert, außerdem enthält sie die ContentView
     init() {
         FirebaseApp.configure()
     }

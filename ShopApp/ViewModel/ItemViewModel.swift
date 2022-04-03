@@ -54,7 +54,6 @@ extension ShoeSize: Identifiable {
 class ItemViewModel: ObservableObject {
     //Dieses ViewModel lädt alle Items
     @Published var allItems: [Item] = []
-    @Published var showProgressView = true
     
     func getAllItems() async {
         //In diesem Array werden die Artikel gespeichert
@@ -91,9 +90,10 @@ class ItemViewModel: ObservableObject {
                 newItems.append(item)
             }
             //Nun kann newItems übergeben werden. Dank async await ist dies wieder an dieser Stelle möglich, aus dem selben Grund wie in Zeile 90 beschrieben
-            //Normalerweise tritt hier ein Fehler auf, da die Funktion auf einem Backgroundthread läuft und von dort aus nicht die UI geupdatet werden darf. Dank @MainActor am Anfang der Klasse laufen all Befehle auf dem Mainthread            allItems = newItems
+            //Normalerweise tritt hier ein Fehler auf, da die Funktion auf einem Backgroundthread läuft und von dort aus nicht die UI geupdatet werden darf. Dank @MainActor am Anfang der Klasse laufen alle Befehle auf dem Mainthread.
             allItems = newItems
         } catch {
+            //TODO: Error handling
             print(error)
         }
         
