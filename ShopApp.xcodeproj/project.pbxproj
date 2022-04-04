@@ -213,7 +213,7 @@
 			path = Account;
 			sourceTree = "<group>";
 		};
-		2491BFF92757E87700BBEB9F /* DetailView */ = {
+		2491BFFA2757E89000BBEB9F /* HomeView */ = {
 			isa = PBXGroup;
 			children = (
 				2460311C2754155200FE98D8 /* ItemDetail.swift */,
@@ -221,14 +221,6 @@
 				2433199E27943D4C00200E1C /* FavoriteAddAnimationButton.swift */,
 				245252C22757A17F006D534B /* StarsView.swift */,
 				245252BE275798DC006D534B /* SelectSize.swift */,
-			);
-			path = DetailView;
-			sourceTree = "<group>";
-		};
-		2491BFFA2757E89000BBEB9F /* HomeView */ = {
-			isa = PBXGroup;
-			children = (
-				2491BFF92757E87700BBEB9F /* DetailView */,
 				2449C4EF278F5C4C00B48FFF /* HomeView.swift */,
 				2491BFFD2757EDC800BBEB9F /* MiniViewer.swift */,
 			);
