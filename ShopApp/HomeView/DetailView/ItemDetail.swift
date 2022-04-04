@@ -4,21 +4,6 @@
 //
 //  Created by Hendrik Steen on 28.11.21.
 //
-//Beispiel für einen USECASE:
-//ItemDetail(item: item, addFavoriteAction: {
-//    if uvm.checkIfItemIsAlreadyFavorite(with: item.id) {
-//        uvm.deleteFavoriteItem(with: item.id)
-//    } else {
-//        uvm.addItemToFavorites(itemToAdd: item)
-//    }
-//}, addToCartAction: { number in
-//    uvm.addItemToCart(with: item.id, size: number, amount: 1)
-//}, checkFavoriteAction: {
-//    return uvm.checkIfItemIsAlreadyFavorite(with: item.id)
-//})
-//    .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
-//        Button("Ok", role: .cancel) {}
-//    }
 import SwiftUI
 
 struct ItemDetail: View {
@@ -27,6 +12,7 @@ struct ItemDetail: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     let item: Item
     var body: some View {
+        //Diese View ist die Artikelseit und zeigt alle nötigen Information eines Artikels, sowie die Möglichkeit den Artikel dem Warenkorb und der Favoritenliste hinzuzufügen.
         ScrollView {
             VStack {
                 ZStack {
@@ -46,6 +32,7 @@ struct ItemDetail: View {
 
                 HStack {
                     if item.discount != 0 {
+                        //Im Eintrag wird der Rabatt angegeben und wenn dieser = 0 ist, dann gibt es keinen Rabatt ansonsten wird dieser hier abgezogen.
                         VStack {
                             Text("\(String(format: "%.2f", (item.price - (item.price/100.0) * Double(item.discount))))$")
                                 .foregroundColor(Color.red)
@@ -60,7 +47,7 @@ struct ItemDetail: View {
                         Text("\(String(format: "%.2f", item.price))$")
                     }
                     Spacer()
-                    
+                    //TODO: Die Möglichkeit eine Bewertung abzuschicken.
                     StarsView(rating: item.rating)
                 }
                 .padding()
@@ -70,6 +57,7 @@ struct ItemDetail: View {
                     .padding()
                 
                 SelectSize(actualSize: $shoeSize, item: item)
+                //Wenn die gesamte Menge > 0 ist, dann kann ein Artikel gekauft werden
                 if calculateShoeSizeAmount(shoeSizes: item.sizes) > 0 {
                     AddAnimationButton {
                         return uvm.addItemToCart(itemToAdd: item, size: shoeSize, amount: 1)
@@ -84,12 +72,14 @@ struct ItemDetail: View {
                         .cornerRadius(15, antialiased: false)
                 }
                 FavoriteAddAnimationButton(addAction: {
+                    //Es wird überprüft, ob das Item bereits ein Favorit ist, wenn ja muss es von der Favoritenliste gelöscht werden, ansonsten muss es hinzugefügt wird.
                     if uvm.checkIfItemIsAlreadyFavorite(with: item.id) {
                         uvm.deleteFavoriteItem(with: item.id)
                     } else {
                         uvm.addItemToFavorites(itemToAdd: item)
                     }
                 }, checkFavoriteAction: {
+                    //Diese Funktion aus Zeile 76 sorgt ebenfalls dafür, dass die Animation in die "richtige" Richtung ausgeführt wird. Also von Favorit nach kein Favorit oder umgekehrt.
                     return uvm.checkIfItemIsAlreadyFavorite(with: item.id)
                 })
 
@@ -108,6 +98,7 @@ struct ItemDetail: View {
     }
     
     private func calculateShoeSizeAmount(shoeSizes: [ShoeSize]) -> Int {
+        //In einer Variable wird gesamte Menge der Schuhgrößen gespeichert.
         var totalAmountOfSizes = 0
         for size in shoeSizes {
             totalAmountOfSizes += size.amount

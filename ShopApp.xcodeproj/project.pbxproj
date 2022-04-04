@@ -120,16 +120,8 @@
 				242542FA277A5BC700FD8AA7 /* ShoppingCartListView.swift */,
 				242542E8277A4C4900FD8AA7 /* PaymentButton.swift */,
 				245637D2277F2258008CEBA4 /* CartMiniViewer.swift */,
-				242542F6277A581800FD8AA7 /* DetailView */,
 			);
 			path = ShoppingCart;
-			sourceTree = "<group>";
-		};
-		242542F6277A581800FD8AA7 /* DetailView */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = DetailView;
 			sourceTree = "<group>";
 		};
 		242542F9277A5A3600FD8AA7 /* FavoriteView */ = {

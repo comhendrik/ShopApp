@@ -11,6 +11,7 @@ struct BuyingView: View {
     @StateObject var uvm: UserViewModel
     @Binding var showBuyingView: Bool
     var body: some View {
+        //Diese View wird angezeigt, wenn der Nutzer das erste mal auf den "Kaufen"-Knopf gedrückt hat.
         VStack {
             Spacer()
             VStack {
@@ -23,6 +24,7 @@ struct BuyingView: View {
                     }
                     Spacer()
                     Button {
+                        //Der Kaufvorgang wird abgebrochen.
                         withAnimation() {
                             showBuyingView.toggle()
                         }
@@ -61,7 +63,7 @@ struct BuyingView: View {
                 .padding()
                 PaymentButton(payBtnAction: {
                     Task {
-                        //Create Order
+                        //An dieser Stelle wird der PaymentButton verwendet, um den Kaufvorgang zu beenden.
                         await uvm.createOrder(price: calculateCost(items: uvm.cartItems))
                     }
                 }, price: String(format: "%.2f", calculateCost(items: uvm.cartItems)))

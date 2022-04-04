@@ -19,10 +19,12 @@ struct FavoriteMiniViewer: View {
                 ZStack {
                     Color.gray.opacity(0.05)
                     NavigationLink {
+                        //Über diesen NavigationLink wird die normale View eines Artikels angezeigt.
                         ItemDetail(uvm: uvm, item: item)
                             .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
                                 Button("Ok", role: .cancel) {}
                             }
+                            
                     } label: {
                         AsyncImage(url: URL(string: item.imagePath)) { image in
                             image
@@ -38,6 +40,7 @@ struct FavoriteMiniViewer: View {
                 VStack(alignment: .leading,spacing: 25) {
                     Text(item.title)
                         .lineLimit(1)
+                    //Im Eintrag wird der Rabatt angegeben und wenn dieser = 0 ist, dann gibt es keinen Rabatt ansonsten wird dieser hier abgezogen.
                     Text("\(String(format: "%.2f", item.discount != 0 ? (item.price - (item.price/100.0) * Double(item.discount)): item.price)) $")
                     Spacer()
                     

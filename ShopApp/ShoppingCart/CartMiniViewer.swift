@@ -11,12 +11,17 @@ struct CartMiniViewer: View {
     var cartItem: CartItem
     @StateObject var uvm: UserViewModel
     var body: some View {
+        //In dieser View werden die Daten eines einzelnen Artikels des Warenkorbs dargestellt
         VStack {
             HStack {
                 ZStack {
                     Color.gray.opacity(0.05)
                     NavigationLink {
+                        //Über diesen NavigationLink wird die normale View eines Artikels angezeig
                         ItemDetail(uvm: uvm, item: cartItem.item)
+                            .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
+                                Button("Ok", role: .cancel) {}
+                            }
                     } label: {
                         AsyncImage(url: URL(string: cartItem.item.imagePath)) { image in
                             image
@@ -36,6 +41,8 @@ struct CartMiniViewer: View {
                             .foregroundColor(.black)
                         Spacer()
                         Button(action: {
+                            //Button zum Löschen aus dem Warenkorb
+                            
                             uvm.deleteCartItem(with: cartItem.id)
                         }, label: {
                             Text("Delete")
@@ -46,6 +53,7 @@ struct CartMiniViewer: View {
                     Text("Size: \(cartItem.size)")
                     Text("\(String(format: "%.2f", cartItem.item.discount != 0 ? (cartItem.item.price - (cartItem.item.price/100.0) * Double(cartItem.item.discount)): cartItem.item.price)) $")
                     HStack {
+                        //Die beiden Button erhöhen bzw. verringern die Menge, die bestellt werden soll.
                         Button(action: {
                             if cartItem.amount > 0 {
                                 uvm.updateAmount(with: cartItem.id, amount: cartItem.amount-1)

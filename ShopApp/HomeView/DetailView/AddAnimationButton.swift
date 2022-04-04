@@ -12,9 +12,11 @@ struct AddAnimationButton: View {
     @State private var disableButton = false
     let addAction: () -> Bool
     var body: some View {
+        //Diese View stellt den Button zum Hinzufügen eines Artikel in den Warenkorb in der ItemDetail View dar.
         ZStack {
 
             Button(action: {
+                //Wenn der Artikel hinzugefügt werden(Dazu: ItemDetail.swift/Zeile 63) kann wird die Animation getriggert.
                 if addAction() {
                     fullAnimation()
                 }
@@ -41,6 +43,7 @@ struct AddAnimationButton: View {
 
     }
     private func fullAnimation() {
+        //Diese Funktion sorgt für die Animation beim Hinzufügen eines Artikels.
         disableButton = true
         withAnimation(.easeOut(duration: 2.0)) {
             doAnimation.toggle()

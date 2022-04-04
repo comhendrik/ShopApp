@@ -22,6 +22,7 @@ struct LoginTextField: View {
                     .foregroundColor(isFocused ? .black : .gray)
                     .padding()
             }
+            //Bei Benutzung kann übergeben werden, ob es ein SecureField oder normales TextField sein soll.
             if isSecure {
                 HStack {
                     if showSecureField {

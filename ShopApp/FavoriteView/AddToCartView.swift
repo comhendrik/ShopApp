@@ -25,9 +25,10 @@ struct AddToCartView: View {
                         Text(item.title)
                             .fontWeight(.bold)
                         HStack {
+                            //Im Eintrag wird der Rabatt angegeben und wenn dieser = 0 ist, dann gibt es keinen Rabatt ansonsten wird dieser hier abgezogen.
                             Text("\(String(format: "%.2f", item.discount != 0 ? (item.price - (item.price/100.0) * Double(item.discount)): item.price)) $")
                                 .foregroundColor(item.discount != 0 ? .red : .none)
-
+                            //Wenn ein Rabatt abgezogen werden soll, wird daneben ein durchgestrichener Text mit dem originalen Preis dargestellt.
                             if item.discount != 0 {
                                 Text("\(String(format: "%.2f", item.price))")
                                     .strikethrough()

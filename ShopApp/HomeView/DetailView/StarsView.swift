@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
-
+//Diese View stellt das Rating in 0-5 Sternen dar.
+//Der Code stammt von dieser Website: https://swiftuirecipes.com/blog/star-rating-view-in-swiftui und ich habe ihn kopiert, da ich selbst überzeugt von dieser Lösung bin.
 struct StarsView: View {
-  private static let MAX_RATING: Float = 5 // Defines upper limit of the rating
-  private static let COLOR = Color.black // The color of the stars
+  private static let MAX_RATING: Float = 5
 
   let rating: Float
   private let fullCount: Int
@@ -41,15 +41,15 @@ struct StarsView: View {
   }
 
   private var fullStar: some View {
-    Image(systemName: "star.fill").foregroundColor(StarsView.COLOR)
+      Image(systemName: "star.fill").foregroundColor(.black)
   }
 
   private var halfFullStar: some View {
-    Image(systemName: "star.lefthalf.fill").foregroundColor(StarsView.COLOR)
+      Image(systemName: "star.leadinghalf.fill").foregroundColor(.black)
   }
 
   private var emptyStar: some View {
-    Image(systemName: "star").foregroundColor(StarsView.COLOR)
+      Image(systemName: "star").foregroundColor(.black)
   }
 }
 

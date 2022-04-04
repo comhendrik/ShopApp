@@ -310,15 +310,16 @@ class UserViewModel: ObservableObject {
                 print(err)
             } else {
                 print("removed")
+                //Löschen des favorisiertem Items innerhalb der App, für das Update ist kein weiterer Request nötig.
+                for i in  0 ..< self.favoriteItems.count {
+                    if id == self.favoriteItems[i].id {
+                        self.favoriteItems.remove(at: i)
+                        break
+                    }
+                }
             }
         }
-        //Löschen des favorisiertem Items innerhalb der App, für das Update ist kein weiterer Request nötig.
-        for i in  0 ..< favoriteItems.count {
-            if id == favoriteItems[i].id {
-                favoriteItems.remove(at: i)
-                break
-            }
-        }
+        
     }
     
     func checkIfItemIsAlreadyFavorite(with id: String) -> Bool {

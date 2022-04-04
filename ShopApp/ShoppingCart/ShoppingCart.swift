@@ -14,9 +14,11 @@ struct ShoppingCart: View {
         NavigationView {
             ZStack {
                 VStack {
+                    //Wenn Artikel im Warenkorb vorhanden sind, werden diese in einer Liste angezeigt und außerdem besteht die Möglichkeit die Artikel zu kaufen.
                     if uvm.cartItems.count > 0 {
                         ShoppingCartListView(uvm: uvm)
                         PaymentButton(payBtnAction: {
+                            //Bei Druck auf diesen Button werden die Artikel noch nicht gekauft, sondern es wird zuerst eine View angezeigt mit Information über die Bestellung
                             withAnimation(.easeIn(duration: 1)) {
                                 showBuyingView.toggle()
                             }

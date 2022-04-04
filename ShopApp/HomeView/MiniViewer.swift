@@ -10,6 +10,7 @@ import SwiftUI
 struct MiniViewer: View {
     let item: Item
     var body: some View {
+        //Diese View wird angezeigt in der HomeView, um die wichtigsten Information des Artikel darzustellen.
         VStack {
             ZStack {
                 Rectangle()
@@ -23,7 +24,7 @@ struct MiniViewer: View {
                     ProgressView()
                 }
                 if calculateShoeSizeAmount(shoeSizes: item.sizes) == 0 {
-                    //Mit dieser View wird signalisiert, dass der Artikel nicht verfügbar ist
+                    //Mit dieser View wird signalisiert, dass der Artikel nicht verfügbar ist. Ein grau "Schicht" wird über die View gelegt.
                     Rectangle()
                         .foregroundColor(Color.gray.opacity(0.5))
                 }
@@ -35,8 +36,10 @@ struct MiniViewer: View {
                         .fontWeight(.bold)
                         .lineLimit(1)
                     HStack {
+                        //Im Eintrag wird der Rabatt angegeben und wenn dieser = 0 ist, dann gibt es keinen Rabatt ansonsten wird dieser hier abgezogen.
                         Text("\(String(format: "%.2f", item.discount != 0 ? (item.price - (item.price/100.0) * Double(item.discount)): item.price)) $")
                             .foregroundColor(item.discount != 0 ? .red : .none)
+                        //Wenn ein Rabatt abgezogen werden soll, wird daneben ein durchgestrichener Text mit dem originalen Preis dargestellt.
                         if item.discount != 0 {
                             Text("\(String(format: "%.2f", item.price))")
                                 .strikethrough()

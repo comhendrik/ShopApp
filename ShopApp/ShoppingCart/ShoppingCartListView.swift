@@ -10,11 +10,11 @@ import SwiftUI
 struct ShoppingCartListView: View {
     @StateObject var uvm: UserViewModel
     var body: some View {
+        //Zeigt alle Artikel des Warenkorbs in einer Liste an
         ScrollView {
             ForEach(uvm.cartItems) { cartitem in
                 CartMiniViewer(cartItem: cartitem, uvm: uvm)
             }
-
         }
     }
 }

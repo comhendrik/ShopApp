@@ -14,8 +14,10 @@ struct FavoriteAddAnimationButton: View {
     let addAction: () -> Void
     let checkFavoriteAction: () -> Bool
     var body: some View {
+        //Diese View stellt den Button zum Hinzufügen eines Artikel in die Favoritenliste in der ItemDetail View dar.
         ZStack {
             Button(action: {
+                //Hier muss nur fullAnimation() und nicht addAction() aufgerufen werden, weil diese bereits in Zeile 59 aufgerufen wird.
                 fullAnimation()
             }, label: {
                 Text(checkFavoriteAction() ? "Added" : "Add to Favorites")
@@ -43,6 +45,7 @@ struct FavoriteAddAnimationButton: View {
         }
         .disabled(disableButton)
         .onAppear() {
+            //Beim Auftauchen der View muss überprüft werden, ob der Artikel bereits als Favorit markiert ist, damit der richtige Status angezeigt wird.
             doAnimation = false
             addedOrNot = false
             if checkFavoriteAction() == true {
@@ -51,6 +54,7 @@ struct FavoriteAddAnimationButton: View {
         }
     }
     private func fullAnimation() {
+        //Diese Funktion sorgt für die Animation beim Hinzufügen eines Artikels.
         disableButton = true
         addAction()
         withAnimation(.easeOut(duration: 2.0)) {
