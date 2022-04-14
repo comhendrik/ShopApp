@@ -15,6 +15,7 @@ Download:<br/>
 7. Create an Item in Firestore in the collection Items. It should look like this: ![](/explanationImage.png) Please upload an product image to Storage and the variable imagePath should contain the matching URL from FirebaseStorage.
 8. Add FirebaseAuth with Email and Password as the sign-in method.
 9. Now run the app in the simulator.
+10. You will get an error because of an image. Please select an image you like from your own library.
 
 Usecases:<br/>
 Create own items in the Firebase Database and get an idea of e-commerce.<br/>
@@ -22,7 +23,7 @@ Create own items in the Firebase Database and get an idea of e-commerce.<br/>
 Credits:<br/>
 To create a star view, I used this code: https://swiftuirecipes.com/blog/star-rating-view-in-swiftui<br/>
 These YouTube videos helped me understand Firebase: https://youtube.com/playlist?list=PLimqJDzPI-H-6rBS1I3VciIsAWG9RZa8o<br/>
-I used some icons from https://shape.so and it is free personal use so please check it out.<br/>
+I used some icons from https://shape.so and it is free personal use so please check it out.(Disclaimer: I deleted them from my source code because this doesn't count as personal use)<br/>
 
 Things to improve: <br/>
 1.Rating system. To this day it is not possible to rate a product.
