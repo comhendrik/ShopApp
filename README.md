@@ -22,6 +22,7 @@ Create own items in the Firebase Database and get an idea of e-commerce.<br/>
 Credits:<br/>
 To create a star view, I used this code: https://swiftuirecipes.com/blog/star-rating-view-in-swiftui<br/>
 These YouTube videos helped me understand Firebase: https://youtube.com/playlist?list=PLimqJDzPI-H-6rBS1I3VciIsAWG9RZa8o<br/>
+I used some icons from https://shape.so and it is free personal use so please check it out.<br/>
 
 Things to improve: <br/>
 1.Rating system. To this day it is not possible to rate a product.
