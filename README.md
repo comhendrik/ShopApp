@@ -27,3 +27,4 @@ I used some icons from https://shape.so and it is free personal use so please ch
 
 Things to improve: <br/>
 1.Rating system. To this day it is not possible to rate a product.
+2.Real Payment Process. Currently, a button for purchase on account is displayed, but nothing happens after that.
