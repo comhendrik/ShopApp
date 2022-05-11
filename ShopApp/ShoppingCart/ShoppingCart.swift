@@ -24,6 +24,11 @@ struct ShoppingCart: View {
                             }
                         }, price: String(format: "%.2f", calculateCost(items: uvm.cartItems)))
                             .disabled(showBuyingView || uvm.cartItems.count <= 0)
+                        NavigationLink(isActive: $showBuyingView) {
+                            BuyingView(uvm: uvm, showBuyingView: $showBuyingView)
+                        } label: {
+                            EmptyView()
+                        }
                     } else {
                         VStack {
                             Spacer()
@@ -38,8 +43,7 @@ struct ShoppingCart: View {
                 }
                 .blur(radius: showBuyingView ? 3 : 0)
                 //Diese View wird angezeigt, wenn ein Nutzer etwas kaufen möchte.
-                BuyingView(uvm: uvm, showBuyingView: $showBuyingView)
-                    .offset(y: showBuyingView ? 0 : 500)
+                
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

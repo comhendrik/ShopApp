@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import Stripe
 
 struct BuyingView: View {
     @StateObject var uvm: UserViewModel
     @Binding var showBuyingView: Bool
+    @State private var paymentMethodParams: STPPaymentMethodParams?
+    let paymentGatewayController = PaymentGatewayController()
     var body: some View {
         //Diese View wird angezeigt, wenn der Nutzer das erste mal auf den "Kaufen"-Knopf gedrückt hat.
         VStack {
@@ -56,30 +59,41 @@ struct BuyingView: View {
                     VStack(alignment: .leading) {
                         Text("Method:")
                             .fontWeight(.bold)
-                        Text("Invoice")
+                        Text("Credit Card")
                     }
                     Spacer()
                 }
                 .padding()
-                PaymentButton(payBtnAction: {
-                    Task {
-                        //An dieser Stelle wird der PaymentButton verwendet, um den Kaufvorgang zu beenden.
-                        await uvm.createOrder(price: calculateCost(items: uvm.cartItems))
-                    }
-                }, price: String(format: "%.2f", calculateCost(items: uvm.cartItems)))
-                    .frame(width: UIScreen.main.bounds.width - 50)
-                    .padding([.horizontal,.bottom])
-                    .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
-                        Button("OK", role: .cancel) {
-                            withAnimation() {
-                                showBuyingView.toggle()
-                            }
-                        }
-                    }
+//                PaymentButton(payBtnAction: {
+//                    Task {
+//                        //An dieser Stelle wird der PaymentButton verwendet, um den Kaufvorgang zu beenden.
+//                        await uvm.createOrder(price: calculateCost(items: uvm.cartItems))
+//                    }
+//                }, price: String(format: "%.2f", calculateCost(items: uvm.cartItems)))
+//                    .frame(width: UIScreen.main.bounds.width - 50)
+//                    .padding([.horizontal,.bottom])
+//                    .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
+//                        Button("OK", role: .cancel) {
+//                            withAnimation() {
+//                                showBuyingView.toggle()
+//                            }
+//                        }
+//                    }
+                STPPaymentCardTextField.Representable.init(paymentMethodParams: $paymentMethodParams)
+                    .padding()
+                Button(action: {
+                    paymentGatewayController.pay(paymentMethodParams: paymentMethodParams)
+                }, label: {
+                    Text("Buy")
+                })
+                
             }
                 .background(Color.white)
                 .foregroundColor(.black)
             }
+        .onAppear {
+            paymentGatewayController.startCheckout()
+        }
         }
     }
     
