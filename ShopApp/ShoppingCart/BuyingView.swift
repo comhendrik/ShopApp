@@ -15,84 +15,99 @@ struct BuyingView: View {
     let paymentGatewayController = PaymentGatewayController()
     var body: some View {
         //Diese View wird angezeigt, wenn der Nutzer das erste mal auf den "Kaufen"-Knopf gedrückt hat.
-        VStack {
-            Spacer()
-            VStack {
-                HStack {
+        ZStack {
+            ScrollView {
+                ForEach(uvm.cartItems) { cartItem in
                     HStack {
-                        Image(systemName: "creditcard")
+                        Text("\(cartItem.amount) x")
                             .font(.subheadline)
-                        Text("Payment process")
                             .fontWeight(.bold)
-                    }
-                    Spacer()
-                    Button {
-                        //Der Kaufvorgang wird abgebrochen.
-                        withAnimation() {
-                            showBuyingView.toggle()
+                        VStack(alignment: .leading) {
+                            Text(cartItem.item.title)
+                                .fontWeight(.bold)
+                            Text(cartItem.item.id)
+                                .font(.subheadline)
+                                .fontWeight(.light)
+                                .foregroundColor(.gray)
                         }
-                    } label: {
-                        Image(systemName: "xmark")
+                        .padding(.leading, 2)
+                        Spacer()
+                        Text("\(String(format: "%.2f", cartItem.item.discount != 0 ? (cartItem.item.price - (cartItem.item.price/100.0) * Double(cartItem.item.discount)): cartItem.item.price)) $")
                     }
-
-                }
-                .padding()
-                Divider()
-                HStack {
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("Address:")
-                            .font(.body)
-                            .fontWeight(.bold)
-                        Text("\(uvm.mainUser.lastName), \(uvm.mainUser.firstName)")
-                        Text("\(uvm.mainUser.adress.street) \(uvm.mainUser.adress.number)")
-                        Text("\(String(uvm.mainUser.adress.zipCode)) \(uvm.mainUser.adress.city)")
-                        Text(uvm.mainUser.adress.land)
-                    }
-                    .font(.subheadline)
-                    Spacer()
-                }
-                .padding()
-                
-                Divider()
-                
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("Method:")
-                            .fontWeight(.bold)
-                        Text("Credit Card")
-                    }
-                    Spacer()
-                }
-                .padding()
-//                PaymentButton(payBtnAction: {
-//                    Task {
-//                        //An dieser Stelle wird der PaymentButton verwendet, um den Kaufvorgang zu beenden.
-//                        await uvm.createOrder(price: calculateCost(items: uvm.cartItems))
-//                    }
-//                }, price: String(format: "%.2f", calculateCost(items: uvm.cartItems)))
-//                    .frame(width: UIScreen.main.bounds.width - 50)
-//                    .padding([.horizontal,.bottom])
-//                    .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
-//                        Button("OK", role: .cancel) {
-//                            withAnimation() {
-//                                showBuyingView.toggle()
-//                            }
-//                        }
-//                    }
-                STPPaymentCardTextField.Representable.init(paymentMethodParams: $paymentMethodParams)
                     .padding()
-                Button(action: {
-                    paymentGatewayController.pay(paymentMethodParams: paymentMethodParams)
-                }, label: {
-                    Text("Buy")
-                })
+                }
+            }
+            
+            VStack {
+                Spacer()
+                ZStack {
+                    Rectangle().foregroundColor(.white)
+                        .shadow(radius: 1)
+                    VStack {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text("Sum:")
+                                    .fontWeight(.bold)
+                                Text("\(String(format: "%.2f", calculateCost(items: uvm.cartItems)))$")
+                                    .font(.subheadline)
+                                Divider()
+                                Text("Address:")
+                                    .font(.body)
+                                    .fontWeight(.bold)
+                                Text("\(uvm.mainUser.lastName), \(uvm.mainUser.firstName)")
+                                Text("\(uvm.mainUser.adress.street) \(uvm.mainUser.adress.number)")
+                                Text("\(String(uvm.mainUser.adress.zipCode)) \(uvm.mainUser.adress.city)")
+                                Text(uvm.mainUser.adress.land)
+                            }
+                            Spacer()
+                        }
+                        .padding()
+                        Button(action: {
+                        }, label: {
+                            Text("Pay with credit card")
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(width: UIScreen.main.bounds.width - 50)
+                                .background(.black)
+                                .cornerRadius(15, antialiased: false)
+                        })
+                        
+                        Spacer()
+                    }
+                    .padding()
+                }
+                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 3)
                 
             }
-                .background(Color.white)
-                .foregroundColor(.black)
+            
+            
+        }
+//        .onAppear {
+//            paymentGatewayController.startCheckout()
+//        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    //Der Kaufvorgang wird abgebrochen.
+                    withAnimation() {
+                        showBuyingView.toggle()
+                    }
+                } label: {
+                    Image(systemName: "xmark")
+                        .foregroundColor(.black)
+                }
             }
-        .onAppear {
-            paymentGatewayController.startCheckout()
+            
+            ToolbarItem(placement: .navigationBarTrailing, content: {
+                
+                HStack {
+                    Text("Payment process")
+                        .fontWeight(.bold)
+                    Image(systemName: "creditcard")
+                        .font(.subheadline)
+                }
+            })
         }
         }
     }
@@ -115,3 +130,20 @@ struct BuyingView_Previews: PreviewProvider {
         BuyingView(uvm: UserViewModel(), showBuyingView: .constant(true))
     }
 }
+
+
+//PaymentButton(payBtnAction: {
+//    Task {
+//        //An dieser Stelle wird der PaymentButton verwendet, um den Kaufvorgang zu beenden.
+//        await uvm.createOrder(price: calculateCost(items: uvm.cartItems))
+//    }
+//}, price: String(format: "%.2f", calculateCost(items: uvm.cartItems)))
+//    .frame(width: UIScreen.main.bounds.width - 50)
+//    .padding([.horizontal,.bottom])
+//    .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
+//        Button("OK", role: .cancel) {
+//            withAnimation() {
+//                showBuyingView.toggle()
+//            }
+//        }
+//    }
