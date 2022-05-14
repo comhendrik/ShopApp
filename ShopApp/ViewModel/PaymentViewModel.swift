@@ -10,81 +10,71 @@ import SwiftUI
 
 //Makes it possible to create payments with stripe
 
-struct CheckoutIntentResponse: Decodable {
-    let clientSecret: String
-}
 
-class PaymentGatewayController: UIViewController {
-    
-    private var paymentIntentClientSecret: String?
-    
-    public var message: String = ""
-    
-    func startCheckout() {
-       print("checkout")
-        let url = URL(string: "http://127.0.0.1:5000/create-payment-intent")!
+class PaymentViewModel: ObservableObject {
+  let backendCheckoutUrl = URL(string: "http://127.0.0.1:5000/payment")! // Your backend endpoint
+  @Published var paymentSheet: PaymentSheet?
+  @Published var paymentResult: PaymentSheetResult?
 
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        //request.httpBody = try! JSONEncoder().encode(cart.items)
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-                
-            guard let data = data, error == nil,
-                  (response as? HTTPURLResponse)?.statusCode == 200
-            else {
-                return
-            }
-            
-            let checkoutIntentResponse = try? JSONDecoder().decode(CheckoutIntentResponse.self, from: data)
-            self.paymentIntentClientSecret = checkoutIntentResponse?.clientSecret
-        }.resume()
-        
-        print("end checkout")
-        
-    }
-    
-    func submitPayment(intent: STPPaymentIntentParams, completion: @escaping (STPPaymentHandlerActionStatus, STPPaymentIntent?, NSError?) -> Void) {
-        
-        let paymentHandler = STPPaymentHandler.shared()
-        
-        paymentHandler.confirmPayment(intent, with: self) { (status, intent, error) in
-            completion(status, intent, error)
-        }
-        
-    }
-    
-    func pay(paymentMethodParams: STPPaymentMethodParams?) {
-        if paymentMethodParams == nil {
-            print("error with params")
-            return
-        }
-        if self.paymentIntentClientSecret == nil {
-            return
-        }
-        let paymentIntentParams = STPPaymentIntentParams(clientSecret: self.paymentIntentClientSecret!)
-        paymentIntentParams.paymentMethodParams = paymentMethodParams
-        
-        submitPayment(intent: paymentIntentParams) { status, intent, error in
-            
-            switch status {
-                case .failed:
-                    self.message = "Failed"
-                case .canceled:
-                    self.message = "Cancelled"
-                case .succeeded:
-                    self.message = "Your payment has been successfully completed!"
-            }
-            
-        }
-        
-    }
-    
-}
-
-extension PaymentGatewayController: STPAuthenticationContext {
-    func authenticationPresentingViewController() -> UIViewController {
-          return self
+  func preparePaymentSheet() {
+    // MARK: Fetch the PaymentIntent and Customer information from the backend
+      print("hello")
+    var request = URLRequest(url: backendCheckoutUrl)
+    request.httpMethod = "POST"
+    let task = URLSession.shared.dataTask(with: request, completionHandler: { [weak self] (data, response, error) in
+      guard let data = data,
+            let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String : Any],
+            //let customerId = json["customer"] as? String,
+            //let customerEphemeralKeySecret = json["ephemeralKey"] as? String,
+            let paymentIntentClientSecret = json["paymentIntent"] as? String,
+            let self = self else {
+        // Handle error
+        return
       }
+
+      STPAPIClient.shared.publishableKey = "pk_test_51KwkR2ELibbweCsHNHiDdSCz2gPFnFWN7rmbIAQ0go5tBKT294iFMxaTPngS58OREXSYekn81fRhfquyBUOP5E1y003smaKoFM"
+      // MARK: Create a PaymentSheet instance
+      var configuration = PaymentSheet.Configuration()
+      configuration.merchantDisplayName = "Example, Inc."
+      configuration.primaryButtonColor = .black
+
+      DispatchQueue.main.async {
+        self.paymentSheet = PaymentSheet(paymentIntentClientSecret: paymentIntentClientSecret, configuration: configuration)
+      }
+    })
+    task.resume()
+  }
+
+  func onPaymentCompletion(result: PaymentSheetResult) {
+    self.paymentResult = result
+  }
 }
+
+//struct CheckoutView: View {
+//  @ObservedObject var model = MyBackendModel()
+//
+//  var body: some View {
+//    VStack {
+//      if let paymentSheet = model.paymentSheet {
+//        PaymentSheet.PaymentButton(
+//          paymentSheet: paymentSheet,
+//          onCompletion: model.onPaymentCompletion
+//        ) {
+//          Text("Buy")
+//        }
+//      } else {
+//        Text("Loading…")
+//      }
+//      if let result = model.paymentResult {
+//        switch result {
+//        case .completed:
+//          Text("Payment complete")
+//        case .failed(let error):
+//          Text("Payment failed: \(error.localizedDescription)")
+//        case .canceled:
+//          Text("Payment canceled.")
+//        }
+//      }
+//    }.onAppear { model.preparePaymentSheet() }
+//  }
+//}

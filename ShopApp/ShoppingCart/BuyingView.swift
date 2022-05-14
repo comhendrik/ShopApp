@@ -12,7 +12,7 @@ struct BuyingView: View {
     @StateObject var uvm: UserViewModel
     @Binding var showBuyingView: Bool
     @State private var paymentMethodParams: STPPaymentMethodParams?
-    let paymentGatewayController = PaymentGatewayController()
+    @ObservedObject private var pvm = PaymentViewModel()
     var body: some View {
         //Diese View wird angezeigt, wenn der Nutzer das erste mal auf den "Kaufen"-Knopf gedrückt hat.
         ZStack {
@@ -62,29 +62,65 @@ struct BuyingView: View {
                             Spacer()
                         }
                         .padding()
-                        Button(action: {
-                        }, label: {
-                            Text("Pay with credit card")
-                                .foregroundColor(.white)
-                                .padding()
-                                .frame(width: UIScreen.main.bounds.width - 50)
-                                .background(.black)
-                                .cornerRadius(15, antialiased: false)
-                        })
+                        VStack {
+                          if let paymentSheet = pvm.paymentSheet {
+                            PaymentSheet.PaymentButton(
+                              paymentSheet: paymentSheet,
+                              onCompletion: { result in
+                                  pvm.onPaymentCompletion(result: result)
+                                  if let paymentResult = pvm.paymentResult {
+                                      switch paymentResult {
+                                      case .completed:
+                                          print("Completed")
+                                          withAnimation() {
+                                              showBuyingView.toggle()
+                                          }
+                                      case .canceled:
+                                          print("Payment canceled.")
+                                      case .failed(let error):
+                                          print("Payment failed: \(error.localizedDescription)")
+                                      }
+                                  }
+                              }
+                            ) {
+                                Text("Pay with credit card")
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .frame(width: UIScreen.main.bounds.width - 50)
+                                    .background(.black)
+                                    .cornerRadius(15, antialiased: false)
+                            }
+                          } else {
+                            Text("Loading…")
+                                  .foregroundColor(.white)
+                                  .padding()
+                                  .frame(width: UIScreen.main.bounds.width - 50)
+                                  .background(.black)
+                                  .cornerRadius(15, antialiased: false)
+                          }
+                          if let result = pvm.paymentResult {
+                            switch result {
+                            case .completed:
+                              Text("Payment complete")
+                            case .failed(let error):
+                              Text("Payment failed: \(error.localizedDescription)")
+                            case .canceled:
+                              Text("Payment canceled.")
+                            }
+                          }
+                        }
                         
                         Spacer()
                     }
                     .padding()
                 }
                 .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 3)
+                .onAppear { pvm.preparePaymentSheet() }
                 
             }
             
             
         }
-//        .onAppear {
-//            paymentGatewayController.startCheckout()
-//        }
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
