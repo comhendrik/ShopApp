@@ -41,14 +41,15 @@ struct BuyingView: View {
             VStack {
                 Spacer()
                 ZStack {
-                    Rectangle().foregroundColor(.white)
-                        .shadow(radius: 1)
+                    Rectangle()
+                        .foregroundColor(.white)
+                        .shadow(color: .gray, radius: 0.5, x: 0, y: -1)
                     VStack {
                         HStack {
                             VStack(alignment: .leading) {
                                 Text("Sum:")
                                     .fontWeight(.bold)
-                                Text("\(String(format: "%.2f", calculateCost(items: uvm.cartItems)))$")
+                                Text("\(String(format: "%.2f", pvm.calculateCost(items: uvm.cartItems)))$")
                                     .font(.subheadline)
                                 Divider()
                                 Text("Address:")
@@ -72,6 +73,11 @@ struct BuyingView: View {
                                       switch paymentResult {
                                       case .completed:
                                           print("Completed")
+                                          Task {
+                                              //An dieser Stelle wird der die Bestellung in der Datenbank hochgeladen und der Warenkorb wird gelöscht, um den Kaufvorgang zu beenden.
+                                              await uvm.createOrder(price: pvm.calculateCost(items: uvm.cartItems))
+                                              pvm.paymentIntentClientSecret = ""
+                                          }
                                           withAnimation() {
                                               showBuyingView.toggle()
                                           }
@@ -115,7 +121,7 @@ struct BuyingView: View {
                     .padding()
                 }
                 .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 3)
-                .onAppear { pvm.preparePaymentSheet() }
+                .onAppear { pvm.preparePaymentSheet(items: uvm.cartItems) }
                 
             }
             
@@ -129,6 +135,8 @@ struct BuyingView: View {
                     withAnimation() {
                         showBuyingView.toggle()
                     }
+                    //Kaufvorgang mit Stripe stornieren, damit der Nutzer keine Zahlung tätigen muss.
+                    pvm.cancelPayment()
                 } label: {
                     Image(systemName: "xmark")
                         .foregroundColor(.black)
@@ -148,18 +156,7 @@ struct BuyingView: View {
         }
     }
     
-    private func calculateCost(items: [CartItem]) -> Double {
-        var cost = 0.0
-        for item in items {
-            if item.item.discount == 0 {
-                cost += item.item.price * Double(item.amount)
-            } else {
-                cost += (item.item.price - (item.item.price/100.0) * Double(item.item.discount)) * Double(item.amount)
-            }
-            
-        }
-        return cost
-}
+
 
 struct BuyingView_Previews: PreviewProvider {
     static var previews: some View {
@@ -169,10 +166,7 @@ struct BuyingView_Previews: PreviewProvider {
 
 
 //PaymentButton(payBtnAction: {
-//    Task {
-//        //An dieser Stelle wird der PaymentButton verwendet, um den Kaufvorgang zu beenden.
-//        await uvm.createOrder(price: calculateCost(items: uvm.cartItems))
-//    }
+//
 //}, price: String(format: "%.2f", calculateCost(items: uvm.cartItems)))
 //    .frame(width: UIScreen.main.bounds.width - 50)
 //    .padding([.horizontal,.bottom])
