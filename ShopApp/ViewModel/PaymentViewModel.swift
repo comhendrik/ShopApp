@@ -8,62 +8,64 @@
 import Stripe
 import SwiftUI
 
-//Makes it possible to create payments with stripe
+//Zahlung über Stripe werden über dieses ViewModel abgewickelt
 
 
 class PaymentViewModel: ObservableObject {
-  let backendCheckoutUrl = URL(string: "http://127.0.0.1:5000/payment")! // Your backend endpoint
+    let backendCheckoutUrl = URL(string: "http://127.0.0.1:5000/payment")! // backend endpoint
     let backendDeleteUrlString = "http://127.0.0.1:5000/cancel-payment"
-  @Published var paymentSheet: PaymentSheet?
-  @Published var paymentResult: PaymentSheetResult?
+    @Published var paymentSheet: PaymentSheet?
+    @Published var paymentResult: PaymentSheetResult?
     @Published var paymentIntentClientSecret: String = ""
 
     func preparePaymentSheet(items: [CartItem]) {
-    // MARK: Fetch the PaymentIntent and Customer information from the backend
-      print("hello")
-    var request = URLRequest(url: backendCheckoutUrl)
-    request.httpMethod = "POST"
-      request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-      let amount = calculateCost(items: items)
-      let bodydata = ["price": amount]
-      let jsonData = try? JSONSerialization.data(withJSONObject: bodydata, options: .fragmentsAllowed)
-      request.httpBody = jsonData
-      
-    let task = URLSession.shared.dataTask(with: request, completionHandler: { [weak self] (data, response, error) in
-      guard let data = data,
-            let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String : Any],
-            //let customerId = json["customer"] as? String,
-            //let customerEphemeralKeySecret = json["ephemeralKey"] as? String,
-                let clientSecret = json["paymentIntent"] as? String,
-            let self = self else {
-        // Handle error
-        return
-      }
-
-      STPAPIClient.shared.publishableKey = "pk_test_51KwkR2ELibbweCsHNHiDdSCz2gPFnFWN7rmbIAQ0go5tBKT294iFMxaTPngS58OREXSYekn81fRhfquyBUOP5E1y003smaKoFM"
-      // MARK: Create a PaymentSheet instance
-      var configuration = PaymentSheet.Configuration()
-      configuration.merchantDisplayName = "Example, Inc."
-      configuration.primaryButtonColor = .black
-
-      DispatchQueue.main.async {
-          //Display Payment Sheet
-          self.paymentIntentClientSecret = clientSecret
-          self.paymentSheet = PaymentSheet(paymentIntentClientSecret: self.paymentIntentClientSecret, configuration: configuration)
+        // Ein PaymentIntent über diesen POST Request erstellt.
+        var request = URLRequest(url: backendCheckoutUrl)
+        request.httpMethod = "POST"
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        //Als body wird der Price mitgegeben, weil Stripe nur die Information des Preise braucht, damit eine Zahlung stattfinden kann.
+        let amount = calculateCost(items: items)
+        let bodydata = ["price": amount]
+        let jsonData = try? JSONSerialization.data(withJSONObject: bodydata, options: .fragmentsAllowed)
+        request.httpBody = jsonData
           
-      }
-    })
-    task.resume()
-  }
+        let task = URLSession.shared.dataTask(with: request, completionHandler: { [weak self] (data, response, error) in
+            //Der Server gibt die Daten des PaymentIntent nach dem Request zurück, wichtig ist das ClientSecret, damit die Zahlung abgeschlossen werden kann.
+            guard let data = data,
+                  let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String : Any],
+                  let clientSecret = json["paymentIntent"] as? String,
+                  let self = self else {
+                      //TODO: Handle error
+                      return
+                  }
 
-  func onPaymentCompletion(result: PaymentSheetResult) {
-    self.paymentResult = result
-      
-  }
+            STPAPIClient.shared.publishableKey = "pk_test_51KwkR2ELibbweCsHNHiDdSCz2gPFnFWN7rmbIAQ0go5tBKT294iFMxaTPngS58OREXSYekn81fRhfquyBUOP5E1y003smaKoFM"
+            // Instanz eines PaymentSheets wird erstellt
+            var configuration = PaymentSheet.Configuration()
+            configuration.primaryButtonColor = .black
+            
+
+            DispatchQueue.main.async {
+                //Payment Sheet wird angezeigt, da es sich um UI-Änderungen handelt, muss dies auf dem Mainthread geschehen
+                self.paymentIntentClientSecret = clientSecret
+                self.paymentSheet = PaymentSheet(paymentIntentClientSecret: self.paymentIntentClientSecret, configuration: configuration)
+            }
+        })
+        task.resume()
+    }
+
+    func onPaymentCompletion(result: PaymentSheetResult) {
+        //Diese Funktion übergibt das Result der Zahlung an das ViewModel, damit die View entweder geschlossen wird und die Daten in der Datenbank Firestore überschrieben werden oder das die View offen bleibt und den Fehler anzeigt.
+        self.paymentResult = result
+    }
     
     
     func cancelPayment() {
+        //TODO: handle errors in this function properly with alert or something else
+        //Diese Funktion ermöglicht das Löschen eines Intent
+        //Zuerst wird überprüft, ob ein clientSecret von Stripe noch vorhanden ist, wenn ja wissen wir das bei schließen des Kaufvorgangs dieser gelöscht werden muss, ist dem nicht so muss beim Schließen der View nichts passieren.
         if self.paymentIntentClientSecret != "" {
+            //Die Id des Intent muss an den Server übergeben werden, damit der gewünschte Intent gelöscht wird.
             let id = STPPaymentIntentParams(clientSecret: self.paymentIntentClientSecret).stripeId
             if id == nil {
                 print("error: payment does not exits")
@@ -82,6 +84,7 @@ class PaymentViewModel: ObservableObject {
                     return
                }
                else if let data = data {
+                   //Der Server gibt die Antwort in Form eines Strings wieder, dementsprechend kann gehandelt werden.
                    let result = String(decoding: data, as: UTF8.self)
                    if result == "success" {
                        print("success")
@@ -97,6 +100,7 @@ class PaymentViewModel: ObservableObject {
     
     
     func calculateCost(items: [CartItem]) -> Double {
+        //Diese berechnet die Kosten aller Items, um diesen dem Server per POST Request mit zu teilen. siehe Zeile
         var cost = 0.0
         for item in items {
             if item.item.discount == 0 {

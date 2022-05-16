@@ -68,6 +68,7 @@ struct BuyingView: View {
                             PaymentSheet.PaymentButton(
                               paymentSheet: paymentSheet,
                               onCompletion: { result in
+                                  //Der Bezahlvorgang wird beendet
                                   pvm.onPaymentCompletion(result: result)
                                   if let paymentResult = pvm.paymentResult {
                                       switch paymentResult {
@@ -135,7 +136,7 @@ struct BuyingView: View {
                     withAnimation() {
                         showBuyingView.toggle()
                     }
-                    //Kaufvorgang mit Stripe stornieren, damit der Nutzer keine Zahlung tätigen muss.
+                    //Kaufvorgang mit Stripe stornieren, wenn sie noch nicht getätigt wurde, damit der Nutzer keine Zahlung tätigen muss.
                     pvm.cancelPayment()
                 } label: {
                     Image(systemName: "xmark")

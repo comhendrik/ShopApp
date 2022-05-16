@@ -309,7 +309,7 @@ class UserViewModel: ObservableObject {
                 //TODO: Handle this properly
                 print(err)
             } else {
-                print("removed")
+                print("removed Favorite Item")
                 //Löschen des favorisiertem Items innerhalb der App, für das Update ist kein weiterer Request nötig.
                 for i in  0 ..< self.favoriteItems.count {
                     if id == self.favoriteItems[i].id {
@@ -382,7 +382,7 @@ class UserViewModel: ObservableObject {
                 //TODO: Handle this properly
                 print(err)
             } else {
-                print("removed")
+                print("removed Cart Item")
             }
         }
         
