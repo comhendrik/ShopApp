@@ -46,7 +46,7 @@ class PaymentViewModel: ObservableObject {
             
 
             DispatchQueue.main.async {
-                //Payment Sheet wird angezeigt, da es sich um UI-Änderungen handelt, muss dies auf dem Mainthread geschehen
+                //Payment Sheet wird angezeigt, da es sich um UI Änderungen handelt, muss dies auf dem Mainthread geschehen
                 self.paymentIntentClientSecret = clientSecret
                 self.paymentSheet = PaymentSheet(paymentIntentClientSecret: self.paymentIntentClientSecret, configuration: configuration)
             }
