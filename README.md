@@ -17,18 +17,18 @@ Download (all commands are marked with ' '):<br/>
 6. Now create a Firestore Database and make sure that you can read and write to it. You can change this in the rules of the Database.
 7. Create an Item in Firestore in the collection Items. It should look like this: ![](/explanationImage.png) Please upload an product image to Storage and the variable imagePath should contain the matching URL from FirebaseStorage.
 8. Add FirebaseAuth with Email and Password as the sign-in method.
-10. You will get an error because of an image. Please select an image you like from your own library.
-11. Create an account on the stripe website stripe.com
-12. Add the stripe package to your Xcode Application. Follow the steps in the tutorial(https://stripe.com/docs/payments/accept-a-payment named "1. Set up Stripe Client-side"
-13. go to the dashboard and search for the secret and publishable API key.
-14. Open the folder stripeDB in your desired IDE.
-15. Open a terminal window and create a virtual environment with 'python3 -m venv placeholderforname'
-16. Execute the command '. placeholderforname/bin/activate'.
-17.Install Flask and Strip with 'pip install flask, stripe'.
-18. Insert your publishable and secret API keys into the Python server and iOS client. The values of the variables where you should insert them are marked in the code with "YOURSECRETAPIKEY" and "YOURPUBLISHABLEAPIKEY".
-19. Set the server with 'export FLASK_APP=server.py'
-20. Run the server with 'flask run'
-21. Now run the app in XCode
+9. Create an account on the stripe website stripe.com
+10. Add the stripe package to your Xcode Application. Follow the steps in the tutorial(https://stripe.com/docs/payments/accept-a-payment named "1. Set up Stripe Client-side"
+11. go to the dashboard and search for the secret and publishable API key.
+12. Open the folder stripeDB in your desired IDE.
+13. Open a terminal window and create a virtual environment with 'python3 -m venv placeholderforname'
+14. Execute the command '. placeholderforname/bin/activate'.
+15.Install Flask and Strip with 'pip install flask, stripe'.
+16. Insert your publishable and secret API keys into the Python server and iOS client. The values of the variables where you should insert them are marked in the code with "YOURSECRETAPIKEY" and "YOURPUBLISHABLEAPIKEY".
+17. Set the server with 'export FLASK_APP=server.py'
+18. Run the server with 'flask run'
+19. Now run the app in XCode
+20. You will get an error because of an image. Please select an image you like from your own library. This will be shown in the Login View
 
 Usecases:<br/>
 Create own items in the Firebase Database and get an idea of e-commerce and payment process with Stripe.<br/>
