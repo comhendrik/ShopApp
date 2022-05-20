@@ -5,7 +5,7 @@ import os
 import stripe
 from flask import request
 
-stripe.api_key = 'YOURSECRETAPIKEY'
+stripe.api_key = 'sk_test_51KwkR2ELibbweCsHWfErxrFU5ES5Un5XvekPpDzyC4NB5v0IrWOY7FlAVeVGqoLqaxP32SHArpN3yyZR6ILpU6jJ00j6Y5vt9g'
 
 from flask import Flask, render_template, jsonify, request
 
@@ -29,7 +29,7 @@ def payment_sheet():
         },
     )
     return jsonify(paymentIntent=paymentIntent.client_secret,
-                    publishableKey='YOURPUBLISHABLEAPIKEY')
+                    publishableKey='pk_test_51KwkR2ELibbweCsHNHiDdSCz2gPFnFWN7rmbIAQ0go5tBKT294iFMxaTPngS58OREXSYekn81fRhfquyBUOP5E1y003smaKoFM')
 
 
 
