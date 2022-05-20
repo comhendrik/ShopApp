@@ -10,11 +10,6 @@
 		24142C272779CC4100195ADC /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C262779CC4100195ADC /* AccountView.swift */; };
 		24142C292779CD7F00195ADC /* ShoppingCart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C282779CD7F00195ADC /* ShoppingCart.swift */; };
 		24142C2B2779CEDC00195ADC /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24142C2A2779CEDC00195ADC /* FavoritesView.swift */; };
-		2415D17E282C01E300E6C517 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2415D17D282C01E300E6C517 /* GoogleService-Info.plist */; };
-		2415D182282C034F00E6C517 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 2415D181282C034F00E6C517 /* FirebaseAuth */; };
-		2415D184282C034F00E6C517 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 2415D183282C034F00E6C517 /* FirebaseFirestore */; };
-		2415D186282C034F00E6C517 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 2415D185282C034F00E6C517 /* FirebaseStorage */; };
-		2415D189282C049000E6C517 /* Stripe in Frameworks */ = {isa = PBXBuildFile; productRef = 2415D188282C049000E6C517 /* Stripe */; };
 		2415D18B282C04A300E6C517 /* PaymentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2415D18A282C04A300E6C517 /* PaymentViewModel.swift */; };
 		2417E6992787247C00593707 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2417E6982787247C00593707 /* Constants.swift */; };
 		241BA12127A5901600162877 /* BuyingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241BA12027A5901600162877 /* BuyingView.swift */; };
@@ -55,7 +50,6 @@
 		24142C262779CC4100195ADC /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		24142C282779CD7F00195ADC /* ShoppingCart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingCart.swift; sourceTree = "<group>"; };
 		24142C2A2779CEDC00195ADC /* FavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
-		2415D17D282C01E300E6C517 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2415D18A282C04A300E6C517 /* PaymentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentViewModel.swift; sourceTree = "<group>"; };
 		2415D18C282C17D300E6C517 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		2417E6982787247C00593707 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -99,10 +93,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2415D182282C034F00E6C517 /* FirebaseAuth in Frameworks */,
-				2415D189282C049000E6C517 /* Stripe in Frameworks */,
-				2415D184282C034F00E6C517 /* FirebaseFirestore in Frameworks */,
-				2415D186282C034F00E6C517 /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,7 +150,6 @@
 			isa = PBXGroup;
 			children = (
 				2445B16C27FB110800F39897 /* .gitignore */,
-				2415D17D282C01E300E6C517 /* GoogleService-Info.plist */,
 				2460310D275414D900FE98D8 /* ShopApp */,
 				2460310C275414D900FE98D8 /* Products */,
 			);
@@ -244,10 +233,6 @@
 			);
 			name = ShopApp;
 			packageProductDependencies = (
-				2415D181282C034F00E6C517 /* FirebaseAuth */,
-				2415D183282C034F00E6C517 /* FirebaseFirestore */,
-				2415D185282C034F00E6C517 /* FirebaseStorage */,
-				2415D188282C049000E6C517 /* Stripe */,
 			);
 			productName = ShopApp;
 			productReference = 2460310B275414D900FE98D8 /* ShopApp.app */;
@@ -278,8 +263,6 @@
 			);
 			mainGroup = 24603102275414D900FE98D8;
 			packageReferences = (
-				2415D180282C034F00E6C517 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				2415D187282C049000E6C517 /* XCRemoteSwiftPackageReference "stripe-ios" */,
 			);
 			productRefGroup = 2460310C275414D900FE98D8 /* Products */;
 			projectDirPath = "";
@@ -296,7 +279,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				24603116275414D900FE98D8 /* Preview Assets.xcassets in Resources */,
-				2415D17E282C01E300E6C517 /* GoogleService-Info.plist in Resources */,
 				2445B16D27FB110800F39897 /* .gitignore in Resources */,
 				24603113275414D900FE98D8 /* Assets.xcassets in Resources */,
 			);
@@ -474,7 +456,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ShopApp/Preview Content\"";
-				DEVELOPMENT_TEAM = B6Q547G5NL;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShopApp/Info.plist;
@@ -489,7 +471,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = de.ShopApp.hendriksteen;
+				PRODUCT_BUNDLE_IDENTIFIER = de.ShopApp.placeholder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -507,7 +489,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ShopApp/Preview Content\"";
-				DEVELOPMENT_TEAM = B6Q547G5NL;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShopApp/Info.plist;
@@ -522,7 +504,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = de.ShopApp.hendriksteen;
+				PRODUCT_BUNDLE_IDENTIFIER = de.ShopApp.placeholder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -553,48 +535,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		2415D180282C034F00E6C517 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 9.0.0;
-			};
-		};
-		2415D187282C049000E6C517 /* XCRemoteSwiftPackageReference "stripe-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/stripe/stripe-ios";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 22.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		2415D181282C034F00E6C517 /* FirebaseAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2415D180282C034F00E6C517 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAuth;
-		};
-		2415D183282C034F00E6C517 /* FirebaseFirestore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2415D180282C034F00E6C517 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseFirestore;
-		};
-		2415D185282C034F00E6C517 /* FirebaseStorage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2415D180282C034F00E6C517 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseStorage;
-		};
-		2415D188282C049000E6C517 /* Stripe */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2415D187282C049000E6C517 /* XCRemoteSwiftPackageReference "stripe-ios" */;
-			productName = Stripe;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 24603103275414D900FE98D8 /* Project object */;
 }
