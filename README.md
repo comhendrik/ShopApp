@@ -1,6 +1,6 @@
 # ShopApp
 Disclaimer:<br/>
-This version includes credit card as a payment method, processed through Stripe. If you want to create the project without a real payment method go to the main-payment branch and follow the instructions there. This instruction uses the test-mode of stripe.
+This version includes credit card as a payment method, processed through Stripe. If you want to create the project without a real payment method go to the main-payment branch and follow the instructions there. This instruction uses the test-mode of stripe. This instruction doesn't explain the details of Firebase, Firestore and Storage. Make sure you are a little bit familiar with Firebase and its products.
 
 Description:<br/>
 E-commerce application for the iOS platform, developed in SwiftUI. You can create an account, add items to your favourites and buy them with credit card. The database is managed by Firebase.<br/>
