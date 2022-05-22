@@ -19,7 +19,7 @@ Download (all commands are marked with ' '):<br/>
 8. Add FirebaseAuth with Email and Password as the sign-in method.
 9. Create an account on the stripe website stripe.com
 10. Add the stripe package to your Xcode Application. Follow the steps in the tutorial(https://stripe.com/docs/payments/accept-a-payment named "1. Set up Stripe Client-side"
-11. Go to dashboard->Developer->API-Keys and search for the secret and publishable API key.
+11. Go to stripe.com->Dashboard->Developer->API-Keys and search for the secret and publishable API key.
 12. Open the folder stripeDB in your desired IDE.
 13. Open a terminal window and create a virtual environment with 'python3 -m venv placeholderforname'
 14. Execute the command '. placeholderforname/bin/activate'.
