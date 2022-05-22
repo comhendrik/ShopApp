@@ -6,7 +6,7 @@ Description:<br/>
 E-commerce application for the iOS platform, developed in SwiftUI. You can create an account, add items to your favourites and buy them with credit card. The database is managed by Firebase.<br/>
 
 Why I have built this project:<br/>
-I created this project to learn more about Firebase and how to deal with deeper collection structures in Firestore. I was interested in the field of e-commerce and how such an application is built. It is clear to me that the security of this project cannot match the security of big companies that make money every day with e-commerce, but I learned a lot, e.g. user interface, MVVM (this is a point I can definitely put more work into) and I created two animations when you click on the buttons "Add to cart" and "Add to favourites".<br/>
+I created this project to learn more about Firebase and how to deal with deeper collection structures in Firestore. I was interested in the field of e-commerce and how such an application is built. It is clear to me that the security of this project cannot match the security of big companies that make money every day with e-commerce, but I learned a lot, e.g. user interface, real payment process MVVM (this is a point I can definitely put more work into) and I created two animations when you click on the buttons "Add to cart" and "Add to favourites".<br/>
 
 Download (all commands are marked with ' '):<br/>
 1. Download it via Github and open the ShopApp.xcodeproj file in Xcode.
