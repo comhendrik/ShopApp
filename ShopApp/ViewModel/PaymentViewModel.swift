@@ -39,7 +39,7 @@ class PaymentViewModel: ObservableObject {
                       return
                   }
 
-            STPAPIClient.shared.publishableKey = "YOURPUBLISHABLEKEY"
+            STPAPIClient.shared.publishableKey = "YOURPUBLISHABLEAPIKEY"
             // Instanz eines PaymentSheets wird erstellt
             var configuration = PaymentSheet.Configuration()
             configuration.primaryButtonColor = .black
