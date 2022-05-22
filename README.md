@@ -15,7 +15,7 @@ Download:<br/>
 7. Create a collection named Items. Create an item object in this collectoin. It should look like this: ![](/explanationImage.png) Please upload an product image to Storage and the variable imagePath should contain the matching URL from FirebaseStorage.
 8. Add FirebaseAuth with Email and Password as the sign-in method.
 9. Now run the app in the simulator.
-10. You will get an error because of an image. Please select an image you like from your own library.
+10.  You will get an error because of an image. Please select an image you like from your own library. This will be shown in LoginView.swift and SignUpView.swift
 
 Usecases:<br/>
 Create own items in the Firebase Database and get an idea of e-commerce.<br/>
