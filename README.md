@@ -3,7 +3,7 @@ Disclaimer:<br/>
 This version includes credit card as a payment method, processed through Stripe. If you want to create the project without a real payment method go to the main-payment branch and follow the instructions there. This instruction uses the test-mode of stripe.
 
 Description:<br/>
-E-commerce application for the iOS platform, developed in SwiftUI. You can create an account, add items to your favourites and buy them on account. The database is managed by Firebase.<br/>
+E-commerce application for the iOS platform, developed in SwiftUI. You can create an account, add items to your favourites and buy them with credit card. The database is managed by Firebase.<br/>
 
 Why I have built this project:<br/>
 I created this project to learn more about Firebase and how to deal with deeper collection structures in Firestore. I was interested in the field of e-commerce and how such an application is built. It is clear to me that the security of this project cannot match the security of big companies that make money every day with e-commerce, but I learned a lot, e.g. user interface, MVVM (this is a point I can definitely put more work into) and I created two animations when you click on the buttons "Add to cart" and "Add to favourites".<br/>
