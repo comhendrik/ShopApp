@@ -28,7 +28,7 @@ Download (all commands are marked with ' '):<br/>
 17. Set the server with 'export FLASK_APP=server.py'
 18. Run the server with 'flask run'
 19. Now run the app in XCode
-20. You will get an error because of an image. Please select an image you like from your own library. This will be shown in the Login View
+20. You will get an error because of an image. Please select an image you like from your own library. This will be shown in LoginView.swift and SignUpView.swift
 
 Usecases:<br/>
 Create own items in the Firebase Database and get an idea of e-commerce and payment process with Stripe.<br/>
