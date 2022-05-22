@@ -23,7 +23,7 @@ Download (all commands are marked with ' '):<br/>
 12. Open the folder stripeDB in your desired IDE.
 13. Open a terminal window and create a virtual environment with 'python3 -m venv placeholderforname'
 14. Execute the command '. placeholderforname/bin/activate'.
-15.Install Flask and Strip with 'pip install flask, stripe'.
+15.Install Flask and Strip with 'pip install flask' and 'pip install stripe'.
 16. Insert your publishable and secret API keys into the Python server and iOS client. The values of the variables where you should insert them are marked in the code with "YOURSECRETAPIKEY" and "YOURPUBLISHABLEAPIKEY".
 17. Set the server with 'export FLASK_APP=server.py'
 18. Run the server with 'flask run'
