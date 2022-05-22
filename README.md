@@ -15,7 +15,7 @@ Download (all commands are marked with ' '):<br/>
 4. Add the iOS Application to Firebase. Follow the given instructions on Firebase to add it via the Swift Package Manager(SPM) (More Information: https://firebase.google.com/docs/ios/installation-methods). You can ignore the step with the Initialization code.
 5. When you start to add packages with SPM use the packages FirebaseAuth, FirebaseFirestore, FirebaseStorage.
 6. Now create a Firestore Database and make sure that you can read and write to it. You can change this in the rules of the Database.
-7. Create an Item in Firestore in the collection Items. It should look like this: ![](/explanationImage.png) Please upload an product image to Storage and the variable imagePath should contain the matching URL from FirebaseStorage.
+7. Create a collection named Items. Create an item object in this collectoin. It should look like this: ![](/explanationImage.png) Please upload an product image to Storage and the variable imagePath should contain the matching URL from FirebaseStorage.
 8. Add FirebaseAuth with Email and Password as the sign-in method.
 9. Create an account on the stripe website stripe.com
 10. Add the stripe package to your Xcode Application. Follow the steps in the tutorial(https://stripe.com/docs/payments/accept-a-payment named "1. Set up Stripe Client-side"
