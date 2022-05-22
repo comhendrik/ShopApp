@@ -15,7 +15,7 @@ struct LoginView: View {
         ScrollView(showsIndicators: false) {
             Text("Welcome!")
                 .fontWeight(.bold)
-            Image("people-shopping-2")
+            Image("USE-OWN-IMAGE!")
                 .scaledToFit()
                 .padding()
             Spacer()
