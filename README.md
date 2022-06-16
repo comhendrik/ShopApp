@@ -12,8 +12,8 @@ Download (all commands are marked with ' '):<br/>
 1. Download it via Github and open the ShopApp.xcodeproj file in Xcode.
 2. Change the bundle Identifier to the desired name and make sure to select a developer account.
 3. Create a Firebase Project on https://console.firebase.google.com without Analytics.
-4. The packages FirebaseAuth, FirebaseFirestore, FirebaseStorage should be added already via SPM that means if everything worked fine, you can skip step 5.
-(5. Add the iOS Application to Firebase. Follow the given instructions on Firebase to add it via the Swift Package Manager(SPM) (More Information: https://firebase.google.com/docs/ios/installation-methods). You can ignore the step with the Initialization code.)
+4. The packages FirebaseAuth, FirebaseFirestore, FirebaseStorage should be added already via SPM that means if everything worked fine, you can skip step 5<br>
+5. Add the iOS Application to Firebase. Follow the given instructions on Firebase to add it via the Swift Package Manager(SPM) (More Information: https://firebase.google.com/docs/ios/installation-methods). You can ignore the step with the Initialization code.
 6. Now create a Firestore Database and make sure that you can read and write to it. You can change this in the rules of the Database.
 7. Create a collection named Items. Create an item object in this collectoin. It should look like this: ![](/explanationImage.png) Please upload an product image to Storage and the variable imagePath should contain the matching URL from FirebaseStorage.
 8. Add FirebaseAuth with Email and Password as the sign-in method.
