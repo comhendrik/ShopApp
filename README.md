@@ -12,13 +12,13 @@ Download (all commands are marked with ' '):<br/>
 1. Download it via Github and open the ShopApp.xcodeproj file in Xcode.
 2. Change the bundle Identifier to the desired name and make sure to select a developer account.
 3. Create a Firebase Project on https://console.firebase.google.com without Analytics.
-4. Add the iOS Application to Firebase. Follow the given instructions on Firebase to add it via the Swift Package Manager(SPM) (More Information: https://firebase.google.com/docs/ios/installation-methods). You can ignore the step with the Initialization code.
-5. When you start to add packages with SPM use the packages FirebaseAuth, FirebaseFirestore, FirebaseStorage.
+4. The packages FirebaseAuth, FirebaseFirestore, FirebaseStorage should be added already via SPM that means if everything worked fine, you can skip step 5.
+(5. Add the iOS Application to Firebase. Follow the given instructions on Firebase to add it via the Swift Package Manager(SPM) (More Information: https://firebase.google.com/docs/ios/installation-methods). You can ignore the step with the Initialization code.)
 6. Now create a Firestore Database and make sure that you can read and write to it. You can change this in the rules of the Database.
 7. Create a collection named Items. Create an item object in this collectoin. It should look like this: ![](/explanationImage.png) Please upload an product image to Storage and the variable imagePath should contain the matching URL from FirebaseStorage.
 8. Add FirebaseAuth with Email and Password as the sign-in method.
 9. Create an account on the stripe website stripe.com
-10. Add the stripe package to your Xcode Application. Follow the steps in the tutorial(https://stripe.com/docs/payments/accept-a-payment named "1. Set up Stripe Client-side"
+10. Add the stripe package to your Xcode Application. Follow the steps in the tutorial(https://stripe.com/docs/payments/accept-a-payment) named "1. Set up Stripe Client-side"(This step can be skipped if everything worked fine, as the package should already be installed.) 
 11. Go to stripe.com->Dashboard->Developer->API-Keys and search for the secret and publishable API key.
 12. Open the folder stripeDB in your desired IDE.
 13. Open a terminal window and create a virtual environment with 'python3 -m venv placeholderforname'
