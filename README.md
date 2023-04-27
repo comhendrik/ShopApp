@@ -1,4 +1,5 @@
 # ShopApp
+!!!!If you download it now, there will be some problems. I am working on it.!!!!
 Disclaimer:<br/>
 This version includes credit card as a payment method, processed through Stripe. If you want to create the project without a real payment method go to the main-payment branch and follow the instructions there. This instruction uses the test-mode of stripe. This instruction doesn't explain the details of Firebase, Firestore and Storage. Make sure you are a little bit familiar with Firebase and its products.
 
