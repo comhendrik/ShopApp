@@ -10,19 +10,19 @@ I created this project to learn more about Firebase and how to deal with deeper 
 
 Images:<br/>
 <p float="left">
-<img src="/Images/LoginPage.png" width="125" height="auto">
-<img src="/Images/HomeView.png" width="125" height="auto">
-<img src="/Images/Searchbar.png" width="125" height="auto">
-<img src="/Images/ItemDetail.png" width="125" height="auto">
-<img src="/Images/ItemDetailButton.png" width="125" height="auto">
-<img src="/Images/FavoritesPage.png" width="125" height="auto">
-<img src="/Images/FavoritesAddToCart.png" width="125" height="auto">
-<img src="/Images/CartOverview.png" width="125" height="auto">
-<img src="/Images/PaymentOverview.png" width="125" height="auto">
-<img src="/Images/StripePayment.png" width="125" height="auto">
-<img src="/Images/Order.png" width="125" height="auto">
-<img src="/Images/OrderOverview.png" width="125" height="auto">
-<img src="/Images/Support.png" width="125" height="auto">
+<img src="/Images/LoginPage.png" width="140" height="auto">
+<img src="/Images/HomeView.png" width="140" height="auto">
+<img src="/Images/Searchbar.png" width="140" height="auto">
+<img src="/Images/ItemDetail.png" width="140" height="auto">
+<img src="/Images/ItemDetailButton.png" width="140" height="auto">
+<img src="/Images/FavoritesPage.png" width="140" height="auto">
+<img src="/Images/FavoritesAddToCart.png" width="140" height="auto">
+<img src="/Images/CartOverview.png" width="140" height="auto">
+<img src="/Images/PaymentOverview.png" width="140" height="auto">
+<img src="/Images/StripePayment.png" width="140" height="auto">
+<img src="/Images/Order.png" width="140" height="auto">
+<img src="/Images/OrderOverview.png" width="140" height="auto">
+<img src="/Images/Support.png" width="140" height="auto">
 </p>
 
 Download (all commands are marked with ' '):<br/>
