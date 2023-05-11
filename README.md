@@ -9,12 +9,12 @@ Why I have built this project:<br/>
 I created this project to learn more about Firebase and how to deal with deeper collection structures in Firestore. I was interested in the field of e-commerce and how such an application is built. It is clear to me that the security of this project cannot match the security of big companies that make money every day with e-commerce, but I learned a lot, e.g. user interface, real payment process MVVM (this is a point I can definitely put more work into) and I created two animations when you click on the buttons "Add to cart" and "Add to favourites". Please keep in mind that this shouldn't be something to use in the real world. It is just a side project for educational purposes. The brands on the pictures are not property of me.<br/>
 
 Images<br/>
+
 <img src="/Images/LoginPage.png" width="125" height="auto"
 <img src="/Images/HomeView.png" width="125" height="auto"
 <img src="/Images/Searchbar.png" width="125" height="auto"
 <img src="/Images/ItemDetail.png" width="125" height="auto"
 <img src="/Images/ItemDetailButton.png" width="125" height="auto"
-<img src="/Images/.png" width="125" height="auto"
 <img src="/Images/FavoritesPage.png" width="125" height="auto"
 <img src="/Images/FavoritesAddToCart.png" width="125" height="auto">
 <img src="/Images/CartOverview.png" width="125" height="auto">
@@ -22,6 +22,8 @@ Images<br/>
 <img src="/Images/Order.png" width="125" height="auto"
 <img src="/Images/OrderOverview.png" width="125" height="auto"
 <img src="/Images/Support.png" width="125" height="auto"
+
+<br/>
 
 Download (all commands are marked with ' '):<br/>
 1. Download it via Github and open the ShopApp.xcodeproj file in Xcode.
