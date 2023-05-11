@@ -17,11 +17,11 @@ struct SignUpView: View {
             Spacer()
             Image("USE-OWN-IMAGE!")
                 .scaledToFit()
-            LoginTextField(isSecure: false, value: $lvm.firstName, title: "firstname", systemImage: "person.crop.square.fill")
-            LoginTextField(isSecure: false, value: $lvm.lastName, title: "lastname", systemImage: "")
-            LoginTextField(isSecure: false, value: $lvm.email_SignUp, title: "email", systemImage: "envelope")
-            LoginTextField(isSecure: true, value: $lvm.password_SignUp, title: "password", systemImage: "lock")
-            LoginTextField(isSecure: true, value: $lvm.reEnterPassword, title: "re enter password", systemImage: "lock")
+            LoginTextField(isSecure: false, value: $lvm.firstName, title: "firstname", systemImage: "person.crop.square.fill", viewWidth: nil)
+            LoginTextField(isSecure: false, value: $lvm.lastName, title: "lastname", systemImage: "", viewWidth: nil)
+            LoginTextField(isSecure: false, value: $lvm.email_SignUp, title: "email", systemImage: "envelope", viewWidth: nil)
+            LoginTextField(isSecure: true, value: $lvm.password_SignUp, title: "password", systemImage: "lock", viewWidth: nil)
+            LoginTextField(isSecure: true, value: $lvm.reEnterPassword, title: "re enter password", systemImage: "lock", viewWidth: nil)
             Button(action: {
                 //Account erstellung
                 lvm.SignUp()

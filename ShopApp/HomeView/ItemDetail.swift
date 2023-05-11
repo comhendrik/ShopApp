@@ -12,7 +12,7 @@ struct ItemDetail: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     let item: Item
     var body: some View {
-        //Diese View ist die Artikelseit und zeigt alle nötigen Information eines Artikels, sowie die Möglichkeit den Artikel dem Warenkorb und der Favoritenliste hinzuzufügen.
+        //Diese View ist die Artikelseite und zeigt alle nötigen Information eines Artikels, sowie die Möglichkeit den Artikel dem Warenkorb und der Favoritenliste hinzuzufügen.
         ScrollView {
             VStack {
                 ZStack {
@@ -29,6 +29,14 @@ struct ItemDetail: View {
 
                 }
                 .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
+                
+                HStack {
+                    Text("\(item.id)")
+                        .foregroundColor(.gray)
+                        .fontWeight(.light)
+                    Spacer()
+                }
+                .padding(.horizontal)
 
                 HStack {
                     if item.discount != 0 {

@@ -7,6 +7,7 @@
 
 import Stripe
 import SwiftUI
+import StripePaymentSheet
 
 //Zahlung über Stripe werden über dieses ViewModel abgewickelt
 

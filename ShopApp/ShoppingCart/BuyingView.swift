@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Stripe
+import StripePaymentSheet
 
 struct BuyingView: View {
     @StateObject var uvm: UserViewModel

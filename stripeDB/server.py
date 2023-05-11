@@ -17,7 +17,7 @@ app = Flask(__name__, static_folder='public',
 def payment_sheet():
   #Payment Intent erstellen
     price = 100 * (request.json["price"])
-    #Der Price wird vom Client als Float übergeben. Der Client über beispielsweise die Zahl 89.99.
+    #Der Price wird vom Client als Float übergeben. Der Client übergibt beispielsweise die Zahl 89.99.
     #Damit der richtige Preis an Stripe übertragen wird muss die Zahl mit 100 multipliziert werden, da Stripe nur Cent Beträge übernimmt.
     # Für den Preis 89.99$ müsste man 8999.00 an Stripe übergeben. 
     paymentIntent = stripe.PaymentIntent.create(

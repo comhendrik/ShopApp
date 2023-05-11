@@ -14,6 +14,7 @@ struct LoginTextField: View {
     let systemImage: String
     @FocusState private var isFocused: Bool
     @State private var showSecureField = true
+    let viewWidth: CGFloat?
     var body: some View {
         //UI für das Design des Textfeldes.
         VStack(alignment: .leading) {
@@ -47,7 +48,7 @@ struct LoginTextField: View {
                 }
                 .padding()
                 .overlay(RoundedRectangle(cornerRadius: 15).stroke().foregroundColor(isFocused ? .black : .gray))
-                .frame(width: UIScreen.main.bounds.width - 55)
+                .frame(width: viewWidth == nil ? UIScreen.main.bounds.width - 55 : viewWidth)
             } else {
                 
                 TextField(title, text: $value)
@@ -55,7 +56,7 @@ struct LoginTextField: View {
                     .textInputAutocapitalization(TextInputAutocapitalization.never)
                     .padding()
                     .overlay(RoundedRectangle(cornerRadius: 15).stroke().foregroundColor(isFocused ? .black : .gray))
-                    .frame(width: UIScreen.main.bounds.width - 55)
+                    .frame(width: viewWidth == nil ? UIScreen.main.bounds.width - 55 : viewWidth)
                     .focused($isFocused)
             }
         }
@@ -64,6 +65,6 @@ struct LoginTextField: View {
 
 struct LoginTextField_Previews: PreviewProvider {
     static var previews: some View {
-        LoginTextField(isSecure: false, value: .constant("Hello"), title: "email", systemImage: "envelope")
+        LoginTextField(isSecure: false, value: .constant("Hello"), title: "email", systemImage: "envelope", viewWidth: nil)
     }
 }

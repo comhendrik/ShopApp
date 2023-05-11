@@ -37,13 +37,13 @@ enum SupportCases: CaseIterable, SupportCasesProtocol {
         case .notLikeExpected:
             return "not like expected"
         case .qualityProblems:
-            return "problems with Quality"
+            return "quality problems"
         case .alreadyWorn:
-            return "article is already worn"
+            return "already worn"
         case .newPrice:
-            return "there is a new price for the article"
+            return "new Price"
         case .noSpecificReason:
-            return "no specific reason for return"
+            return "no specific reason"
         }
     }
     

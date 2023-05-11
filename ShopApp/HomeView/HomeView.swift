@@ -15,35 +15,43 @@ struct HomeView: View {
     var body: some View {
         //Diese View begrüßt den Nutzer und enthält alle Artikel, sowie die Möglichkeiten, wie in Zeile 27 umgesetzt, nach den Artikelnamen zu suchen.
         NavigationView {
-            ScrollView(showsIndicators: false) {
-                HStack {
-                    Text("Hi,\n\(nameOfCustomer)")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                    Spacer()
-                }
-                LoginTextField(isSecure: false, value: $searchText, title: "search", systemImage: "")
-                LazyVGrid(columns: [GridItem(), GridItem()]) {
-                    ForEach(items.filter { $0.title.contains(searchText) || searchText.isEmpty }) { item in
-                        //Für jeden Artikel wird ein NavigationLink erstellt, um zur ItemDetail View zu kommen.
-                        NavigationLink(destination: {
-                            ItemDetail(uvm: uvm, item: item)
-                                .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
-                                    Button("Ok", role: .cancel) {}
-                                }
-                            
-                        }, label: {
-                            MiniViewer(item: item)
-                                
-                        })
-                            .buttonStyle(.plain)
-                            .padding(.horizontal, 5)
+            VStack {
+                ScrollView(showsIndicators: false) {
+                    HStack {
+                        Text("Hi,\n\(nameOfCustomer)")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                        Spacer()
                     }
+                    
+                    LazyVGrid(columns: [GridItem(), GridItem()]) {
+                        ForEach(items.filter { $0.title.contains(searchText) || searchText.isEmpty }) { item in
+                            //Für jeden Artikel wird ein NavigationLink erstellt, um zur ItemDetail View zu kommen.
+                            NavigationLink(destination: {
+                                ItemDetail(uvm: uvm, item: item)
+                                    .alert(uvm.alertMessage, isPresented: $uvm.showAlert) {
+                                        Button("Ok", role: .cancel) {}
+                                    }
+                                
+                            }, label: {
+                                MiniViewer(item: item)
+                                    
+                            })
+                                .buttonStyle(.plain)
+                        }
+                    }
+                    
+                    
+                    
+                    
                 }
+                .navigationBarHidden(true)
+                .padding()
+                LoginTextField(isSecure: false, value: $searchText, title: "search", systemImage: "", viewWidth: nil)
+                    .padding(.bottom)
             }
-            .navigationBarHidden(true)
-            .padding()
         }
+        
     }
 }
 

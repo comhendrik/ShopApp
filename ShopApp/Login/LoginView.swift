@@ -23,8 +23,8 @@ struct LoginView: View {
             if showResetPasswordView {
                 ResetPasswordView(showResetPasswordview: $showResetPasswordView, lvm: lvm)
             } else {
-                LoginTextField(isSecure: false, value: $lvm.email, title: "email", systemImage: "envelope")
-                LoginTextField(isSecure: true, value: $lvm.password, title: "password", systemImage: "lock")
+                LoginTextField(isSecure: false, value: $lvm.email, title: "email", systemImage: "envelope", viewWidth: nil)
+                LoginTextField(isSecure: true, value: $lvm.password, title: "password", systemImage: "lock", viewWidth: nil)
                 Button(action: {
                     //Anmelden
                     lvm.login()

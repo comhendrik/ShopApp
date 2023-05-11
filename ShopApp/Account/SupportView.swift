@@ -52,10 +52,15 @@ struct SupportView: View {
                                 spm.supportCase = supportCase
                             }, label: {
                                 Text("\(supportCase.stringDescription)")
-                                    .foregroundColor(spm.supportCase == supportCase ? .black : .gray)
+                                    .foregroundColor(spm.supportCase == supportCase ? .white : .black)
                             })
-                                .padding(5)
-                                .background(Color.gray.opacity(0.05).cornerRadius(25))
+                            .frame(width: UIScreen.main.bounds.width / 2.25, height: UIScreen.main.bounds.height / 20)
+                            .background(spm.supportCase == supportCase ? Color.black.cornerRadius(10) : Color.white.cornerRadius(10))
+                            
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.black, lineWidth: 1)
+                            )
                         }
                     }
                     

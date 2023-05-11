@@ -18,6 +18,7 @@ struct SelectSize: View {
                 SelectSizeButton(actualSize: $actualSize, shoeSize: size)
             }
         }
+        .padding(.horizontal,20)
     }
 }
 

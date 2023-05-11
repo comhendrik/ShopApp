@@ -11,7 +11,7 @@ struct ResetPasswordView: View {
     @Binding var showResetPasswordview: Bool
     @StateObject var lvm: LoginViewModel
     var body: some View {
-        LoginTextField(isSecure: false, value: $lvm.email, title: "email", systemImage: "envelope")
+        LoginTextField(isSecure: false, value: $lvm.email, title: "email", systemImage: "envelope", viewWidth: nil)
         Spacer()
         Button(action: {
             //Passwort zurücksetzen
