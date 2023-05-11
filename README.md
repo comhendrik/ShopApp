@@ -16,13 +16,6 @@ Images<br/>
 <img src="/Images/Searchbar.png" width="125" height="auto"
 <img src="/Images/ItemDetail.png" width="125" height="auto"
 <img src="/Images/ItemDetailButton.png" width="125" height="auto"
-<img src="/Images/FavoritesPage.png" width="125" height="auto"
-<img src="/Images/FavoritesAddToCart.png" width="125" height="auto">
-<img src="/Images/CartOverview.png" width="125" height="auto">
-<img src="/Images/PaymentOverview.png" width="125" height="auto"
-<img src="/Images/Order.png" width="125" height="auto"
-<img src="/Images/OrderOverview.png" width="125" height="auto"
-<img src="/Images/Support.png" width="125" height="auto"
 
 <br/>
 
