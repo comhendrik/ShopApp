@@ -10,7 +10,7 @@ I created this project to learn more about Firebase and how to deal with deeper 
 
 Images<br/>
 
-<img src="/Images/LoginPage.png" width="125" height="auto"
+<img src="Images/LoginPage.png" width="125" height="auto"
 
 
 Download (all commands are marked with ' '):<br/>
