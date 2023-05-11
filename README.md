@@ -12,10 +12,10 @@ Images<br/>
 
 <img src="/Images/FavoritesAddToCart.png" width="125" height="auto">
 <img src="/Images/CartOverview.png" width="125" height="auto">
-<img src="/Images/HomeView.png" width="125" height="auto"
-<img src="/Images/Searchbar.png" width="125" height="auto"
-<img src="/Images/ItemDetail.png" width="125" height="auto"
-<img src="/Images/ItemDetailButton.png" width="125" height="auto"
+<img src="/Images/HomeView.png" width="125" height="auto">
+<img src="/Images/Searchbar.png" width="125" height="auto">
+<img src="/Images/ItemDetail.png" width="125" height="auto">
+<img src="/Images/ItemDetailButton.png" width="125" height="auto">
 
 <br/>
 
